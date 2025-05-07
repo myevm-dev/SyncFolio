@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+
 export default function CashOnCashCalculator() {
   const [rent, setRent] = useState("");
   const [taxes, setTaxes] = useState("");
@@ -23,15 +24,9 @@ export default function CashOnCashCalculator() {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">
-      {/* Navbar */}
-      <nav className="w-full bg-gray-900 p-4 text-center text-lg font-semibold border-b border-gray-700">
-        Seller Finance Cash on Cash Calculator
-      </nav>
 
-      {/* Main Calculator Card */}
-      <div className="max-w-md mx-auto p-4 mt-8 border rounded-2xl shadow-md bg-black space-y-4 text-sm">
-        <h2 className="text-xl font-bold text-center">Cash-on-Cash Return Calculator</h2>
 
+      <div className="max-w-md mx-auto p-4 mt-8 mb-20 border rounded-2xl shadow-md bg-black space-y-4 text-sm">
         {/* Example Buttons */}
         <div className="flex justify-center gap-4 mb-2 flex-wrap">
           <button
