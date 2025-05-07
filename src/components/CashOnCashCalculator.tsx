@@ -14,7 +14,6 @@ export default function CashOnCashCalculator() {
   const insuranceNum = parseFloat(insurance) || 0;
   const hoaNum = parseFloat(hoa) || 0;
   const principalNum = parseFloat(principal) || 0;
-  const purchasePriceNum = parseFloat(purchasePrice) || 0;
   const entry = parseFloat(downPayment) || 0;
 
   const mmr = rentNum * 0.8;
@@ -29,12 +28,47 @@ export default function CashOnCashCalculator() {
         Seller Finance Cash on Cash Calculator
       </nav>
 
-      {/* Main calculator card */}
+      {/* Main Calculator Card */}
       <div className="max-w-md mx-auto p-4 mt-8 border rounded-2xl shadow-md bg-black space-y-4 text-sm">
+        <h2 className="text-xl font-bold text-center">Cash-on-Cash Return Calculator</h2>
 
+        {/* Example Buttons */}
+        <div className="flex justify-center gap-4 mb-2 flex-wrap">
+          <button
+            onClick={() => {
+              setRent("1500");
+              setTaxes("150");
+              setInsurance("75");
+              setHoa("0");
+              setPrincipal("500");
+              setPurchasePrice("150000");
+              setDownPayment("15000");
+            }}
+            className="px-4 py-2 bg-green-700 hover:bg-green-800 rounded text-white text-sm"
+          >
+            Load Good Deal Example
+          </button>
+
+          <button
+            onClick={() => {
+              setRent("1100");
+              setTaxes("200");
+              setInsurance("100");
+              setHoa("50");
+              setPrincipal("450");
+              setPurchasePrice("150000");
+              setDownPayment("20000");
+            }}
+            className="px-4 py-2 bg-red-700 hover:bg-red-800 rounded text-white text-sm"
+          >
+            Load Bad Deal Example
+          </button>
+        </div>
+
+        {/* Input Fields */}
         <div className="space-y-4">
           <div>
-            <label>Monthly Rent:</label>
+            <label>Monthly Rent Incoming:</label>
             <input
               type="number"
               value={rent}
@@ -78,7 +112,7 @@ export default function CashOnCashCalculator() {
           </div>
 
           <div>
-            <label>Monthly Principal Payment:</label>
+            <label>Monthly Payment to Seller:</label>
             <input
               type="number"
               value={principal}
@@ -111,6 +145,7 @@ export default function CashOnCashCalculator() {
           </div>
         </div>
 
+        {/* Output Display */}
         <div className="pt-4 space-y-1 text-base">
           <p><strong>Monthly Cash Flow:</strong> ${monthlyCashFlow.toFixed(2)}</p>
           <p><strong>Annual Cash Flow:</strong> ${annualCashFlow.toFixed(2)}</p>
@@ -127,7 +162,6 @@ export default function CashOnCashCalculator() {
             {cashOnCash >= 20 ? "It's a Deal!" : "No Deal: Under Target 20% CoC"}
           </p>
         </div>
-
       </div>
     </div>
   );
