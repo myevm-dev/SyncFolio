@@ -12,5 +12,7 @@ export interface DealInput {
   mortgageBalance: string;
   interestRate: string;
   loanPayment: string;
+  beds: string;
+  baths: string;
   role: string | null;
 }
