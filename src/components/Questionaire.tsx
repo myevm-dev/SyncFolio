@@ -43,18 +43,18 @@ const handleSave = async () => {
   if (selectedRole !== "Finder") return;
 
   try {
-    await addDoc(collection(db, "deals"), {
+    const docRef = await addDoc(collection(db, "deals"), {
       ...formData,
       role: selectedRole,
       createdAt: new Date().toISOString()
     });
+    console.log("✅ Saved to Firestore:", docRef.id); // Confirm success
     alert("Deal saved to Firebase.");
-  } catch (error) {
-    console.error("🔥 Firebase Save Error:", error); // This is critical
+  } catch (error: any) {
+    console.error("🔥 Firebase Save Error:", error?.message || error);
     alert("Failed to save");
   }
 };
-
 
   const renderField = (name: keyof typeof formData, label: string, span = 1) => (
     <div className={span === 2 ? "md:col-span-2" : ""}>
