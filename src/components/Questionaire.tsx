@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { DealInput } from "../types/DealInput";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 interface Props {
   onSubmit: (data: DealInput) => void;
@@ -37,6 +39,23 @@ export default function Questionaire({ onSubmit }: Props) {
     onSubmit({ ...formData, role: selectedRole });
   };
 
+const handleSave = async () => {
+  if (selectedRole !== "Finder") return;
+
+  try {
+    await addDoc(collection(db, "deals"), {
+      ...formData,
+      role: selectedRole,
+      createdAt: new Date().toISOString()
+    });
+    alert("Deal saved to Firebase.");
+  } catch (error) {
+    console.error("🔥 Firebase Save Error:", error); // This is critical
+    alert("Failed to save");
+  }
+};
+
+
   const renderField = (name: keyof typeof formData, label: string, span = 1) => (
     <div className={span === 2 ? "md:col-span-2" : ""}>
       <label className="block text-sm font-medium mb-1">{label}</label>
@@ -45,10 +64,7 @@ export default function Questionaire({ onSubmit }: Props) {
   );
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-4 max-w-3xl mx-auto space-y-6"
-    >
+    <form onSubmit={handleSubmit} className="p-4 max-w-3xl mx-auto space-y-6">
       {/* Role Toggle */}
       <div className="flex justify-center gap-2">
         {roles.map((role) => (
@@ -57,9 +73,7 @@ export default function Questionaire({ onSubmit }: Props) {
             type="button"
             onClick={() => setSelectedRole(role)}
             className={`px-4 py-2 rounded-full border ${
-              selectedRole === role
-                ? "bg-blue-600 text-white"
-                : "bg-white text-black"
+              selectedRole === role ? "bg-blue-600 text-white" : "bg-white text-black"
             }`}
           >
             {role}
@@ -67,30 +81,24 @@ export default function Questionaire({ onSubmit }: Props) {
         ))}
       </div>
 
-      {/* Group 1: Address, Zillow, Beds, Baths */}
+      {/* Grouped Fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
         {renderField("address", "Address")}
         {renderField("zillowUrl", "Zillow URL")}
         {renderField("beds", "Number of Beds")}
         {renderField("baths", "Number of Baths")}
       </div>
-
-      {/* Group 2: Price, Rental, Rehab, ARV */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
         {renderField("listingPrice", "Listing Price")}
         {renderField("rentalValue", "Monthly Rental Value")}
         {renderField("rehabCost", "Estimated Rehab Cost")}
         {renderField("arv", "After Repair Value (ARV)")}
       </div>
-
-      {/* Group 3: Taxes, HOA, Insurance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
         {renderField("taxes", "Monthly Taxes")}
         {renderField("hoa", "Monthly HOA")}
         {renderField("insurance", "Monthly Insurance", 2)}
       </div>
-
-      {/* Group 4: Loan Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
         {renderField("loanAmount", "Original Loan Amount")}
         {renderField("mortgageBalance", "Outstanding Mortgage Balance")}
@@ -109,8 +117,8 @@ export default function Questionaire({ onSubmit }: Props) {
         {selectedRole === "Finder" && (
           <button
             type="button"
+            onClick={handleSave}
             className="px-6 py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition"
-            onClick={() => console.log("Save for Finder:", formData)}
           >
             Save
           </button>
