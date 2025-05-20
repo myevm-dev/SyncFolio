@@ -36,7 +36,7 @@ export default function App() {
       cashOnCashCash(data),
       cashOnCashSeller(data),
       cashOnCashTakeover(data),
-      cashOnCashHybrid(data)
+      cashOnCashHybrid(data),
     ]);
   };
 
@@ -45,7 +45,7 @@ export default function App() {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col justify-between overflow-x-hidden">
+    <div className="w-full min-h-screen flex flex-col overflow-x-hidden">
       <Navbar />
       <div className="flex-grow space-y-8">
         <Questionaire onSubmit={handleSubmit} onSaveSuccess={triggerRefreshDeals} />
@@ -61,6 +61,7 @@ export default function App() {
 
         <DealsTable refreshKey={refreshKey} />
       </div>
+      <div className="mt-20" />
       <Footer />
     </div>
   );
