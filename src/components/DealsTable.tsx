@@ -56,18 +56,18 @@ export default function DealsTable({ refreshKey }: { refreshKey: number }) {
         <table className="min-w-full table-auto border-collapse border border-neutral-700 text-sm">
           <thead className="bg-neutral-800 text-white">
             <tr>
-              <th className="border border-neutral-700 px-3 py-2">Address</th>
-              <th className="border border-neutral-700 px-3 py-2">Beds</th>
-              <th className="border border-neutral-700 px-3 py-2">Baths</th>
-              <th className="border border-neutral-700 px-3 py-2">ARV</th>
-              <th className="border border-neutral-700 px-3 py-2">Price</th>
+              <th className="border border-neutral-700 px-3 py-2 text-left">Address</th>
+              <th className="border border-neutral-700 px-3 py-2 text-center">Beds</th>
+              <th className="border border-neutral-700 px-3 py-2 text-center">Baths</th>
+              <th className="border border-neutral-700 px-3 py-2 text-center">ARV</th>
+              <th className="border border-neutral-700 px-3 py-2 text-center">Price</th>
               <th className="border border-neutral-700 px-3 py-2 text-center">Delete</th>
             </tr>
           </thead>
           <tbody>
             {deals.map((deal) => (
               <tr key={deal.id} className="hover:bg-neutral-900">
-                <td className="border border-neutral-700 px-3 py-2">
+                <td className="border border-neutral-700 px-3 py-2 text-left">
                   {deal.zillowUrl ? (
                     <a
                       href={deal.zillowUrl}
@@ -81,10 +81,10 @@ export default function DealsTable({ refreshKey }: { refreshKey: number }) {
                     deal.address
                   )}
                 </td>
-                <td className="border border-neutral-700 px-3 py-2">{deal.beds || "-"}</td>
-                <td className="border border-neutral-700 px-3 py-2">{deal.baths || "-"}</td>
-                <td className="border border-neutral-700 px-3 py-2">${deal.arv || "-"}</td>
-                <td className="border border-neutral-700 px-3 py-2">${deal.listingPrice || "-"}</td>
+                <td className="border border-neutral-700 px-3 py-2 text-center">{deal.beds || "-"}</td>
+                <td className="border border-neutral-700 px-3 py-2 text-center">{deal.baths || "-"}</td>
+                <td className="border border-neutral-700 px-3 py-2 text-center">${deal.arv || "-"}</td>
+                <td className="border border-neutral-700 px-3 py-2 text-center">${deal.listingPrice || "-"}</td>
                 <td className="border border-neutral-700 px-3 py-2 text-center">
                   <button onClick={() => handleDelete(deal.id)} title="Delete">
                     <XCircleIcon className="w-5 h-5 text-red-500 hover:text-red-700" />
