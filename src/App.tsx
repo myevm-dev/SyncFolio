@@ -3,17 +3,26 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Questionaire from "./components/Questionaire";
 import Offers from "./components/Offers";
+import DealsTable from "./components/DealsTable";
+import CashOnCashBlock from "./components/CashOnCashBlock";
+
+import { DealInput } from "./types/DealInput";
+import { OfferResults } from "./types/OfferResults";
 
 import cashOffer from "./calculations/cashOffer";
 import sellerFinance from "./calculations/sellerFinance";
 import mortgageTakeover from "./calculations/takeover";
 import hybridOffer from "./calculations/hybridOffer";
 
-import { DealInput } from "./types/DealInput";
-import { OfferResults } from "./types/OfferResults";
+import cashOnCashCash from "./calculations/cashOnCashCash";
+import cashOnCashSeller from "./calculations/cashOnCashSeller";
+import cashOnCashTakeover from "./calculations/cashOnCashTakeover";
+import cashOnCashHybrid from "./calculations/cashOnCashHybrid";
 
 export default function App() {
   const [results, setResults] = useState<OfferResults | null>(null);
+  const [cocResults, setCocResults] = useState<any[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const handleSubmit = (data: DealInput) => {
     setResults({
@@ -22,14 +31,35 @@ export default function App() {
       takeover: mortgageTakeover(data),
       hybrid: hybridOffer(data),
     });
+
+    setCocResults([
+      cashOnCashCash(data),
+      cashOnCashSeller(data),
+      cashOnCashTakeover(data),
+      cashOnCashHybrid(data)
+    ]);
+  };
+
+  const triggerRefreshDeals = () => {
+    setRefreshKey((prev) => prev + 1);
   };
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-between overflow-x-hidden">
       <Navbar />
       <div className="flex-grow space-y-8">
-        <Questionaire onSubmit={handleSubmit} />
+        <Questionaire onSubmit={handleSubmit} onSaveSuccess={triggerRefreshDeals} />
         {results && <Offers results={results} />}
+
+        {cocResults.length > 0 && (
+          <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-4">
+            {cocResults.map((r) => (
+              <CashOnCashBlock key={r.type} result={r} />
+            ))}
+          </div>
+        )}
+
+        <DealsTable refreshKey={refreshKey} />
       </div>
       <Footer />
     </div>
