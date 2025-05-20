@@ -44,6 +44,11 @@ export default function App() {
     setRefreshKey((prev) => prev + 1);
   };
 
+  const handleLoadDeal = (deal: any) => {
+    // Assume deal is DealInput-compatible
+    handleSubmit(deal);
+  };
+
   return (
     <div className="w-full min-h-screen flex flex-col overflow-x-hidden">
       <Navbar />
@@ -59,7 +64,7 @@ export default function App() {
           </div>
         )}
 
-        <DealsTable refreshKey={refreshKey} />
+        <DealsTable refreshKey={refreshKey} onLoad={handleLoadDeal} />
       </div>
       <div className="mt-20" />
       <Footer />

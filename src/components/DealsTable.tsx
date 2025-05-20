@@ -19,6 +19,15 @@ interface Deal {
   arv?: string;
   status?: string;
   method?: string;
+  rentalValue?: string;
+  rehabCost?: string;
+  taxes?: string;
+  hoa?: string;
+  insurance?: string;
+  loanAmount?: string;
+  mortgageBalance?: string;
+  interestRate?: string;
+  loanPayment?: string;
 }
 
 const statuses = [
@@ -38,7 +47,7 @@ const methods = [
   "hybrid",
 ];
 
-export default function DealsTable({ refreshKey }: { refreshKey: number }) {
+export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number; onLoad: (deal: Deal) => void }) {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("");
@@ -141,7 +150,7 @@ export default function DealsTable({ refreshKey }: { refreshKey: number }) {
               <th className="border border-neutral-700 px-3 py-2 text-center">Price</th>
               <th className="border border-neutral-700 px-3 py-2 text-center">Status</th>
               <th className="border border-neutral-700 px-3 py-2 text-center">Method</th>
-              <th className="border border-neutral-700 px-3 py-2 text-center">Delete</th>
+              <th className="border border-neutral-700 px-3 py-2 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -204,9 +213,15 @@ export default function DealsTable({ refreshKey }: { refreshKey: number }) {
                     </button>
                   )}
                 </td>
-                <td className="border border-neutral-700 px-3 py-2 text-center">
+                <td className="border border-neutral-700 px-3 py-2 text-center space-x-2">
+                  <button
+                    onClick={() => onLoad(deal)}
+                    className="text-xs px-2 py-1 bg-blue-700 text-white rounded hover:bg-blue-800"
+                  >
+                    Load
+                  </button>
                   <button onClick={() => handleDelete(deal.id)} title="Delete">
-                    <XCircleIcon className="w-5 h-5 text-red-500 hover:text-red-700" />
+                    <XCircleIcon className="w-5 h-5 text-red-500 hover:text-red-700 inline-block" />
                   </button>
                 </td>
               </tr>
