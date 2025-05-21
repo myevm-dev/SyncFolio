@@ -5,5 +5,9 @@ export default function cashOffer(input: DealInput): string {
   const rehab = parseFloat(input.rehabCost || "0");
 
   const offer = (arv * 0.68) - rehab;
-  return isNaN(offer) ? "Invalid input" : `$${offer.toFixed(2)}`;
+  const downPayment = offer * 0.20;
+
+  if (isNaN(offer) || offer <= 0) return "Invalid input";
+
+  return `Offer: $${offer.toFixed(2)} (Down: $${downPayment.toFixed(2)})`;
 }

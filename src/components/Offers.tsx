@@ -3,7 +3,7 @@ import { OfferResults } from "../types/OfferResults";
 
 export default function Offers({ results }: { results: OfferResults }) {
   const labels = {
-    cash: "Cash Offer",
+    cash: "Cash Offer via DSCR",
     sellerFinance: "Seller Finance",
     takeover: "Mortgage Takeover",
     hybrid: "Hybrid"
