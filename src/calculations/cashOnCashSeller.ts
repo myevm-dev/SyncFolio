@@ -17,14 +17,16 @@ export default function cashOnCashSeller(input: DealInput): CashOnCashResult {
   const mmr = rent * 0.8;
   const monthlyCashFlow = mmr - taxes - insurance - hoa - sellerPayment;
   const annualCashFlow = monthlyCashFlow * 12;
-  const cashOnCash = downPayment > 0 ? (annualCashFlow / downPayment) * 100 : 0;
+  const totalEntry = downPayment + rehab;
+  const cashOnCash = totalEntry > 0 ? (annualCashFlow / totalEntry) * 100 : 0;
 
   return {
     type: "Seller Finance",
     monthlyCashFlow,
     annualCashFlow,
-    entry: downPayment,
+    entry: totalEntry,
     cashOnCash,
     pass: cashOnCash >= 20,
+    monthlyPayment: sellerPayment,
   };
 }

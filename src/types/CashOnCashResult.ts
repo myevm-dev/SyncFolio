@@ -5,4 +5,5 @@ export interface CashOnCashResult {
   cashOnCash: number;
   entry: number;
   pass: boolean;
+  monthlyPayment: number; // 👈 Add this line
 }

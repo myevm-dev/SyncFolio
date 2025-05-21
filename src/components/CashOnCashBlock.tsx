@@ -8,7 +8,7 @@ export default function CashOnCashBlock({ result }: { result: CashOnCashResult }
       <h3 className="text-lg font-bold mb-1">{type} Cash-on-Cash</h3>
       <p><strong>Monthly Cash Flow:</strong> ${Number(monthlyCashFlow).toFixed(2)}</p>
       <p><strong>Annual Cash Flow:</strong> ${Number(annualCashFlow).toFixed(2)}</p>
-      <p><strong>Entry / Down Payment:</strong> ${Number(entry).toFixed(2)}</p>
+      <p><strong>Down Payment:</strong> ${Number(entry).toFixed(2)}</p>
       <p>
         <strong>Return:</strong>
         <span className={Number(cashOnCash) >= 20 ? "text-green-400 ml-2" : "text-red-400 ml-2"}>

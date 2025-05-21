@@ -42,14 +42,17 @@ export default function Offers({ results, cashOnCashResults }: Props) {
               <pre className="text-sm whitespace-pre-wrap mb-2">{value}</pre>
 
               {!isComingSoon && coc && (
+                                  
                 <div className="text-xs bg-zinc-800 rounded p-3 text-left space-y-1">
-                  <p><strong>Monthly Cash Flow:</strong> ${coc.monthlyCashFlow}</p>
-                  <p><strong>Annual Cash Flow:</strong> ${coc.annualCashFlow}</p>
-                  <p><strong>Entry / Down Payment:</strong> ${coc.entry}</p>
+
+                  <p><strong>Monthly Payment:</strong> ${Number(coc.monthlyPayment).toFixed(2)}</p>
+                  <p><strong>Monthly Cash Flow:</strong> ${Number(coc.monthlyCashFlow).toFixed(2)}</p>
+                  <p><strong>Annual Cash Flow:</strong> ${Number(coc.annualCashFlow).toFixed(2)}</p>
+                  <p><strong>Entry:</strong> ${Number(coc.entry).toFixed(2)}</p>
                   <p>
                     <strong>Return:</strong>
                     <span className={coc.pass ? "text-green-400 ml-2" : "text-red-400 ml-2"}>
-                      {coc.cashOnCash}%
+                      {Number(coc.cashOnCash).toFixed(2)}%
                     </span>
                   </p>
                   <p className={coc.pass ? "text-green-500 font-bold" : "text-red-500 font-bold"}>

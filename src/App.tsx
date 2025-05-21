@@ -5,7 +5,6 @@ import Questionaire from "./components/Questionaire";
 import Offers from "./components/Offers";
 import DealsTable from "./components/DealsTable";
 
-
 import { DealInput } from "./types/DealInput";
 import { OfferResults } from "./types/OfferResults";
 import { CashOnCashResult } from "./types/CashOnCashResult";
@@ -24,6 +23,24 @@ export default function App() {
   const [results, setResults] = useState<OfferResults | null>(null);
   const [cocResults, setCocResults] = useState<CashOnCashResult[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  const [formData, setFormData] = useState<DealInput>({
+    address: "",
+    zillowUrl: "",
+    beds: "",
+    baths: "",
+    listingPrice: "",
+    rentalValue: "",
+    rehabCost: "",
+    arv: "",
+    taxes: "",
+    hoa: "",
+    insurance: "",
+    loanAmount: "",
+    mortgageBalance: "",
+    interestRate: "",
+    loanPayment: "",
+  });
 
   const handleSubmit = (data: DealInput) => {
     setResults({
@@ -46,6 +63,24 @@ export default function App() {
   };
 
   const handleLoadDeal = (deal: DealInput) => {
+    setFormData({
+      address: deal.address || "",
+      zillowUrl: deal.zillowUrl || "",
+      beds: deal.beds || "",
+      baths: deal.baths || "",
+      listingPrice: deal.listingPrice || "",
+      rentalValue: deal.rentalValue || "",
+      rehabCost: deal.rehabCost || "",
+      arv: deal.arv || "",
+      taxes: deal.taxes || "",
+      hoa: deal.hoa || "",
+      insurance: deal.insurance || "",
+      loanAmount: deal.loanAmount || "",
+      mortgageBalance: deal.mortgageBalance || "",
+      interestRate: deal.interestRate || "",
+      loanPayment: deal.loanPayment || "",
+    });
+
     handleSubmit(deal);
   };
 
@@ -53,12 +88,16 @@ export default function App() {
     <div className="w-full min-h-screen flex flex-col overflow-x-hidden">
       <Navbar />
       <div className="flex-grow space-y-8">
-        <Questionaire onSubmit={handleSubmit} onSaveSuccess={triggerRefreshDeals} />
-        
+        <Questionaire
+          onSubmit={handleSubmit}
+          onSaveSuccess={triggerRefreshDeals}
+          formData={formData}
+          setFormData={setFormData}
+        />
+
         {results && (
           <Offers results={results} cashOnCashResults={cocResults} />
         )}
-
 
         <DealsTable refreshKey={refreshKey} onLoad={handleLoadDeal} />
       </div>

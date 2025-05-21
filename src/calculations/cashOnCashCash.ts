@@ -17,17 +17,21 @@ export default function cashOnCashCash(input: DealInput): CashOnCashResult {
   const months = 30 * 12;
   const loanPayment = (financed * rate) / (1 - Math.pow(1 + rate, -months));
 
+  const monthlyPayment = loanPayment + taxes + insurance + hoa;
+
   const mmr = rent * 0.8;
-  const monthlyCashFlow = mmr - taxes - insurance - hoa - loanPayment;
+  const monthlyCashFlow = mmr - monthlyPayment;
   const annualCashFlow = monthlyCashFlow * 12;
-  const cashOnCash = down > 0 ? (annualCashFlow / down) * 100 : 0;
+  const totalEntry = down + rehab;
+  const cashOnCash = totalEntry > 0 ? (annualCashFlow / totalEntry) * 100 : 0;
 
   return {
     type: "Cash via DSCR",
     monthlyCashFlow,
     annualCashFlow,
-    entry: down,
+    entry: totalEntry,
     cashOnCash,
     pass: cashOnCash >= 20,
+    monthlyPayment
   };
 }

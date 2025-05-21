@@ -9,5 +9,6 @@ export default function cashOnCashHybrid(_: DealInput): CashOnCashResult {
     entry: 0,
     cashOnCash: 0,
     pass: false,
+    monthlyPayment: 0
   };
 }

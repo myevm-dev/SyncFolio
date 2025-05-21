@@ -6,28 +6,17 @@ import { db } from "../lib/firebase";
 interface Props {
   onSubmit: (data: DealInput) => void;
   onSaveSuccess: () => void;
+  formData: DealInput;
+  setFormData: React.Dispatch<React.SetStateAction<DealInput>>;
 }
 
-export default function Questionaire({ onSubmit, onSaveSuccess }: Props) {
+export default function Questionaire({
+  onSubmit,
+  onSaveSuccess,
+  formData,
+  setFormData
+}: Props) {
   const [saveSuccess, setSaveSuccess] = useState(false);
-
-  const [formData, setFormData] = useState<DealInput>({
-    address: "",
-    zillowUrl: "",
-    beds: "",
-    baths: "",
-    listingPrice: "",
-    rentalValue: "",
-    rehabCost: "",
-    arv: "",
-    taxes: "",
-    hoa: "",
-    insurance: "",
-    loanAmount: "",
-    mortgageBalance: "",
-    interestRate: "",
-    loanPayment: ""
-  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -51,7 +40,7 @@ export default function Questionaire({ onSubmit, onSaveSuccess }: Props) {
     }
   };
 
-  const renderField = (name: keyof typeof formData, label: string, span = 1) => (
+  const renderField = (name: keyof DealInput, label: string, span = 1) => (
     <div className={span === 2 ? "md:col-span-2" : ""}>
       <label className="block text-sm font-medium mb-1">{label}</label>
       <input
