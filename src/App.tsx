@@ -4,10 +4,11 @@ import Footer from "./components/Footer";
 import Questionaire from "./components/Questionaire";
 import Offers from "./components/Offers";
 import DealsTable from "./components/DealsTable";
-import CashOnCashBlock from "./components/CashOnCashBlock";
+
 
 import { DealInput } from "./types/DealInput";
 import { OfferResults } from "./types/OfferResults";
+import { CashOnCashResult } from "./types/CashOnCashResult";
 
 import cashOffer from "./calculations/cashOffer";
 import sellerFinance from "./calculations/sellerFinance";
@@ -21,7 +22,7 @@ import cashOnCashHybrid from "./calculations/cashOnCashHybrid";
 
 export default function App() {
   const [results, setResults] = useState<OfferResults | null>(null);
-  const [cocResults, setCocResults] = useState<any[]>([]);
+  const [cocResults, setCocResults] = useState<CashOnCashResult[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleSubmit = (data: DealInput) => {
@@ -44,8 +45,7 @@ export default function App() {
     setRefreshKey((prev) => prev + 1);
   };
 
-  const handleLoadDeal = (deal: any) => {
-    // Assume deal is DealInput-compatible
+  const handleLoadDeal = (deal: DealInput) => {
     handleSubmit(deal);
   };
 
@@ -54,15 +54,11 @@ export default function App() {
       <Navbar />
       <div className="flex-grow space-y-8">
         <Questionaire onSubmit={handleSubmit} onSaveSuccess={triggerRefreshDeals} />
-        {results && <Offers results={results} />}
-
-        {cocResults.length > 0 && (
-          <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-4">
-            {cocResults.map((r) => (
-              <CashOnCashBlock key={r.type} result={r} />
-            ))}
-          </div>
+        
+        {results && (
+          <Offers results={results} cashOnCashResults={cocResults} />
         )}
+
 
         <DealsTable refreshKey={refreshKey} onLoad={handleLoadDeal} />
       </div>

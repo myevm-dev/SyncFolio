@@ -26,8 +26,7 @@ export default function Questionaire({ onSubmit, onSaveSuccess }: Props) {
     loanAmount: "",
     mortgageBalance: "",
     interestRate: "",
-    loanPayment: "",
-    role: null, // optional: still define it to satisfy DealInput type
+    loanPayment: ""
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +58,7 @@ export default function Questionaire({ onSubmit, onSaveSuccess }: Props) {
         name={name}
         value={formData[name] as string}
         onChange={handleChange}
-        className="input"
+        className="w-full bg-zinc-900 text-white border border-neutral-700 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 autofill:bg-zinc-900"
       />
     </div>
   );

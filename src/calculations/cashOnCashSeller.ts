@@ -1,12 +1,5 @@
 import { DealInput } from "../types/DealInput";
-
-export interface CashOnCashResult {
-  type: string;
-  monthlyCashFlow: number;
-  annualCashFlow: number;
-  cashOnCash: number;
-  entry: number;
-}
+import { CashOnCashResult } from "../types/CashOnCashResult";
 
 export default function cashOnCashSeller(input: DealInput): CashOnCashResult {
   const rent = parseFloat(input.rentalValue || "0");
@@ -30,7 +23,8 @@ export default function cashOnCashSeller(input: DealInput): CashOnCashResult {
     type: "Seller Finance",
     monthlyCashFlow,
     annualCashFlow,
+    entry: downPayment,
     cashOnCash,
-    entry: downPayment
+    pass: cashOnCash >= 20,
   };
 }

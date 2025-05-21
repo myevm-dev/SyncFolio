@@ -1,9 +1,8 @@
-// src/types/CashOnCashResult.ts
 export interface CashOnCashResult {
   type: string;
-  monthlyCashFlow: string;
-  annualCashFlow: string;
-  entry: string;
-  cashOnCash: string;
+  monthlyCashFlow: number;
+  annualCashFlow: number;
+  cashOnCash: number;
+  entry: number;
   pass: boolean;
 }

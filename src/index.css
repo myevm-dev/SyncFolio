@@ -37,3 +37,11 @@ html, body {
     @apply border border-neutral-700 bg-zinc-900 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500;
   }
 }
+
+
+input:-webkit-autofill {
+  background-color: #18181b !important;
+  color: #fff !important;
+  -webkit-box-shadow: 0 0 0 1000px #18181b inset !important;
+  -webkit-text-fill-color: #fff !important;
+}
