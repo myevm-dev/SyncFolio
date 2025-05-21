@@ -26,9 +26,13 @@ export default function Offers({ results, cashOnCashResults }: Props) {
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 max-w-6xl mx-auto">
       {Object.entries(results).map(([key, value]) => {
         const isComingSoon = value.toLowerCase().includes("coming soon");
-        const borderColor = isComingSoon ? "border-red-500" : "border-green-500";
-
         const coc = cashOnCashResults.find((r) => r.type === typeMap[key]);
+
+        const borderColor = isComingSoon
+          ? "border-grey-500"
+          : coc?.pass
+            ? "border-green-500"
+            : "border-red-500";
 
         return (
           <div
@@ -59,7 +63,6 @@ export default function Offers({ results, cashOnCashResults }: Props) {
                   </p>
                 </div>
               )}
-
             </div>
 
             <div className="mt-4 flex justify-center gap-2">
