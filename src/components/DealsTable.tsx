@@ -67,10 +67,14 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
   const fetchDeals = async () => {
     try {
       const snapshot = await getDocs(collection(db, "deals"));
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Deal[];
+      const data = snapshot.docs.map((doc) => {
+        const dealData = doc.data() as Deal;
+        return {
+          ...dealData,
+          id: doc.id,
+          status: dealData.status || "lead", // default to lead
+        };
+      });
       setDeals(data);
     } catch (err) {
       console.error("Error fetching deals:", err);
@@ -212,7 +216,7 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
                       onClick={() => setEditingStatusId(deal.id)}
                       className={`px-2 py-1 text-xs rounded-full font-medium cursor-pointer hover:opacity-80 ${statusColors[deal.status ?? ""] || "bg-neutral-700 text-white"}`}
                     >
-                      {deal.status || "-"}
+                      {deal.status || "lead"}
                     </span>
                   )}
                 </td>
