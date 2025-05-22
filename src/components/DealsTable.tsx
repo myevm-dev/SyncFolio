@@ -39,6 +39,15 @@ const statuses = [
   "closed",
 ];
 
+const statusColors: Record<string, string> = {
+  lead: "bg-yellow-400 text-black",
+  called: "bg-blue-400 text-black",
+  contacted: "bg-indigo-400 text-white",
+  "offer sent": "bg-orange-400 text-black",
+  "contract sent": "bg-purple-400 text-white",
+  closed: "bg-green-500 text-white",
+};
+
 const methods = [
   "unknown",
   "cash",
@@ -51,6 +60,8 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("");
+  const [search, setSearch] = useState<string>("");
+  const [editingStatusId, setEditingStatusId] = useState<string | null>(null);
   const [editingMethodId, setEditingMethodId] = useState<string | null>(null);
 
   const fetchDeals = async () => {
@@ -90,6 +101,7 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
           deal.id === id ? { ...deal, status: newStatus } : deal
         )
       );
+      setEditingStatusId(null);
     } catch (err) {
       console.error("Failed to update status:", err);
     }
@@ -109,9 +121,11 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
     }
   };
 
-  const filteredDeals = filter
-    ? deals.filter((deal) => deal.status === filter)
-    : deals;
+  const filteredDeals = deals.filter((deal) => {
+    const matchesStatus = filter ? deal.status === filter : true;
+    const matchesSearch = deal.address.toLowerCase().includes(search.toLowerCase());
+    return matchesStatus && matchesSearch;
+  });
 
   if (loading) return <div className="text-center text-sm">Loading deals...</div>;
   if (!deals.length) return <div className="text-center text-sm text-zinc-400">No deals saved yet.</div>;
@@ -137,6 +151,13 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
             {status}
           </button>
         ))}
+        <input
+          type="text"
+          placeholder="Search address..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="ml-auto px-3 py-1 rounded border text-sm bg-white text-black"
+        />
       </div>
 
       <div className="overflow-x-auto">
@@ -175,18 +196,25 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
                 <td className="border border-neutral-700 px-3 py-2 text-center">${deal.arv || "-"}</td>
                 <td className="border border-neutral-700 px-3 py-2 text-center">${deal.listingPrice || "-"}</td>
                 <td className="border border-neutral-700 px-3 py-2 text-center">
-                  <select
-                    value={deal.status || ""}
-                    onChange={(e) => handleStatusChange(deal.id, e.target.value)}
-                    className="bg-neutral-800 border border-neutral-700 text-white text-xs px-2 py-1 rounded"
-                  >
-                    <option value="">-</option>
-                    {statuses.map((status) => (
-                      <option key={status} value={status}>
-                        {status}
-                      </option>
-                    ))}
-                  </select>
+                  {editingStatusId === deal.id ? (
+                    <select
+                      value={deal.status || ""}
+                      onChange={(e) => handleStatusChange(deal.id, e.target.value)}
+                      className="bg-neutral-800 border border-neutral-700 text-white text-xs px-2 py-1 rounded"
+                    >
+                      <option value="" disabled>Select status</option>
+                      {statuses.map((status) => (
+                        <option key={status} value={status}>{status}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span
+                      onClick={() => setEditingStatusId(deal.id)}
+                      className={`px-2 py-1 text-xs rounded-full font-medium cursor-pointer hover:opacity-80 ${statusColors[deal.status ?? ""] || "bg-neutral-700 text-white"}`}
+                    >
+                      {deal.status || "-"}
+                    </span>
+                  )}
                 </td>
                 <td className="border border-neutral-700 px-3 py-2 text-center">
                   {editingMethodId === deal.id ? (
