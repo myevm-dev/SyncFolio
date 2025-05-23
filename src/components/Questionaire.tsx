@@ -31,13 +31,35 @@ export default function Questionaire({
     try {
       await addDoc(collection(db, "deals"), {
         ...formData,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        status: "lead",
       });
       setSaveSuccess(true);
       onSaveSuccess?.();
     } catch (error: any) {
       console.error("🔥 Firebase Save Error:", error?.message || error);
     }
+  };
+
+  const handleClear = () => {
+    setFormData({
+      address: "",
+      zillowUrl: "",
+      beds: "",
+      baths: "",
+      listingPrice: "",
+      rentalValue: "",
+      rehabCost: "",
+      arv: "",
+      taxes: "",
+      hoa: "",
+      insurance: "",
+      loanAmount: "",
+      mortgageBalance: "",
+      interestRate: "",
+      loanPayment: "",
+    });
+    setSaveSuccess(false);
   };
 
   const renderField = (name: keyof DealInput, label: string, span = 1) => (
@@ -91,7 +113,7 @@ export default function Questionaire({
       )}
 
       {/* Buttons */}
-      <div className="flex justify-center gap-4 border-t border-neutral-800 pt-6">
+      <div className="flex justify-center gap-4 border-t border-neutral-800 pt-6 flex-wrap">
         <button
           type="submit"
           className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
@@ -104,6 +126,13 @@ export default function Questionaire({
           className="px-6 py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition"
         >
           Save
+        </button>
+        <button
+          type="button"
+          onClick={handleClear}
+          className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition"
+        >
+          Clear
         </button>
       </div>
     </form>
