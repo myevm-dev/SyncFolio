@@ -1,4 +1,5 @@
 import { ConnectButton } from "thirdweb/react";
+import favicon from "../favicon.png";
 import { client } from "../client"; // adjust path if needed
 import {
   inAppWallet,
@@ -33,7 +34,8 @@ export default function Navbar() {
       className="w-full p-4 flex justify-between items-center border-b border-gray-700"
       style={{ backgroundColor: "#0B1519" }}
     >
-      <div className="text-lg font-semibold text-white">
+      <div className="flex items-center gap-2 text-white font-semibold text-2xl">
+        <img src={favicon} alt="logo" className="w-12 h-12" />
         Syncfolio
       </div>
       <ConnectButton
