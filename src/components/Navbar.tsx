@@ -1,17 +1,21 @@
 import { ConnectButton } from "thirdweb/react";
-import { client } from "../client"; // adjust if your path differs
+import { client } from "../client";
 
 export default function Navbar() {
   return (
-    <nav className="w-full bg-gray-900 p-4 flex justify-between items-center border-b border-gray-700">
-      <div className="text-lg font-semibold text-white">
-        Syncfolio
-      </div>
+    <nav
+      className="w-full p-4 flex justify-between items-center border-b border-gray-700"
+      style={{ backgroundColor: "#0B1519" }}
+    >
+      <div className="text-lg font-semibold text-white">Syncfolio</div>
       <ConnectButton
         client={client}
         appMetadata={{
           name: "Syncfolio",
-          url: "https://myevm.org", // replace with your deployed app URL
+          url: "https://myevm.org",
+        }}
+        connectButton={{
+          label: "Sign In",
         }}
       />
     </nav>
