@@ -36,7 +36,7 @@ export default function Navbar() {
     >
       <div className="flex items-center gap-2 text-white font-semibold text-2xl">
         <img src={favicon} alt="logo" className="w-12 h-12" />
-        Syncfolio
+        SyncFolio
       </div>
       <ConnectButton
         client={client}
@@ -46,7 +46,7 @@ export default function Navbar() {
           showThirdwebBranding: false,
         }}
         appMetadata={{
-          name: "Syncfolio",
+          name: "SyncFolio",
           url: "https://myevm.org",
         }}
         connectButton={{

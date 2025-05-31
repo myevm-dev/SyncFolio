@@ -21,7 +21,22 @@ export default function Questionaire({
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "zillowUrl") {
+      const match = value.match(/\/homedetails\/([^/]+)\//);
+      if (match && match[1]) {
+        const addressFromUrl = decodeURIComponent(match[1].replace(/-/g, " "));
+        setFormData((prev) => ({
+          ...prev,
+          [name]: value,
+          address: addressFromUrl,
+        }));
+        return;
+      }
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -65,6 +80,8 @@ export default function Questionaire({
       mortgageBalance: "",
       interestRate: "",
       loanPayment: "",
+      sqft: "",
+      yearBuilt: "",
     });
     setSaveSuccess(false);
   };
@@ -84,9 +101,14 @@ export default function Questionaire({
   return (
     <form onSubmit={handleSubmit} className="p-4 max-w-3xl mx-auto space-y-6">
       {/* Address + Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
+      <div className="grid grid-cols-1 gap-4 border-t border-neutral-800 pt-6">
+        {renderField("zillowUrl", "Zillow URL", 2)}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {renderField("address", "Address")}
-        {renderField("zillowUrl", "Zillow URL")}
+        {renderField("sqft", "Square Footage")}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {renderField("beds", "Number of Beds")}
         {renderField("baths", "Number of Baths")}
       </div>
@@ -102,8 +124,9 @@ export default function Questionaire({
       {/* Expenses */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
         {renderField("taxes", "Monthly Taxes")}
+        {renderField("insurance", "Monthly Insurance")}
         {renderField("hoa", "Monthly HOA")}
-        {renderField("insurance", "Monthly Insurance", 2)}
+        {renderField("yearBuilt", "Year Built")}
       </div>
 
       {/* Financing */}
@@ -116,7 +139,8 @@ export default function Questionaire({
 
       {/* Success message */}
       {saveSuccess && (
-        <div className="text-green-500 text-center font-medium">✔ Deal saved!</div>
+        <div className="text-green-500 text-center font-medium">✔ Deal saved!
+        </div>
       )}
 
       {/* Buttons */}
