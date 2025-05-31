@@ -56,7 +56,15 @@ const methods = [
   "hybrid",
 ];
 
-export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number; onLoad: (deal: Deal) => void }) {
+export default function DealsTable({
+  refreshKey,
+  onLoad,
+  walletAddress,
+}: {
+  refreshKey: number;
+  onLoad: (deal: Deal) => void;
+  walletAddress: string;
+}) {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("");
@@ -65,14 +73,18 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
   const [editingMethodId, setEditingMethodId] = useState<string | null>(null);
 
   const fetchDeals = async () => {
+    if (!walletAddress) return;
+
     try {
-      const snapshot = await getDocs(collection(db, "deals"));
+      const snapshot = await getDocs(
+        collection(db, `users/${walletAddress}/deals`)
+      );
       const data = snapshot.docs.map((doc) => {
         const dealData = doc.data() as Deal;
         return {
           ...dealData,
           id: doc.id,
-          status: dealData.status || "lead", // default to lead
+          status: dealData.status || "lead",
         };
       });
       setDeals(data);
@@ -86,11 +98,11 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
   useEffect(() => {
     setLoading(true);
     fetchDeals();
-  }, [refreshKey]);
+  }, [refreshKey, walletAddress]);
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteDoc(doc(db, "deals", id));
+      await deleteDoc(doc(db, `users/${walletAddress}/deals`, id));
       setDeals((prev) => prev.filter((deal) => deal.id !== id));
     } catch (err) {
       console.error("Failed to delete deal:", err);
@@ -99,7 +111,9 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
-      await updateDoc(doc(db, "deals", id), { status: newStatus });
+      await updateDoc(doc(db, `users/${walletAddress}/deals`, id), {
+        status: newStatus,
+      });
       setDeals((prev) =>
         prev.map((deal) =>
           deal.id === id ? { ...deal, status: newStatus } : deal
@@ -113,7 +127,9 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
 
   const handleMethodChange = async (id: string, newMethod: string) => {
     try {
-      await updateDoc(doc(db, "deals", id), { method: newMethod });
+      await updateDoc(doc(db, `users/${walletAddress}/deals`, id), {
+        method: newMethod,
+      });
       setDeals((prev) =>
         prev.map((deal) =>
           deal.id === id ? { ...deal, method: newMethod } : deal
@@ -127,9 +143,19 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
 
   const filteredDeals = deals.filter((deal) => {
     const matchesStatus = filter ? deal.status === filter : true;
-    const matchesSearch = deal.address.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = deal.address
+      .toLowerCase()
+      .includes(search.toLowerCase());
     return matchesStatus && matchesSearch;
   });
+
+  if (!walletAddress) {
+    return (
+      <div className="text-center text-sm text-zinc-400">
+        Connect wallet to view saved deals.
+      </div>
+    );
+  }
 
   if (loading) return <div className="text-center text-sm">Loading deals...</div>;
   if (!deals.length) return <div className="text-center text-sm text-zinc-400">No deals saved yet.</div>;
@@ -168,20 +194,20 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
         <table className="min-w-full table-auto border-collapse border border-neutral-700 text-sm">
           <thead className="bg-neutral-800 text-white">
             <tr>
-              <th className="border border-neutral-700 px-3 py-2 text-left">Address</th>
-              <th className="border border-neutral-700 px-3 py-2 text-center">Beds</th>
-              <th className="border border-neutral-700 px-3 py-2 text-center">Baths</th>
-              <th className="border border-neutral-700 px-3 py-2 text-center">ARV</th>
-              <th className="border border-neutral-700 px-3 py-2 text-center">Price</th>
-              <th className="border border-neutral-700 px-3 py-2 text-center">Status</th>
-              <th className="border border-neutral-700 px-3 py-2 text-center">Method</th>
-              <th className="border border-neutral-700 px-3 py-2 text-center">Action</th>
+              <th className="border px-3 py-2">Address</th>
+              <th className="border px-3 py-2">Beds</th>
+              <th className="border px-3 py-2">Baths</th>
+              <th className="border px-3 py-2">ARV</th>
+              <th className="border px-3 py-2">Price</th>
+              <th className="border px-3 py-2">Status</th>
+              <th className="border px-3 py-2">Method</th>
+              <th className="border px-3 py-2">Action</th>
             </tr>
           </thead>
           <tbody>
             {filteredDeals.map((deal) => (
               <tr key={deal.id} className="hover:bg-neutral-900">
-                <td className="border border-neutral-700 px-3 py-2 text-left">
+                <td className="border px-3 py-2">
                   {deal.zillowUrl ? (
                     <a
                       href={deal.zillowUrl}
@@ -195,16 +221,16 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
                     deal.address
                   )}
                 </td>
-                <td className="border border-neutral-700 px-3 py-2 text-center">{deal.beds || "-"}</td>
-                <td className="border border-neutral-700 px-3 py-2 text-center">{deal.baths || "-"}</td>
-                <td className="border border-neutral-700 px-3 py-2 text-center">${deal.arv || "-"}</td>
-                <td className="border border-neutral-700 px-3 py-2 text-center">${deal.listingPrice || "-"}</td>
-                <td className="border border-neutral-700 px-3 py-2 text-center">
+                <td className="border px-3 py-2 text-center">{deal.beds || "-"}</td>
+                <td className="border px-3 py-2 text-center">{deal.baths || "-"}</td>
+                <td className="border px-3 py-2 text-center">${deal.arv || "-"}</td>
+                <td className="border px-3 py-2 text-center">${deal.listingPrice || "-"}</td>
+                <td className="border px-3 py-2 text-center">
                   {editingStatusId === deal.id ? (
                     <select
                       value={deal.status || ""}
                       onChange={(e) => handleStatusChange(deal.id, e.target.value)}
-                      className="bg-neutral-800 border border-neutral-700 text-white text-xs px-2 py-1 rounded"
+                      className="bg-neutral-800 border text-white text-xs px-2 py-1 rounded"
                     >
                       <option value="" disabled>Select status</option>
                       {statuses.map((status) => (
@@ -220,12 +246,12 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
                     </span>
                   )}
                 </td>
-                <td className="border border-neutral-700 px-3 py-2 text-center">
+                <td className="border px-3 py-2 text-center">
                   {editingMethodId === deal.id ? (
                     <select
                       value={deal.method || ""}
                       onChange={(e) => handleMethodChange(deal.id, e.target.value)}
-                      className="bg-neutral-800 border border-neutral-700 text-white text-xs px-2 py-1 rounded"
+                      className="bg-neutral-800 border text-white text-xs px-2 py-1 rounded"
                     >
                       <option value="" disabled>Select method</option>
                       {methods.map((method) => (
@@ -245,7 +271,7 @@ export default function DealsTable({ refreshKey, onLoad }: { refreshKey: number;
                     </button>
                   )}
                 </td>
-                <td className="border border-neutral-700 px-3 py-2 text-center space-x-2">
+                <td className="border px-3 py-2 text-center space-x-2">
                   <button
                     onClick={() => onLoad(deal)}
                     className="text-xs px-2 py-1 bg-blue-700 text-white rounded hover:bg-blue-800"

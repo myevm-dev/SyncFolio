@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DealInput } from "../types/DealInput";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../lib/firebase";
 
 interface Props {
@@ -8,13 +8,15 @@ interface Props {
   onSaveSuccess: () => void;
   formData: DealInput;
   setFormData: React.Dispatch<React.SetStateAction<DealInput>>;
+  walletAddress: string;
 }
 
 export default function Questionaire({
   onSubmit,
   onSaveSuccess,
   formData,
-  setFormData
+  setFormData,
+  walletAddress,
 }: Props) {
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -28,10 +30,15 @@ export default function Questionaire({
   };
 
   const handleSave = async () => {
+    if (!walletAddress) {
+      console.error("No wallet connected — cannot save.");
+      return;
+    }
+
     try {
-      await addDoc(collection(db, "deals"), {
+      await addDoc(collection(db, `users/${walletAddress}/deals`), {
         ...formData,
-        createdAt: new Date().toISOString(),
+        createdAt: serverTimestamp(),
         status: "lead",
       });
       setSaveSuccess(true);
@@ -123,7 +130,12 @@ export default function Questionaire({
         <button
           type="button"
           onClick={handleSave}
-          className="px-6 py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition"
+          className={`px-6 py-2 rounded-full transition ${
+            walletAddress
+              ? "bg-amber-500 text-white hover:bg-amber-600"
+              : "bg-gray-700 text-gray-400 cursor-not-allowed"
+          }`}
+          disabled={!walletAddress}
         >
           Save
         </button>

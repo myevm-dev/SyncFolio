@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useActiveAccount } from "thirdweb/react";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Questionaire from "./components/Questionaire";
@@ -20,6 +22,9 @@ import cashOnCashTakeover from "./calculations/cashOnCashTakeover";
 import cashOnCashHybrid from "./calculations/cashOnCashHybrid";
 
 export default function App() {
+  const account = useActiveAccount();
+  const walletAddress = account?.address || "";
+
   const [results, setResults] = useState<OfferResults | null>(null);
   const [cocResults, setCocResults] = useState<CashOnCashResult[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -93,13 +98,18 @@ export default function App() {
           onSaveSuccess={triggerRefreshDeals}
           formData={formData}
           setFormData={setFormData}
+          walletAddress={walletAddress}
         />
 
         {results && (
           <Offers results={results} cashOnCashResults={cocResults} />
         )}
 
-        <DealsTable refreshKey={refreshKey} onLoad={handleLoadDeal} />
+        <DealsTable
+          refreshKey={refreshKey}
+          onLoad={handleLoadDeal}
+          walletAddress={walletAddress}
+        />
       </div>
       <div className="mt-20" />
       <Footer />
