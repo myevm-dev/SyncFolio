@@ -101,7 +101,7 @@ export default function Questionaire({
   return (
     <form onSubmit={handleSubmit} className="p-4 max-w-3xl mx-auto space-y-6">
       {/* Address + Details */}
-      <div className="grid grid-cols-1 gap-4 border-t border-neutral-800 pt-6">
+      <div className="grid grid-cols-1 gap-4">
         {renderField("zillowUrl", "Zillow URL", 2)}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

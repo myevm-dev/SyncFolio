@@ -99,7 +99,7 @@ export default function LinkBar({ walletAddress }: { walletAddress: string }) {
   };
 
   return (
-    <div className="w-full flex flex-col items-center gap-2 px-6 py-2 bg-gray-100 dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700">
+    <div className="w-full flex flex-col items-center gap-2 px-6 py-2 bg-gray-100 dark:bg-black border-b border-gray-300 dark:border-gray-700">
       <div className="flex flex-wrap justify-center gap-4">
         {links.map((link) => (
           <div key={link.id} className="relative group">
