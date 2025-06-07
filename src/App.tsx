@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
 
 import Navbar from "./components/Navbar";
+import LinkBar from "./components/LinkBar";
 import Footer from "./components/Footer";
 import Questionaire from "./components/Questionaire";
 import Offers from "./components/Offers";
@@ -92,6 +93,10 @@ export default function App() {
   return (
     <div className="w-full min-h-screen flex flex-col overflow-x-hidden">
       <Navbar />
+      
+      <LinkBar walletAddress={walletAddress} />
+
+
       <div className="flex-grow space-y-8">
         <Questionaire
           onSubmit={handleSubmit}
