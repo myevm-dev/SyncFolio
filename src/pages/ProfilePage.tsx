@@ -102,6 +102,38 @@ export default function ProfilePage() {
       )}
 
       <p className="text-gray-400 break-all">Account: {walletAddress}</p>
+            {/* Dashboard Cards */}
+      <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        {[
+          {
+            label: "Earnings",
+            value: "$0.00",
+            icon: "💰",
+          },
+          {
+            label: "Buying",
+            value: "0 Properties",
+            icon: "🏠",
+          },
+          {
+            label: "Selling",
+            value: "0 Properties",
+            icon: "📤",
+          },
+        ].map((card) => (
+          <div
+            key={card.label}
+            className="bg-[#111827] rounded-xl p-6 shadow-md border border-zinc-700 flex justify-between items-center"
+          >
+            <div>
+              <p className="text-2xl font-bold text-white">{card.value}</p>
+              <p className="text-sm text-gray-400">{card.label}</p>
+            </div>
+            <div className="text-3xl">{card.icon}</div>
+          </div>
+        ))}
+      </div>
+
     </div>
   );
 }
