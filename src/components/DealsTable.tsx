@@ -101,13 +101,43 @@ export default function DealsTable({
   }, [refreshKey, walletAddress]);
 
   const handleDelete = async (id: string) => {
-    try {
-      await deleteDoc(doc(db, `users/${walletAddress}/deals`, id));
-      setDeals((prev) => prev.filter((deal) => deal.id !== id));
-    } catch (err) {
-      console.error("Failed to delete deal:", err);
-    }
-  };
+  const modal = document.createElement("div");
+  modal.className =
+    "fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50";
+
+  modal.innerHTML = `
+    <div class='bg-white dark:bg-gray-900 rounded-lg p-6 shadow-xl max-w-sm w-full text-center'>
+      <h2 class='text-lg font-semibold mb-4 text-gray-900 dark:text-white'>Confirm Delete</h2>
+      <p class='text-sm text-gray-700 dark:text-gray-300 mb-6'>Are you sure you want to delete this deal?</p>
+      <div class='flex justify-center gap-4'>
+        <button id='confirmYes' class='px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700'>Yes</button>
+        <button id='confirmNo' class='px-4 py-1 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'>Cancel</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  return new Promise<void>((resolve) => {
+    modal.querySelector("#confirmYes")?.addEventListener("click", async () => {
+      try {
+        await deleteDoc(doc(db, `users/${walletAddress}/deals`, id));
+        setDeals((prev) => prev.filter((deal) => deal.id !== id));
+      } catch (err) {
+        console.error("Failed to delete deal:", err);
+      } finally {
+        modal.remove();
+        resolve();
+      }
+    });
+
+    modal.querySelector("#confirmNo")?.addEventListener("click", () => {
+      modal.remove();
+      resolve();
+    });
+  });
+};
+
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
