@@ -31,7 +31,7 @@ const wallets = [
 ];
 
 const pageLabels: Record<string, string> = {
-  "/": "CRM",
+  "/": "EARN",
   "/buy": "BUY",
   "/sell": "SELL",
   "/profile": "PROFILE",
