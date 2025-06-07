@@ -34,7 +34,8 @@ const pageLabels: Record<string, string> = {
   "/": "EARN",
   "/buy": "BUY",
   "/sell": "SELL",
-  "/profile": "PROFILE",
+  "/profile": "DASHBOARD",
+  "/about": "ABOUT",
 };
 
 export default function Navbar() {

@@ -47,6 +47,11 @@ export default function App() {
     loanPayment: "",
     sqft: "",
     yearBuilt: "",
+    notes: "",
+    agentName: "",
+    agentPhone: "",
+    agentEmail: "",
+    agentTimezone: "",
   });
 
   const handleSubmit = (data: DealInput) => {
@@ -89,6 +94,11 @@ export default function App() {
       loanPayment: "",
       sqft: "",
       yearBuilt: "",
+      notes: "",
+      agentName: "",
+      agentPhone: "",
+      agentEmail: "",
+      agentTimezone: "",
     });
 
     setTimeout(() => {
@@ -110,6 +120,11 @@ export default function App() {
         loanPayment: deal.loanPayment || "",
         sqft: deal.sqft || "",
         yearBuilt: deal.yearBuilt || "",
+        notes: deal.notes || "",
+        agentName: deal.agentName || "",
+        agentPhone: deal.agentPhone || "",
+        agentEmail: deal.agentEmail || "",
+        agentTimezone: deal.agentTimezone || "",
       });
 
       if (deal.id) setCurrentDealId(deal.id);
@@ -120,7 +135,12 @@ export default function App() {
   return (
     <div className="w-full min-h-screen flex flex-col overflow-hidden">
       <LinkBar walletAddress={walletAddress} />
-      <div className="flex-grow space-y-8 overflow-y-auto">
+      <div className="flex-grow space-y-8 overflow-y-auto px-4 py-8">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-white mb-2">Earn by Finding Deals</h1>
+          <p className="text-gray-400">Manage real estate leads and send deals to Investors</p>
+        </div>
+
         <Questionaire
           onSubmit={handleSubmit}
           onSaveSuccess={triggerRefreshDeals}
@@ -129,9 +149,11 @@ export default function App() {
           walletAddress={walletAddress}
           currentDealId={currentDealId}
         />
+
         {results && (
           <Offers results={results} cashOnCashResults={cocResults} />
         )}
+
         <DealsTable
           refreshKey={refreshKey}
           onLoad={handleLoadDeal}
