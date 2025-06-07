@@ -28,7 +28,9 @@ export default function Questionaire({
 }: Props) {
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
 
     if (name === "zillowUrl") {
@@ -53,24 +55,21 @@ export default function Questionaire({
   };
 
   const handleSave = async () => {
-    if (!walletAddress) {
-      console.error("No wallet connected — cannot save.");
-      return;
-    }
+    if (!walletAddress) return;
 
     try {
+      const payload = {
+        ...formData,
+        [currentDealId ? "updatedAt" : "createdAt"]: serverTimestamp(),
+        status: currentDealId ? formData.status : "lead",
+      };
+
       if (currentDealId) {
-        await updateDoc(doc(db, `users/${walletAddress}/deals`, currentDealId), {
-          ...formData,
-          updatedAt: serverTimestamp(),
-        });
+        await updateDoc(doc(db, `users/${walletAddress}/deals`, currentDealId), payload);
       } else {
-        await addDoc(collection(db, `users/${walletAddress}/deals`), {
-          ...formData,
-          createdAt: serverTimestamp(),
-          status: "lead",
-        });
+        await addDoc(collection(db, `users/${walletAddress}/deals`), payload);
       }
+
       setSaveSuccess(true);
       onSaveSuccess?.();
     } catch (error: any) {
@@ -97,7 +96,11 @@ export default function Questionaire({
       loanPayment: "",
       sqft: "",
       yearBuilt: "",
-      notes: "", // reset new field
+      notes: "",
+      agentName: "",
+      agentPhone: "",
+      agentEmail: "",
+      agentTimezone: "",
     });
     setSaveSuccess(false);
   };
@@ -146,18 +149,40 @@ export default function Questionaire({
         {renderField("loanPayment", "Monthly Loan Payment")}
       </div>
 
+      {/* Notes Section */}
       <div className="border-t border-neutral-800 pt-6">
-        <label className="block text-sm font-medium mb-1">
-          Notes / Why are they selling?
-        </label>
+        <label className="block text-sm font-medium mb-1">Notes / Why Are They Selling?</label>
         <textarea
           name="notes"
           value={formData.notes || ""}
-          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-          rows={5}
-          className="w-full bg-zinc-900 text-white border border-neutral-700 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Add any details, seller motivations, or notes here..."
+          onChange={handleChange}
+          maxLength={1000}
+          rows={4}
+          className="w-full bg-zinc-900 text-white border border-neutral-700 rounded px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        <div className="text-right text-xs text-gray-400">{(formData.notes?.length || 0)}/1000</div>
+      </div>
+
+      {/* Agent Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
+        {renderField("agentName", "Agent Name")}
+        {renderField("agentPhone", "Agent Phone")}
+        {renderField("agentEmail", "Agent Email")}
+        <div>
+          <label className="block text-sm font-medium mb-1">Agent Timezone</label>
+          <select
+            name="agentTimezone"
+            value={formData.agentTimezone || ""}
+            onChange={handleChange}
+            className="w-full bg-zinc-900 text-white border border-neutral-700 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select Timezone</option>
+            <option value="PST">PST</option>
+            <option value="MST">MST</option>
+            <option value="CST">CST</option>
+            <option value="EST">EST</option>
+          </select>
+        </div>
       </div>
 
       {saveSuccess && (
@@ -165,7 +190,6 @@ export default function Questionaire({
           ✔ Deal saved successfully!
         </div>
       )}
-
       <div className="flex justify-center gap-4 border-t border-neutral-800 pt-6 flex-wrap">
         <button
           type="submit"
