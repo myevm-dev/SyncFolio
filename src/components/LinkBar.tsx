@@ -105,7 +105,7 @@ export default function LinkBar({ walletAddress }: { walletAddress: string }) {
           <div key={link.id} className="relative group">
             <button
               onClick={() => window.open(link.url, "_blank")}
-              className="px-3 py-1 bg-blue-500 text-white rounded-full hover:bg-blue-600 text-sm"
+              className="px-3 py-1 bg-[#044a4b] text-white rounded-full hover:brightness-110 text-sm"
             >
               {link.name}
             </button>
