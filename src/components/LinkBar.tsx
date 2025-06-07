@@ -57,7 +57,8 @@ export default function LinkBar({ walletAddress }: { walletAddress: string }) {
 
   const handleDelete = async (id: string) => {
     const modal = document.createElement("div");
-    modal.className = "fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50";
+    modal.className =
+      "fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50";
 
     modal.innerHTML = `
       <div class='bg-white dark:bg-gray-900 rounded-lg p-6 shadow-xl max-w-sm w-full text-center'>
@@ -90,12 +91,6 @@ export default function LinkBar({ walletAddress }: { walletAddress: string }) {
         resolve();
       });
     });
-    try {
-      await deleteDoc(doc(db, `users/${walletAddress}/links`, id));
-      setLinks((prev) => prev.filter((link) => link.id !== id));
-    } catch (err) {
-      console.error("Failed to delete link:", err);
-    }
   };
 
   return (
@@ -130,27 +125,37 @@ export default function LinkBar({ walletAddress }: { walletAddress: string }) {
       </div>
 
       {showForm && (
-        <div className="flex items-center gap-2 mt-2">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2 mt-2 w-full max-w-md">
           <input
             type="text"
             placeholder="Name"
             value={newLink.name}
             onChange={(e) => setNewLink({ ...newLink, name: e.target.value })}
-            className="px-2 py-1 border rounded text-sm bg-gray-800 text-white placeholder-gray-400"
+            className="flex-1 px-2 py-1 border rounded text-sm bg-gray-800 text-white placeholder-gray-400 w-full"
           />
           <input
             type="url"
             placeholder="https://example.com"
             value={newLink.url}
             onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
-            className="px-2 py-1 border rounded text-sm bg-gray-800 text-white placeholder-gray-400"
+            className="flex-1 px-2 py-1 border rounded text-sm bg-gray-800 text-white placeholder-gray-400 w-full"
           />
-          <button
-            onClick={handleAddLink}
-            className="px-2 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
-          >
-            Add
-          </button>
+          {walletAddress ? (
+            <button
+              onClick={handleAddLink}
+              className="px-4 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 w-full md:w-auto"
+            >
+              Add
+            </button>
+          ) : (
+            <button
+              disabled
+              className="px-4 py-1 bg-gray-700 text-gray-400 text-sm rounded cursor-not-allowed w-full md:w-auto"
+              title="Login to save links"
+            >
+              Login to add quick links
+            </button>
+          )}
         </div>
       )}
     </div>
