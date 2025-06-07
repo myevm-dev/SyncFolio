@@ -29,7 +29,7 @@ export default function Offers({ results, cashOnCashResults }: Props) {
         const coc = cashOnCashResults.find((r) => r.type === typeMap[key]);
 
         const borderColor = isComingSoon
-          ? "border-grey-500"
+          ? "border-gray-500"
           : coc?.pass
             ? "border-green-500"
             : "border-red-500";
@@ -66,7 +66,15 @@ export default function Offers({ results, cashOnCashResults }: Props) {
             </div>
 
             <div className="mt-4 flex justify-center gap-2">
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
+              <button
+                className={`px-4 py-2 rounded-full transition ${
+                  isComingSoon
+                    ? "bg-gray-500 text-gray-200 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                }`}
+                disabled={isComingSoon}
+                title={isComingSoon ? "Coming soon" : "ComingSoon"}
+              >
                 Details
               </button>
             </div>
