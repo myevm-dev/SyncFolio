@@ -3,6 +3,8 @@ import { ConnectButton } from "thirdweb/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import favicon from "../favicon.png";
 import { client } from "../client";
+import { base } from "thirdweb/chains";
+
 import {
   inAppWallet,
   createWallet,
@@ -87,6 +89,8 @@ export default function Navbar() {
           <ConnectButton
             client={client}
             wallets={wallets}
+            chains={[base]} // limits app support to base
+            chain={base}    // ✅ force default chain
             connectModal={{
               size: "compact",
               showThirdwebBranding: false,
@@ -99,6 +103,7 @@ export default function Navbar() {
               label: "sign in",
             }}
           />
+
         </div>
       </nav>
 
