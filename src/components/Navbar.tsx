@@ -31,8 +31,10 @@ const wallets = [
 ];
 
 const pageLabels: Record<string, string> = {
-  "/": "Home",
-  "/profile": "Profile",
+  "/": "CRM",
+  "/buy": "BUY",
+  "/sell": "SELL",
+  "/profile": "PROFILE",
 };
 
 export default function Navbar() {

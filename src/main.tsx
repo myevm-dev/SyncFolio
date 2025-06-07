@@ -6,6 +6,8 @@ import "./index.css";
 
 import App from "./App";
 import ProfilePage from "./pages/ProfilePage";
+import BuyPage from "./pages/BuyPage";
+import SellPage from "./pages/SellPage";
 import Layout from "./components/Layout";
 
 createRoot(document.getElementById("root")!).render(
@@ -15,6 +17,8 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<App />} />
+            <Route path="/buy" element={<BuyPage />} />
+            <Route path="/sell" element={<SellPage />} />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>
         </Routes>
