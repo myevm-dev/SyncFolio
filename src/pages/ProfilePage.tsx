@@ -1,113 +1,73 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
-import { db } from "../lib/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { Pencil } from "lucide-react";
+import multiavatar from "@multiavatar/multiavatar";
 
 export default function ProfilePage() {
   const account = useActiveAccount();
-  const walletAddress = account?.address;
+  const walletAddress = account?.address || "";
 
-  const [displayName, setDisplayName] = useState("Anonymous");
-  const [editing, setEditing] = useState(false);
-  const [inputName, setInputName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [displayName, setDisplayName] = useState("New User");
+  const [isEditing, setIsEditing] = useState(false);
+  const [inputName, setInputName] = useState(displayName);
+  const [avatarSvg, setAvatarSvg] = useState("");
 
   useEffect(() => {
-    const fetchDisplayName = async () => {
-      if (!walletAddress) return;
-      const ref = doc(db, "users", walletAddress);
-      const snap = await getDoc(ref);
-      if (snap.exists()) {
-        const data = snap.data();
-        if (data.displayName) {
-          setDisplayName(data.displayName);
-          setInputName(data.displayName);
-        }
-      }
-    };
+    setAvatarSvg(multiavatar(isEditing ? inputName : displayName));
+  }, [displayName, inputName, isEditing]);
 
-    fetchDisplayName();
-  }, [walletAddress]);
-
-  const handleUpdate = async () => {
-    if (!walletAddress || !inputName.trim()) return;
-    setLoading(true);
-    try {
-      await setDoc(
-        doc(db, "users", walletAddress),
-        { displayName: inputName.trim() },
-        { merge: true }
-      );
+  const saveName = () => {
+    if (inputName.trim()) {
       setDisplayName(inputName.trim());
-      setSaved(true);
-      setTimeout(() => setSaved(false), 1500);
-      setEditing(false);
-    } finally {
-      setLoading(false);
+      setIsEditing(false);
     }
   };
 
   return (
-    <div className="min-h-screen max-w-4xl mx-auto py-16 px-4 text-white">
-      <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center">User Profile</h1>
+    <div className="min-h-screen px-4 py-10 text-white" style={{ backgroundColor: "#0B1519" }}>
+      <div className="max-w-2xl mx-auto text-center space-y-6">
+        {/* Avatar */}
+        <div
+          className="w-32 h-32 mx-auto rounded-full border-4 border-[#044a4b] bg-white p-1 overflow-hidden"
+          dangerouslySetInnerHTML={{ __html: avatarSvg }}
+        />
 
-      {walletAddress ? (
-        <div className="bg-[#0B1519] border border-gray-700 rounded-xl p-6 max-w-lg mx-auto space-y-6 shadow-md">
-          {/* Display Name */}
-          <div>
-            <p className="text-sm text-gray-400 mb-1">Display Name</p>
-            {!editing ? (
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-semibold">{displayName}</span>
-                <button
-                  onClick={() => setEditing(true)}
-                  className="text-gray-400 hover:text-white"
-                  title="Edit display name"
-                >
-                  <Pencil size={16} />
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <input
-                  type="text"
-                  value={inputName}
-                  onChange={(e) => setInputName(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#044a4b]"
-                />
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleUpdate}
-                    disabled={loading}
-                    className="bg-[#044a4b] hover:brightness-110 text-white px-4 py-1 rounded-md text-sm transition disabled:opacity-50"
-                  >
-                    {loading ? "Saving..." : saved ? "Saved ✔" : "Update Name"}
-                  </button>
-                  <button
-                    onClick={() => {
-                      setEditing(false);
-                      setInputName(displayName);
-                    }}
-                    className="text-gray-400 hover:text-white text-sm"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Wallet Address */}
-          <div>
-            <p className="text-sm text-gray-400 mb-1">Account</p>
-            <p className="text-sm font-mono break-all text-green-400">{walletAddress}</p>
-          </div>
+        {/* Display Name Section */}
+        <div className="text-lg font-semibold flex justify-center items-center gap-2 flex-wrap">
+          {isEditing ? (
+            <>
+              <input
+                value={inputName}
+                onChange={(e) => setInputName(e.target.value)}
+                className="px-2 py-1 rounded bg-zinc-800 text-white border border-zinc-600"
+              />
+              <button
+                onClick={saveName}
+                className="text-sm bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
+              >
+                Save
+              </button>
+            </>
+          ) : (
+            <>
+              <span>{displayName}</span>
+              <button
+                onClick={() => setIsEditing(true)}
+                className="text-sm text-blue-400 hover:underline"
+                title="Edit display name"
+              >
+                ✏️
+              </button>
+            </>
+          )}
         </div>
-      ) : (
-        <p className="text-center text-gray-400 mt-12 text-lg">Please log in to view your profile.</p>
-      )}
+
+        {/* Wallet Info */}
+        {walletAddress ? (
+          <p className="text-gray-400 break-all">Account: {walletAddress}</p>
+        ) : (
+          <p className="text-gray-500">Please sign in to view your profile.</p>
+        )}
+      </div>
     </div>
   );
 }
