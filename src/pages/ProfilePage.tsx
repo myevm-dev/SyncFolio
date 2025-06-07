@@ -1,84 +1,107 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useActiveAccount } from "thirdweb/react";
-import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
-import multiavatar from "@multiavatar/multiavatar";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { Pencil } from "lucide-react";
+
+declare global {
+  interface Window {
+    multiavatar: (id: string) => string;
+  }
+}
 
 export default function ProfilePage() {
   const account = useActiveAccount();
   const walletAddress = account?.address || "";
 
-  const [displayName, setDisplayName] = useState("User");
-  const [inputName, setInputName] = useState("User");
-  const [isEditing, setIsEditing] = useState(false);
-  const [avatarSvg, setAvatarSvg] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [liveName, setLiveName] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadProfile = async () => {
+    const fetchProfile = async () => {
       if (!walletAddress) return;
-      const docRef = doc(db, "users", walletAddress);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const name = docSnap.data().displayName || "User";
-        setDisplayName(name);
-        setInputName(name);
-        setAvatarSvg(multiavatar(name));
+      const ref = doc(db, "users", walletAddress);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const data = snap.data();
+        setDisplayName(data.displayName || "Unnamed");
+        setLiveName(data.displayName || "Unnamed");
+      } else {
+        setDisplayName("Unnamed");
+        setLiveName("Unnamed");
       }
+      setLoading(false);
     };
-    loadProfile();
+    fetchProfile();
   }, [walletAddress]);
 
-  useEffect(() => {
-    setAvatarSvg(multiavatar(inputName));
-  }, [inputName]);
-
-  const saveName = async () => {
-    if (!walletAddress || !inputName.trim()) return;
-    await setDoc(doc(db, "users", walletAddress), { displayName: inputName.trim() }, { merge: true });
-    setDisplayName(inputName.trim());
-    setIsEditing(false);
+  const handleSave = async () => {
+    if (!walletAddress) return;
+    const ref = doc(db, "users", walletAddress);
+    await setDoc(ref, { displayName: liveName }, { merge: true });
+    setDisplayName(liveName);
+    setEditing(false);
   };
 
+  if (!walletAddress) {
+    return (
+      <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
+        <h1 className="text-3xl font-bold mb-6">User Profile</h1>
+        <p className="text-gray-400">Please connect your wallet to view profile.</p>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
+        <h1 className="text-3xl font-bold mb-6">User Profile</h1>
+        <p className="text-gray-400">Loading profile...</p>
+      </div>
+    );
+  }
+
+  const svg = window.multiavatar(liveName);
+
   return (
-    <div className="min-h-screen bg-[#0B1519] text-white px-4 py-10 flex flex-col items-center">
+    <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
+      <h1 className="text-3xl font-bold mb-6">User Profile</h1>
+
       <div
-        className="w-28 h-28 rounded-full overflow-hidden mb-4 border border-gray-500"
-        dangerouslySetInnerHTML={{ __html: avatarSvg }}
+        className="w-28 h-28 mx-auto mb-4"
+        dangerouslySetInnerHTML={{ __html: svg }}
       />
-      {!walletAddress ? (
-        <p className="text-gray-400">Please log in</p>
+
+      {editing ? (
+        <div className="flex flex-col items-center gap-2 mb-2">
+          <input
+            value={liveName}
+            onChange={(e) => setLiveName(e.target.value)}
+            className="bg-zinc-800 px-3 py-1 rounded text-sm"
+          />
+          <button
+            onClick={handleSave}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full text-sm"
+          >
+            Save Name
+          </button>
+        </div>
       ) : (
-        <>
-          <div className="mb-4 text-center">
-            {!isEditing ? (
-              <div className="flex items-center justify-center gap-2">
-                <h2 className="text-xl font-semibold">{displayName}</h2>
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="text-sm text-blue-400 hover:underline"
-                >
-                  ✎
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-2">
-                <input
-                  className="px-3 py-1 rounded bg-gray-800 border border-gray-600 text-white"
-                  value={inputName}
-                  onChange={(e) => setInputName(e.target.value)}
-                />
-                <button
-                  onClick={saveName}
-                  className="px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-                >
-                  Update Name
-                </button>
-              </div>
-            )}
-          </div>
-          <p className="text-gray-400 break-all">Account: {walletAddress}</p>
-        </>
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <span className="font-bold text-lg">{displayName}</span>
+          <button
+            onClick={() => setEditing(true)}
+            className="text-blue-400 text-sm hover:underline flex items-center"
+          >
+            <Pencil size={14} className="mr-1" />
+            Edit
+          </button>
+        </div>
       )}
+
+      <p className="text-gray-400 break-all">Account: {walletAddress}</p>
     </div>
   );
 }
