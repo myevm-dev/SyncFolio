@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { DealInput } from "../types/DealInput";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../lib/firebase";
 
 interface Props {
@@ -9,6 +15,7 @@ interface Props {
   formData: DealInput;
   setFormData: React.Dispatch<React.SetStateAction<DealInput>>;
   walletAddress: string;
+  currentDealId: string | null;
 }
 
 export default function Questionaire({
@@ -17,6 +24,7 @@ export default function Questionaire({
   formData,
   setFormData,
   walletAddress,
+  currentDealId,
 }: Props) {
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -51,11 +59,18 @@ export default function Questionaire({
     }
 
     try {
-      await addDoc(collection(db, `users/${walletAddress}/deals`), {
-        ...formData,
-        createdAt: serverTimestamp(),
-        status: "lead",
-      });
+      if (currentDealId) {
+        await updateDoc(doc(db, `users/${walletAddress}/deals`, currentDealId), {
+          ...formData,
+          updatedAt: serverTimestamp(),
+        });
+      } else {
+        await addDoc(collection(db, `users/${walletAddress}/deals`), {
+          ...formData,
+          createdAt: serverTimestamp(),
+          status: "lead",
+        });
+      }
       setSaveSuccess(true);
       onSaveSuccess?.();
     } catch (error: any) {
@@ -100,7 +115,6 @@ export default function Questionaire({
 
   return (
     <form onSubmit={handleSubmit} className="p-4 max-w-3xl mx-auto space-y-6">
-      {/* Address + Details */}
       <div className="grid grid-cols-1 gap-4">
         {renderField("zillowUrl", "Zillow URL", 2)}
       </div>
@@ -112,38 +126,29 @@ export default function Questionaire({
         {renderField("beds", "Number of Beds")}
         {renderField("baths", "Number of Baths")}
       </div>
-
-      {/* Value & Income */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
         {renderField("listingPrice", "Listing Price")}
         {renderField("rentalValue", "Monthly Rental Value")}
         {renderField("rehabCost", "Estimated Rehab Cost")}
         {renderField("arv", "After Repair Value (ARV)")}
       </div>
-
-      {/* Expenses */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
         {renderField("taxes", "Monthly Taxes")}
         {renderField("insurance", "Monthly Insurance")}
         {renderField("hoa", "Monthly HOA")}
         {renderField("yearBuilt", "Year Built")}
       </div>
-
-      {/* Financing */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
         {renderField("loanAmount", "Original Loan Amount")}
         {renderField("mortgageBalance", "Outstanding Mortgage Balance")}
         {renderField("interestRate", "Mortgage Interest Rate")}
         {renderField("loanPayment", "Monthly Loan Payment")}
       </div>
-
-      {/* Success message */}
       {saveSuccess && (
-        <div className="text-green-500 text-center font-medium">✔ Deal saved!
+        <div className="text-green-500 text-center font-medium">
+          ✔ Deal saved successfully!
         </div>
       )}
-
-      {/* Buttons */}
       <div className="flex justify-center gap-4 border-t border-neutral-800 pt-6 flex-wrap">
         <button
           type="submit"
@@ -161,7 +166,7 @@ export default function Questionaire({
           }`}
           disabled={!walletAddress}
         >
-          Save
+          {currentDealId ? "Update" : "Save"}
         </button>
         <button
           type="button"

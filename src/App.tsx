@@ -29,6 +29,7 @@ export default function App() {
   const [results, setResults] = useState<OfferResults | null>(null);
   const [cocResults, setCocResults] = useState<CashOnCashResult[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [currentDealId, setCurrentDealId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<DealInput>({
     address: "",
@@ -68,10 +69,10 @@ export default function App() {
 
   const triggerRefreshDeals = () => {
     setRefreshKey((prev) => prev + 1);
+    setCurrentDealId(null);
   };
 
-  const handleLoadDeal = (deal: DealInput) => {
-    // Clear first
+  const handleLoadDeal = (deal: DealInput & { id?: string }) => {
     setFormData({
       address: "",
       zillowUrl: "",
@@ -92,7 +93,6 @@ export default function App() {
       yearBuilt: "",
     });
 
-    // Set new data and re-calculate
     setTimeout(() => {
       setFormData({
         address: deal.address || "",
@@ -114,6 +114,7 @@ export default function App() {
         yearBuilt: deal.yearBuilt || "",
       });
 
+      if (deal.id) setCurrentDealId(deal.id);
       handleSubmit(deal);
     }, 0);
   };
@@ -129,6 +130,7 @@ export default function App() {
           formData={formData}
           setFormData={setFormData}
           walletAddress={walletAddress}
+          currentDealId={currentDealId}
         />
         {results && (
           <Offers results={results} cashOnCashResults={cocResults} />
