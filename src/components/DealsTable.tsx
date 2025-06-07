@@ -182,7 +182,7 @@ export default function DealsTable({
   if (!walletAddress) {
     return (
       <div className="text-center text-sm text-zinc-400">
-        Connect wallet to view saved deals.
+        Sign In to view saved deals.
       </div>
     );
   }

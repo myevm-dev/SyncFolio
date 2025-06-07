@@ -49,7 +49,7 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
         <h1 className="text-3xl font-bold mb-6">User Profile</h1>
-        <p className="text-gray-400">Please connect your wallet to view profile.</p>
+        <p className="text-gray-400">Please sign in to view your dashboard.</p>
       </div>
     );
   }
@@ -102,7 +102,8 @@ export default function ProfilePage() {
       )}
 
       <p className="text-gray-400 break-all">Account: {walletAddress}</p>
-            {/* Dashboard Cards */}
+
+      {/* Dashboard Cards */}
       <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
         {[
           {
@@ -123,17 +124,16 @@ export default function ProfilePage() {
         ].map((card) => (
           <div
             key={card.label}
-            className="bg-[#111827] rounded-xl p-6 shadow-md border border-zinc-700 flex justify-between items-center"
+            className="bg-[#111827] rounded-xl p-6 shadow-md border border-zinc-700 flex flex-col items-center text-center"
           >
-            <div>
+            <p className="text-sm text-accent font-semibold mb-4">{card.label}</p>
+            <div className="w-full flex items-center justify-between px-2">
               <p className="text-2xl font-bold text-white">{card.value}</p>
-              <p className="text-sm text-gray-400">{card.label}</p>
+              <div className="text-3xl">{card.icon}</div>
             </div>
-            <div className="text-3xl">{card.icon}</div>
           </div>
         ))}
       </div>
-
     </div>
   );
 }

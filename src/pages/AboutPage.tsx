@@ -2,8 +2,8 @@ import React from "react";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen w-full bg-[#0B1519] text-white px-6 py-20">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen w-full bg-[#0B1519] text-white px-6 py-20 flex flex-col">
+      <div className="max-w-6xl mx-auto flex-grow">
         {/* Hero */}
         <header className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
