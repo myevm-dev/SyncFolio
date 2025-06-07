@@ -44,16 +44,27 @@ export default function AboutPage() {
         {/* Coming Soon */}
         <section className="mt-16 bg-[#050505] border border-neutral-700 rounded-lg p-8 text-center shadow-md hover:shadow-lg transition">
           <h2 className="text-2xl font-semibold text-accent mb-4">🚀 Coming Soon</h2>
-          <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto mb-6 leading-relaxed">
+          <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
             Unlock the next generation of real estate intelligence. AI-driven tools will soon help
             you analyze, score, and optimize deals. Collaborate with partners or deploy smart agents
             to work deals on your behalf.
           </p>
-          <ul className="text-gray-400 text-sm space-y-1">
-            <li>• Team collaboration</li>
-            <li>• Portfolio Management</li>
-            <li>• Employable AI Agents</li>
-          </ul>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+            {[
+              "Team Collaboration",
+              "Portfolio Management",
+              "Employable AI Agents",
+              "Tradable Trust Rights",
+            ].map((feature) => (
+              <div
+                key={feature}
+                className="bg-[#0B1519] border border-zinc-700 text-gray-200 text-sm rounded-md px-4 py-3 shadow-sm hover:border-accent transition"
+              >
+                {feature}
+              </div>
+            ))}
+          </div>
         </section>
       </div>
     </div>
