@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
 
-import Navbar from "./components/Navbar";
 import LinkBar from "./components/LinkBar";
-import Footer from "./components/Footer";
 import Questionaire from "./components/Questionaire";
 import Offers from "./components/Offers";
 import DealsTable from "./components/DealsTable";
@@ -120,10 +118,9 @@ export default function App() {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col overflow-x-hidden">
-      <Navbar />
+    <div className="w-full min-h-screen flex flex-col overflow-hidden">
       <LinkBar walletAddress={walletAddress} />
-      <div className="flex-grow space-y-8">
+      <div className="flex-grow space-y-8 overflow-y-auto">
         <Questionaire
           onSubmit={handleSubmit}
           onSaveSuccess={triggerRefreshDeals}
@@ -141,8 +138,6 @@ export default function App() {
           walletAddress={walletAddress}
         />
       </div>
-      <div className="mt-20" />
-      <Footer />
     </div>
   );
 }
