@@ -177,13 +177,30 @@ export default function Questionaire({
             className="w-full bg-zinc-900 text-white border border-neutral-700 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select Timezone</option>
-            <option value="PST">PST</option>
-            <option value="MST">MST</option>
-            <option value="CST">CST</option>
-            <option value="EST">EST</option>
+            {[
+              { label: "Hawaii", tz: "Pacific/Honolulu" },
+              { label: "Pacific", tz: "America/Los_Angeles" },
+              { label: "Mountain", tz: "America/Denver" },
+              { label: "Central", tz: "America/Chicago" },
+              { label: "Eastern", tz: "America/New_York" },
+            ].map(({ label, tz }) => {
+              const now = new Intl.DateTimeFormat("en-US", {
+                timeZone: tz,
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              }).format(new Date());
+
+              return (
+                <option key={label} value={label}>
+                  {label} ({now})
+                </option>
+              );
+            })}
           </select>
         </div>
       </div>
+
 
       {saveSuccess && (
         <div className="text-green-500 text-center font-medium">
