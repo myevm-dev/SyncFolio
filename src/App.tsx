@@ -46,6 +46,8 @@ export default function App() {
     mortgageBalance: "",
     interestRate: "",
     loanPayment: "",
+    sqft: "",
+    yearBuilt: "",
   });
 
   const handleSubmit = (data: DealInput) => {
@@ -69,34 +71,57 @@ export default function App() {
   };
 
   const handleLoadDeal = (deal: DealInput) => {
+    // Clear first
     setFormData({
-      address: deal.address || "",
-      zillowUrl: deal.zillowUrl || "",
-      beds: deal.beds || "",
-      baths: deal.baths || "",
-      listingPrice: deal.listingPrice || "",
-      rentalValue: deal.rentalValue || "",
-      rehabCost: deal.rehabCost || "",
-      arv: deal.arv || "",
-      taxes: deal.taxes || "",
-      hoa: deal.hoa || "",
-      insurance: deal.insurance || "",
-      loanAmount: deal.loanAmount || "",
-      mortgageBalance: deal.mortgageBalance || "",
-      interestRate: deal.interestRate || "",
-      loanPayment: deal.loanPayment || "",
+      address: "",
+      zillowUrl: "",
+      beds: "",
+      baths: "",
+      listingPrice: "",
+      rentalValue: "",
+      rehabCost: "",
+      arv: "",
+      taxes: "",
+      hoa: "",
+      insurance: "",
+      loanAmount: "",
+      mortgageBalance: "",
+      interestRate: "",
+      loanPayment: "",
+      sqft: "",
+      yearBuilt: "",
     });
 
-    handleSubmit(deal);
+    // Set new data and re-calculate
+    setTimeout(() => {
+      setFormData({
+        address: deal.address || "",
+        zillowUrl: deal.zillowUrl || "",
+        beds: deal.beds || "",
+        baths: deal.baths || "",
+        listingPrice: deal.listingPrice || "",
+        rentalValue: deal.rentalValue || "",
+        rehabCost: deal.rehabCost || "",
+        arv: deal.arv || "",
+        taxes: deal.taxes || "",
+        hoa: deal.hoa || "",
+        insurance: deal.insurance || "",
+        loanAmount: deal.loanAmount || "",
+        mortgageBalance: deal.mortgageBalance || "",
+        interestRate: deal.interestRate || "",
+        loanPayment: deal.loanPayment || "",
+        sqft: deal.sqft || "",
+        yearBuilt: deal.yearBuilt || "",
+      });
+
+      handleSubmit(deal);
+    }, 0);
   };
 
   return (
     <div className="w-full min-h-screen flex flex-col overflow-x-hidden">
       <Navbar />
-      
       <LinkBar walletAddress={walletAddress} />
-
-
       <div className="flex-grow space-y-8">
         <Questionaire
           onSubmit={handleSubmit}
@@ -105,11 +130,9 @@ export default function App() {
           setFormData={setFormData}
           walletAddress={walletAddress}
         />
-
         {results && (
           <Offers results={results} cashOnCashResults={cocResults} />
         )}
-
         <DealsTable
           refreshKey={refreshKey}
           onLoad={handleLoadDeal}
