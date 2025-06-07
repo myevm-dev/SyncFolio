@@ -97,6 +97,7 @@ export default function Questionaire({
       loanPayment: "",
       sqft: "",
       yearBuilt: "",
+      notes: "", // reset new field
     });
     setSaveSuccess(false);
   };
@@ -144,11 +145,27 @@ export default function Questionaire({
         {renderField("interestRate", "Mortgage Interest Rate")}
         {renderField("loanPayment", "Monthly Loan Payment")}
       </div>
+
+      <div className="border-t border-neutral-800 pt-6">
+        <label className="block text-sm font-medium mb-1">
+          Notes / Why are they selling?
+        </label>
+        <textarea
+          name="notes"
+          value={formData.notes || ""}
+          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+          rows={5}
+          className="w-full bg-zinc-900 text-white border border-neutral-700 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Add any details, seller motivations, or notes here..."
+        />
+      </div>
+
       {saveSuccess && (
         <div className="text-green-500 text-center font-medium">
           ✔ Deal saved successfully!
         </div>
       )}
+
       <div className="flex justify-center gap-4 border-t border-neutral-800 pt-6 flex-wrap">
         <button
           type="submit"

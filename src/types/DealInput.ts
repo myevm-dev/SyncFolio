@@ -14,7 +14,12 @@ export interface DealInput {
   loanPayment?: string;
   beds?: string;
   baths?: string;
-  sqft?: string; // ✅ Add this line
-  yearBuilt?: string; // ✅ Add this line
+  sqft?: string; 
+  yearBuilt?: string; 
+  notes?: string; 
+  agentName?: string;
+  agentPhone?: string;
+  agentEmail?: string;
+  agentTimezone?: string;
 
 }
