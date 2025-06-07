@@ -2,15 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/src/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SyncFolio</title>
+    <meta name="robots" content="index, follow" />
+    <meta
+      name="description"
+      content="SyncFolio.Space is a platform to buy, sell, or submit real estate deals. Built for deal finders, investors, and agents to connect smarter with AI-powered tools."
+    />
+    <link rel="canonical" href="https://syncfolio.space/" />
+
+    <title>SyncFolio — Deal Sourcing & AI Real Estate CRM</title>
+    <link rel="icon" type="image/svg+xml" href="/src/favicon.png" />
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:slnt,wght@-10..0,100..900&display=swap"
       rel="stylesheet"
     />
+
+    <!-- For Vercel global polyfill -->
     <script>
       if (global === undefined) {
         var global = window;
@@ -19,8 +30,9 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- App Scripts -->
     <script type="module" src="/src/main.tsx"></script>
     <script src="https://cdn.jsdelivr.net/npm/@multiavatar/multiavatar/multiavatar.min.js"></script>
   </body>
-
 </html>
