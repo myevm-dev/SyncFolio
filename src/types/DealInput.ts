@@ -22,5 +22,5 @@ export interface DealInput {
   agentEmail?: string;
   agentTimezone?: string;
   status?: string;
-
+  method?: string;
 }

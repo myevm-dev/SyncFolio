@@ -3,8 +3,9 @@ import { DealInput } from "../types/DealInput";
 import {
   collection,
   addDoc,
+  deleteDoc,
+  getDoc,
   serverTimestamp,
-  updateDoc,
   doc,
 } from "firebase/firestore";
 import { db } from "../lib/firebase";
@@ -16,6 +17,7 @@ interface Props {
   setFormData: React.Dispatch<React.SetStateAction<DealInput>>;
   walletAddress: string;
   currentDealId: string | null;
+  setCurrentDealId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const emptyForm: DealInput = {
@@ -50,6 +52,7 @@ export default function Questionaire({
   setFormData,
   walletAddress,
   currentDealId,
+  setCurrentDealId,
 }: Props) {
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -83,21 +86,41 @@ export default function Questionaire({
     if (!walletAddress) return;
 
     try {
-      const payload = {
-        ...formData,
-        [currentDealId ? "updatedAt" : "createdAt"]: serverTimestamp(),
-        status: currentDealId ? formData.status : "lead",
-      };
+      const dealsRef = collection(db, `users/${walletAddress}/deals`);
+
+      let preserved: Partial<DealInput & { createdAt?: any }> = {};
 
       if (currentDealId) {
-        await updateDoc(doc(db, `users/${walletAddress}/deals`, currentDealId), payload);
-      } else {
-        await addDoc(collection(db, `users/${walletAddress}/deals`), payload);
-        setFormData(emptyForm);        // reset form after new save
+        const prevRef = doc(dealsRef, currentDealId);
+        const prevSnap = await getDoc(prevRef);
+
+        if (prevSnap.exists()) {
+          const prevData = prevSnap.data();
+          preserved = {
+            status: prevData.status || "lead",
+            method: prevData.method || "unknown",
+            createdAt: prevData.createdAt || serverTimestamp(),
+          };
+
+          await deleteDoc(prevRef);
+        }
+
+        setCurrentDealId(null); // clear the editing context after update
       }
 
+      const payload = {
+        ...formData,
+        ...preserved,
+        updatedAt: serverTimestamp(),
+      };
+
+      await addDoc(dealsRef, payload);
       setSaveSuccess(true);
       onSaveSuccess?.();
+
+      if (!currentDealId) {
+        setFormData(emptyForm); // only reset after new save
+      }
     } catch (error: any) {
       console.error("🔥 Firebase Save Error:", error?.message || error);
     }
@@ -105,6 +128,7 @@ export default function Questionaire({
 
   const handleClear = () => {
     setFormData(emptyForm);
+    setCurrentDealId(null);
     setSaveSuccess(false);
   };
 

@@ -102,7 +102,9 @@ export default function App() {
           setFormData={setFormData}
           walletAddress={walletAddress}
           currentDealId={currentDealId}
+          setCurrentDealId={setCurrentDealId}
         />
+
 
         {results && (
           <Offers results={results} cashOnCashResults={cocResults} />
