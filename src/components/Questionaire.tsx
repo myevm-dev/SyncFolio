@@ -18,6 +18,31 @@ interface Props {
   currentDealId: string | null;
 }
 
+const emptyForm: DealInput = {
+  address: "",
+  zillowUrl: "",
+  beds: "",
+  baths: "",
+  listingPrice: "",
+  rentalValue: "",
+  rehabCost: "",
+  arv: "",
+  taxes: "",
+  hoa: "",
+  insurance: "",
+  loanAmount: "",
+  mortgageBalance: "",
+  interestRate: "",
+  loanPayment: "",
+  sqft: "",
+  yearBuilt: "",
+  notes: "",
+  agentName: "",
+  agentPhone: "",
+  agentEmail: "",
+  agentTimezone: "",
+};
+
 export default function Questionaire({
   onSubmit,
   onSaveSuccess,
@@ -68,8 +93,8 @@ export default function Questionaire({
         await updateDoc(doc(db, `users/${walletAddress}/deals`, currentDealId), payload);
       } else {
         await addDoc(collection(db, `users/${walletAddress}/deals`), payload);
+        setFormData(emptyForm);        // reset form after new save
       }
-
 
       setSaveSuccess(true);
       onSaveSuccess?.();
@@ -79,30 +104,7 @@ export default function Questionaire({
   };
 
   const handleClear = () => {
-    setFormData({
-      address: "",
-      zillowUrl: "",
-      beds: "",
-      baths: "",
-      listingPrice: "",
-      rentalValue: "",
-      rehabCost: "",
-      arv: "",
-      taxes: "",
-      hoa: "",
-      insurance: "",
-      loanAmount: "",
-      mortgageBalance: "",
-      interestRate: "",
-      loanPayment: "",
-      sqft: "",
-      yearBuilt: "",
-      notes: "",
-      agentName: "",
-      agentPhone: "",
-      agentEmail: "",
-      agentTimezone: "",
-    });
+    setFormData(emptyForm);
     setSaveSuccess(false);
   };
 
@@ -150,7 +152,6 @@ export default function Questionaire({
         {renderField("loanPayment", "Monthly Loan Payment")}
       </div>
 
-      {/* Notes Section */}
       <div className="border-t border-neutral-800 pt-6">
         <label className="block text-sm font-medium mb-1">Notes / Why Are They Selling?</label>
         <textarea
@@ -164,7 +165,6 @@ export default function Questionaire({
         <div className="text-right text-xs text-gray-400">{(formData.notes?.length || 0)}/1000</div>
       </div>
 
-      {/* Agent Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
         {renderField("agentName", "Agent Name")}
         {renderField("agentPhone", "Agent Phone")}
@@ -202,12 +202,12 @@ export default function Questionaire({
         </div>
       </div>
 
-
       {saveSuccess && (
         <div className="text-green-500 text-center font-medium">
           ✔ Deal saved successfully!
         </div>
       )}
+
       <div className="flex justify-center gap-4 border-t border-neutral-800 pt-6 flex-wrap">
         <button
           type="submit"
