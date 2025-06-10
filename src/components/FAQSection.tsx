@@ -16,7 +16,7 @@ const FAQSection: React.FC = () => {
     {
     question: "It says ETH on my profile, is blockchain or cryptocurrency used?",
     answer:
-        "No, SyncFolio does not use cryptocurrency or blockchain for deal storage or sharing. The app uses the same cryptographic system as Ethereum (Keccak256 hashing and ECDSA signatures) to generate and verify accounts. This enables secure, private deal submission, your data is encrypted and even the site admin cannot view anything unless you choose to share it. While we may collect platform fees in ETH or USD for features or services, no cryptocurrency is used in any deals.",
+        "No, SyncFolio does not use cryptocurrency or blockchain for deal storage or sharing. The app uses the same cryptographic system as Ethereum (Keccak256 hashing and ECDSA signatures) to generate and verify accounts. This enables secure, private deal submission so your data is encrypted and even the site admin cannot view anything unless you choose to share it. While we may collect platform fees in ETH or USD for features or services, no cryptocurrency is used in any deals.",
     },
 
     {
