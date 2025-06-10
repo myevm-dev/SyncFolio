@@ -70,6 +70,7 @@ export default function Questionaire({
         await addDoc(collection(db, `users/${walletAddress}/deals`), payload);
       }
 
+
       setSaveSuccess(true);
       onSaveSuccess?.();
     } catch (error: any) {

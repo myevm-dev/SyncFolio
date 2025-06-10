@@ -20,6 +20,31 @@ import cashOnCashSeller from "./calculations/cashOnCashSeller";
 import cashOnCashTakeover from "./calculations/cashOnCashTakeover";
 import cashOnCashHybrid from "./calculations/cashOnCashHybrid";
 
+const initialDeal: DealInput = {
+  address: "",
+  zillowUrl: "",
+  beds: "",
+  baths: "",
+  listingPrice: "",
+  rentalValue: "",
+  rehabCost: "",
+  arv: "",
+  taxes: "",
+  hoa: "",
+  insurance: "",
+  loanAmount: "",
+  mortgageBalance: "",
+  interestRate: "",
+  loanPayment: "",
+  sqft: "",
+  yearBuilt: "",
+  notes: "",
+  agentName: "",
+  agentPhone: "",
+  agentEmail: "",
+  agentTimezone: "",
+};
+
 export default function App() {
   const account = useActiveAccount();
   const walletAddress = account?.address || "";
@@ -28,31 +53,7 @@ export default function App() {
   const [cocResults, setCocResults] = useState<CashOnCashResult[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const [currentDealId, setCurrentDealId] = useState<string | null>(null);
-
-  const [formData, setFormData] = useState<DealInput>({
-    address: "",
-    zillowUrl: "",
-    beds: "",
-    baths: "",
-    listingPrice: "",
-    rentalValue: "",
-    rehabCost: "",
-    arv: "",
-    taxes: "",
-    hoa: "",
-    insurance: "",
-    loanAmount: "",
-    mortgageBalance: "",
-    interestRate: "",
-    loanPayment: "",
-    sqft: "",
-    yearBuilt: "",
-    notes: "",
-    agentName: "",
-    agentPhone: "",
-    agentEmail: "",
-    agentTimezone: "",
-  });
+  const [formData, setFormData] = useState<DealInput>(initialDeal);
 
   const handleSubmit = (data: DealInput) => {
     setResults({
@@ -77,59 +78,12 @@ export default function App() {
 
   const handleLoadDeal = (deal: DealInput & { id?: string }) => {
     setFormData({
-      address: "",
-      zillowUrl: "",
-      beds: "",
-      baths: "",
-      listingPrice: "",
-      rentalValue: "",
-      rehabCost: "",
-      arv: "",
-      taxes: "",
-      hoa: "",
-      insurance: "",
-      loanAmount: "",
-      mortgageBalance: "",
-      interestRate: "",
-      loanPayment: "",
-      sqft: "",
-      yearBuilt: "",
-      notes: "",
-      agentName: "",
-      agentPhone: "",
-      agentEmail: "",
-      agentTimezone: "",
+      ...initialDeal,
+      ...deal,
     });
 
-    setTimeout(() => {
-      setFormData({
-        address: deal.address || "",
-        zillowUrl: deal.zillowUrl || "",
-        beds: deal.beds || "",
-        baths: deal.baths || "",
-        listingPrice: deal.listingPrice || "",
-        rentalValue: deal.rentalValue || "",
-        rehabCost: deal.rehabCost || "",
-        arv: deal.arv || "",
-        taxes: deal.taxes || "",
-        hoa: deal.hoa || "",
-        insurance: deal.insurance || "",
-        loanAmount: deal.loanAmount || "",
-        mortgageBalance: deal.mortgageBalance || "",
-        interestRate: deal.interestRate || "",
-        loanPayment: deal.loanPayment || "",
-        sqft: deal.sqft || "",
-        yearBuilt: deal.yearBuilt || "",
-        notes: deal.notes || "",
-        agentName: deal.agentName || "",
-        agentPhone: deal.agentPhone || "",
-        agentEmail: deal.agentEmail || "",
-        agentTimezone: deal.agentTimezone || "",
-      });
-
-      if (deal.id) setCurrentDealId(deal.id);
-      handleSubmit(deal);
-    }, 0);
+    if (deal.id) setCurrentDealId(deal.id);
+    handleSubmit(deal);
   };
 
   return (
