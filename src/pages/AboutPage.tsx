@@ -1,4 +1,5 @@
 import React from "react";
+import FAQSection from "../components/FAQSection"; // Adjust the path if needed
 
 export default function AboutPage() {
   return (
@@ -66,6 +67,9 @@ export default function AboutPage() {
             ))}
           </div>
         </section>
+
+        {/* FAQ Section */}
+        <FAQSection />
       </div>
     </div>
   );
