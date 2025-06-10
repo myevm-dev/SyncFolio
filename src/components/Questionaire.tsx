@@ -43,6 +43,9 @@ const emptyForm: DealInput = {
   agentPhone: "",
   agentEmail: "",
   agentTimezone: "",
+  occupancyStatus: "",
+  highRiskArea: "",
+
 };
 
 export default function Questionaire({
@@ -157,38 +160,10 @@ export default function Questionaire({
         {renderField("beds", "Number of Beds")}
         {renderField("baths", "Number of Baths")}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {renderField("listingPrice", "Listing Price")}
-        {renderField("rentalValue", "Monthly Rental Value")}
-        {renderField("rehabCost", "Estimated Rehab Cost")}
-        {renderField("arv", "After Repair Value (ARV)")}
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
-        {renderField("taxes", "Monthly Taxes")}
-        {renderField("insurance", "Monthly Insurance")}
-        {renderField("hoa", "Monthly HOA")}
         {renderField("yearBuilt", "Year Built")}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
-        {renderField("loanAmount", "Original Loan Amount")}
-        {renderField("mortgageBalance", "Outstanding Mortgage Balance")}
-        {renderField("interestRate", "Mortgage Interest Rate")}
-        {renderField("loanPayment", "Monthly Loan Payment")}
-      </div>
-
-      <div className="border-t border-neutral-800 pt-6">
-        <label className="block text-sm font-medium mb-1">Notes / Why Are They Selling?</label>
-        <textarea
-          name="notes"
-          value={formData.notes || ""}
-          onChange={handleChange}
-          maxLength={1000}
-          rows={4}
-          className="w-full bg-zinc-900 text-white border border-neutral-700 rounded px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <div className="text-right text-xs text-gray-400">{(formData.notes?.length || 0)}/1000</div>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
         {renderField("agentName", "Agent Name")}
         {renderField("agentPhone", "Agent Phone")}
@@ -225,6 +200,72 @@ export default function Questionaire({
           </select>
         </div>
       </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
+        {renderField("rentalValue", "Monthly Rental Value")}
+        <div>
+          <label className="block text-sm font-medium mb-1">Occupancy Status</label>
+          <select
+            name="occupancyStatus"
+            value={formData.occupancyStatus || ""}
+            onChange={handleChange}
+            className="w-full bg-zinc-900 text-white border border-neutral-700 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select Status</option>
+            <option value="vacant">Vacant</option>
+            <option value="rented">Rented</option>
+            <option value="owner occupied">Owner Occupied</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {renderField("rehabCost", "Estimated Rehab Cost")}
+        {renderField("arv", "After Repair Value (ARV)")}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
+        {renderField("taxes", "Monthly Taxes")}
+        {renderField("hoa", "Monthly HOA")}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {renderField("insurance", "Monthly Insurance")}
+        <div>
+          <label className="block text-sm font-medium mb-1">High Risk Area?</label>
+          <select
+            name="highRiskArea"
+            value={formData.highRiskArea || ""}
+            onChange={handleChange}
+            className="w-full bg-zinc-900 text-white border border-neutral-700 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-neutral-800 pt-6">
+        {renderField("loanAmount", "Original Loan Amount")}
+        {renderField("mortgageBalance", "Outstanding Mortgage Balance")}
+        {renderField("interestRate", "Mortgage Interest Rate")}
+        {renderField("loanPayment", "Monthly Loan Payment")}
+      </div>
+
+      <div className="border-t border-neutral-800 pt-6">
+        <label className="block text-sm font-medium mb-1">Notes / Why Are They Selling?</label>
+        <textarea
+          name="notes"
+          value={formData.notes || ""}
+          onChange={handleChange}
+          maxLength={1000}
+          rows={4}
+          className="w-full bg-zinc-900 text-white border border-neutral-700 rounded px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <div className="text-right text-xs text-gray-400">{(formData.notes?.length || 0)}/1000</div>
+      </div>
+
+    
 
       {saveSuccess && (
         <div className="text-green-500 text-center font-medium">

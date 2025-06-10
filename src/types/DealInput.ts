@@ -23,4 +23,8 @@ export interface DealInput {
   agentTimezone?: string;
   status?: string;
   method?: string;
+  occupancyStatus?: string;
+  highRiskArea?: string; 
+
+
 }
