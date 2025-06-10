@@ -25,12 +25,13 @@ const FAQSection: React.FC = () => {
     },
     {
       question: "Who sees the deals I submit?",
-      answer: "Buyers subscribed to your criteria or region will see your deals, and can reach out to close them directly with you.",
+      answer: "If one of our current 112 Buyers are subscribed to your criteria or region, they will see your deals when you submit them to the platform.",
     },
     {
-      question: "Do I need to pay to use SyncFolio?",
-      answer: "No — it’s free to use during the beta. Premium features and tools will be optional when released.",
+    question: "Do I need to pay to use SyncFolio?",
+    answer: "The platform charges fees on a transactional basis when a deal is complete. In the future, you will also have the option to purchase credits if you want to use AI-powered assistance.",
     },
+
   ];
 
   const handleToggle = (index: number) => {

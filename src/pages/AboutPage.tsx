@@ -11,7 +11,7 @@ export default function AboutPage() {
             Welcome to <span className="text-accent">SyncFolio.Space</span>
           </h1>
           <p className="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-            A streamlined platform to buy, sell, or submit real estate deals — built for deal finders,
+            A streamlined platform to buy, sell, or submit real estate deals. Built for deal finders,
             buyers, sellers, and agents to connect, analyze, and close faster.
           </p>
         </header>
