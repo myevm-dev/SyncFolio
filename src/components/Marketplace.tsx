@@ -9,6 +9,7 @@ const mockDeals = [
     returnValue: "17.5%",
     monthlyCashflow: "$950",
     price: "$85,000",
+    imageUrl: "https://via.placeholder.com/400x200",
   },
   {
     address: "456 Oak Ave, Las Cruces, NM",
@@ -17,22 +18,16 @@ const mockDeals = [
     returnValue: "16.4%",
     monthlyCashflow: "$610",
     price: "$10,249",
+    imageUrl: "https://via.placeholder.com/400x200",
   },
   {
-    address: "789 Desert Rd, Phoenix, AZ",
-    daysLeft: 2,
-    method: "Seller Finance",
-    returnValue: "34.2%",
-    monthlyCashflow: "$1,125",
-    price: "$24,500",
-  },
-    {
     address: "123 Main St, El Paso, TX",
     daysLeft: 3,
     method: "Seller Finance",
     returnValue: "17.5%",
     monthlyCashflow: "$950",
     price: "$85,000",
+    imageUrl: "https://via.placeholder.com/400x200",
   },
   {
     address: "456 Oak Ave, Las Cruces, NM",
@@ -41,15 +36,27 @@ const mockDeals = [
     returnValue: "16.4%",
     monthlyCashflow: "$610",
     price: "$10,249",
+    imageUrl: "https://via.placeholder.com/400x200",
   },
   {
-    address: "789 Desert Rd, Phoenix, AZ",
-    daysLeft: 2,
+    address: "123 Main St, El Paso, TX",
+    daysLeft: 3,
     method: "Seller Finance",
-    returnValue: "34.2%",
-    monthlyCashflow: "$1,125",
-    price: "$24,500",
+    returnValue: "17.5%",
+    monthlyCashflow: "$950",
+    price: "$85,000",
+    imageUrl: "https://via.placeholder.com/400x200",
   },
+  {
+    address: "456 Oak Ave, Las Cruces, NM",
+    daysLeft: 5,
+    method: "Cash",
+    returnValue: "16.4%",
+    monthlyCashflow: "$610",
+    price: "$10,249",
+    imageUrl: "https://via.placeholder.com/400x200",
+  },
+
 ];
 
 const Marketplace: React.FC = () => {
