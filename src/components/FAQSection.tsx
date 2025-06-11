@@ -17,7 +17,7 @@ const FAQSection: React.FC = () => {
     {
       question: "It says ETH on my profile, is blockchain or cryptocurrency used?",
       answer:
-        "No, SyncFolio does not use cryptocurrency or blockchain for real estate deals. The app uses the same cryptographic system as Ethereum (Keccak256 hashing and ECDSA signatures) to generate and verify accounts. This enables secure, private deal submission so your data is encrypted and even the site admin cannot view anything unless you choose to share it. While we may collect platform fees in ETH or USD for features or services, no cryptocurrency is used in any deals.",
+        "No, SyncFolio does not use cryptocurrency or blockchain for real estate deals or involving the homes themselves. The app uses the same cryptographic system as Ethereum (Keccak256 hashing and ECDSA signatures) to generate and verify accounts. This enables secure, private deal submission so your data is encrypted and even the site admin cannot view anything unless you choose to share it. While we may collect platform fees in ETH or USD for features or services, and likely offer onchain products, homes or deals are peer to peer in a traditional sense. ",
     },
     {
       question: "Are users listing and selling houses?",
@@ -33,7 +33,7 @@ const FAQSection: React.FC = () => {
     {
       question: "Who sees the deals I submit?",
       answer:
-        "If one of our current 112 Buyers are subscribed to your criteria or region, they will see your deals when you submit them to the platform.",
+        "If one of our current 100+ Buyers are subscribed to your criteria or region, they will see your deals when you submit them to the platform.",
     },
     {
       question: "Do I need to pay to use SyncFolio?",
