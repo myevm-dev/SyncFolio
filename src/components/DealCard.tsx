@@ -35,7 +35,7 @@ const DealCard: React.FC<DealCardProps> = ({
       <div className="p-4 flex-grow">
         <h3 className="text-lg font-semibold mb-1">{address}</h3>
         <p className="text-sm text-gray-300">Method: {method}</p>
-        <p className="text-sm text-gray-300">Days Left: {daysLeft}</p>
+        <p className="text-sm text-gray-300">Inspection Days Left: {daysLeft}</p>
         <p className="text-sm text-gray-300">
           {isCash ? "Cap Rate" : "CoC Return"}: {returnValue}
         </p>
