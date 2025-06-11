@@ -126,7 +126,6 @@ export default function ProfilePage() {
       )}
 
       <p className="text-gray-400 break-all">Account: {walletAddress}</p>
-      <TeamSection walletAddress={walletAddress} />
 
       {/* Dashboard Cards */}
       <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
@@ -134,17 +133,17 @@ export default function ProfilePage() {
           {
             label: "Earnings",
             value: "$0.00",
-            icon: "\uD83D\uDCB0",
+            icon: "💰",
           },
           {
             label: "Buying",
             value: "0 Properties",
-            icon: "\uD83C\uDFE0",
+            icon: "🏠",
           },
           {
             label: "Selling",
             value: "0 Properties",
-            icon: "\uD83D\uDCE4",
+            icon: "📤",
           },
         ].map((card) => (
           <div
@@ -159,6 +158,9 @@ export default function ProfilePage() {
           </div>
         ))}
       </div>
+
+      {/* Team Section */}
+      <TeamSection walletAddress={walletAddress} />
     </div>
   );
 }
