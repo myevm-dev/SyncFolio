@@ -78,21 +78,25 @@ const Marketplace: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center mb-4 px-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-2 mb-4 px-4">
         <Link
           to="/buybox-directory"
-          className="flex items-center gap-2 border border-cyan-400 text-cyan-300 hover:bg-cyan-400 hover:text-black font-semibold px-3 py-1 rounded transition"
+          className="flex flex-col items-center justify-center text-cyan-300 border border-cyan-400 hover:bg-cyan-400 hover:text-black font-semibold px-3 py-2 rounded transition w-full sm:w-auto"
         >
-          <Users size={16} /> Total Buyers: <span className="text-white">112</span>
+          <div className="flex items-center gap-1 text-xs sm:text-sm">
+            <Users size={16} />
+            <span>Total Buyers</span>
+          </div>
+          <div className="text-white text-base font-bold leading-none">112</div>
         </Link>
 
-        <div className="flex gap-2">
-          <button className="bg-zinc-800 text-white font-medium px-4 py-2 rounded hover:bg-[#6e5690] hover:text-black transition">
+        <div className="flex gap-2 w-full sm:w-auto justify-center sm:justify-end">
+          <button className="bg-zinc-800 text-white font-medium px-4 py-2 rounded w-full sm:w-auto hover:bg-[#6e5690] hover:text-black transition">
             My BuyBox
           </button>
           <button
             onClick={() => setShowModal(true)}
-            className="bg-[#6e5690] text-white font-medium px-4 py-2 rounded hover:bg-accent2 hover:text-black transition"
+            className="bg-[#6e5690] text-white font-medium px-4 py-2 rounded w-full sm:w-auto hover:bg-accent2 hover:text-black transition"
           >
             Submit BuyBox
           </button>
