@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import DealCard from "./DealCard";
 import { Users } from "lucide-react";
+import SubmitBuyboxModal from "./SubmitBuyboxModal"; // Make sure this is the correct path
 
 const mockDeals = [
   {
@@ -73,6 +74,8 @@ const mockDeals = [
 ];
 
 const Marketplace: React.FC = () => {
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-4 px-4">
@@ -87,7 +90,10 @@ const Marketplace: React.FC = () => {
           <button className="bg-zinc-800 text-white font-medium px-4 py-2 rounded hover:bg-[#6e5690] hover:text-black transition">
             My BuyBox
           </button>
-          <button className="bg-[#6e5690] text-white font-medium px-4 py-2 rounded hover:bg-accent2 hover:text-black transition">
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-[#6e5690] text-white font-medium px-4 py-2 rounded hover:bg-accent2 hover:text-black transition"
+          >
             Submit BuyBox
           </button>
         </div>
@@ -98,6 +104,15 @@ const Marketplace: React.FC = () => {
           <DealCard key={idx} {...deal} />
         ))}
       </div>
+
+      {showModal && (
+        <SubmitBuyboxModal
+          onClose={() => setShowModal(false)}
+          onSubmit={(data) => {
+            console.log("BuyBox submitted:", data);
+          }}
+        />
+      )}
     </div>
   );
 };
