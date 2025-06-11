@@ -40,7 +40,7 @@ const DealCard: React.FC<DealCardProps> = ({
           {isCash ? "Cap Rate" : "CoC Return"}: {returnValue}
         </p>
         <p className="text-sm text-gray-300">Monthly Cashflow: {monthlyCashflow}</p>
-        <p className="text-sm text-gray-300">Entry: {price}</p>
+        <p className="text-sm text-gray-300">Entry Cost: {price}</p>
         <p className="text-sm text-accent1 mt-1 font-medium">
           Current Finder's Fee Bid: {currentBid}
         </p>
