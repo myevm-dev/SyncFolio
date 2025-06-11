@@ -62,6 +62,10 @@ export default function AboutPage() {
               "Portfolio Management",
               "Employable AI Agents",
               "Tradable Trust Rights",
+              "Funding & Yield Plugins",
+              "Lead Gamification",
+              "Deal Marketplace",
+              "Earn Platform Credits",
             ].map((feature) => (
               <div
                 key={feature}
