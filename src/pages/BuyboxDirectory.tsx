@@ -69,8 +69,8 @@ const BuyboxDirectory: React.FC = () => {
         State Buyboxes
       </h2>
       <p className="text-center text-sm text-gray-100 max-w-2xl mx-auto mb-8">
-        These buyboxes were submitted by investors targeting specific locations. While they highlight areas of interest,
-        creative deals can be structured and submitted anywhere in the United States.
+        These buyboxes were submitted by investors targeting specific locations. While highlighting areas of interest,
+        creative finance deals can be structured & submitted anywhere with a strong rental market.
       </p>
 
       <div className="space-y-4">
