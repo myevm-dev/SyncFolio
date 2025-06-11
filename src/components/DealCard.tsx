@@ -1,5 +1,5 @@
 import React from "react";
-import placeholder from "../placeholder.jpg"; // adjust path if needed
+import placeholder from "../placeholder.jpg";
 
 interface DealCardProps {
   address: string;
@@ -8,6 +8,8 @@ interface DealCardProps {
   returnValue: string;
   price: string;
   monthlyCashflow: string;
+  buyNowPrice: string;
+  currentBid: string;
 }
 
 const DealCard: React.FC<DealCardProps> = ({
@@ -17,17 +19,20 @@ const DealCard: React.FC<DealCardProps> = ({
   returnValue,
   price,
   monthlyCashflow,
+  buyNowPrice,
+  currentBid,
 }) => {
   const isCash = method.toLowerCase() === "cash";
 
   return (
-    <div className="bg-[#050505] border border-neutral-700 rounded-lg shadow-md hover:bg-[#6e5690] hover:text-black hover:border-[#6e5690] transition overflow-hidden">
+    <div className="bg-[#050505] border border-neutral-700 rounded-lg shadow-md overflow-hidden flex flex-col">
       <img
         src={placeholder}
         alt="Property"
         className="w-full h-48 object-cover border-b border-neutral-800"
       />
-      <div className="p-4">
+
+      <div className="p-4 flex-grow">
         <h3 className="text-lg font-semibold mb-1">{address}</h3>
         <p className="text-sm text-gray-300">Method: {method}</p>
         <p className="text-sm text-gray-300">Days Left: {daysLeft}</p>
@@ -36,10 +41,25 @@ const DealCard: React.FC<DealCardProps> = ({
         </p>
         <p className="text-sm text-gray-300">Monthly Cashflow: {monthlyCashflow}</p>
         <p className="text-sm text-gray-300">Entry: {price}</p>
+        <p className="text-sm text-accent1 mt-1 font-medium">
+          Current Finder's Fee Bid: {currentBid}
+        </p>
+      </div>
+
+      <div className="px-4 pb-4 mt-auto flex justify-between gap-2">
+        <button
+          className="flex-1 border border-[#fd01f5] text-[#fd01f5] hover:bg-[#fd01f5] hover:text-black text-sm py-2 rounded transition"
+        >
+          Bid
+        </button>
+        <button
+          className="flex-1 bg-[#01fcfc] text-black text-sm py-2 rounded hover:bg-[#00e0e0] transition"
+        >
+          Buy Now for {buyNowPrice}
+        </button>
       </div>
     </div>
   );
 };
 
 export default DealCard;
-
