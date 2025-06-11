@@ -10,6 +10,7 @@ import BuyPage from "./pages/BuyPage";
 import SellPage from "./pages/SellPage";
 import AboutPage from "./pages/AboutPage";
 import Layout from "./components/Layout";
+import BuyboxDirectoryPage from "./pages/BuyboxDirectory"; 
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -22,8 +23,10 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/sell" element={<SellPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/buybox-directory" element={<BuyboxDirectoryPage />} /> {/* ✅ Add this line */}
           </Route>
         </Routes>
+
       </BrowserRouter>
     </ThirdwebProvider>
   </React.StrictMode>

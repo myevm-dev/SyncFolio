@@ -1,4 +1,4 @@
-export const coloradoBuyBox = [
+export const coloradoBuyboxes = [
   {
     city: "denver",
     county: "el pasopueblo",
