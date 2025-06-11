@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useActiveAccount } from "thirdweb/react";
 import { db } from "../lib/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, getDocs } from "firebase/firestore";
 import { Pencil } from "lucide-react";
+import TeamSection from "../components/TeamSection";
 
 declare global {
   interface Window {
@@ -18,6 +19,7 @@ export default function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const [liveName, setLiveName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [nameTaken, setNameTaken] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -37,8 +39,26 @@ export default function ProfilePage() {
     fetchProfile();
   }, [walletAddress]);
 
+  useEffect(() => {
+    const checkDuplicateName = async () => {
+      if (!liveName.trim()) {
+        setNameTaken(false);
+        return;
+      }
+      const usersSnapshot = await getDocs(collection(db, "users"));
+      const taken = usersSnapshot.docs.some(
+        (docSnap) =>
+          docSnap.id !== walletAddress &&
+          docSnap.data().displayName?.toLowerCase() === liveName.toLowerCase()
+      );
+      setNameTaken(taken);
+    };
+    checkDuplicateName();
+  }, [liveName, walletAddress]);
+
   const handleSave = async () => {
-    if (!walletAddress) return;
+    if (!walletAddress || !liveName || nameTaken) return;
+
     const ref = doc(db, "users", walletAddress);
     await setDoc(ref, { displayName: liveName }, { merge: true });
     setDisplayName(liveName);
@@ -79,11 +99,15 @@ export default function ProfilePage() {
           <input
             value={liveName}
             onChange={(e) => setLiveName(e.target.value)}
-            className="bg-zinc-800 px-3 py-1 rounded text-sm"
+            className={`bg-zinc-800 px-3 py-1 rounded text-sm ${nameTaken ? "border border-red-500 text-red-400" : ""}`}
           />
+          {nameTaken && (
+            <p className="text-red-500 text-xs">Name already taken</p>
+          )}
           <button
             onClick={handleSave}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full text-sm"
+            disabled={nameTaken}
           >
             Save Name
           </button>
@@ -102,6 +126,7 @@ export default function ProfilePage() {
       )}
 
       <p className="text-gray-400 break-all">Account: {walletAddress}</p>
+      <TeamSection walletAddress={walletAddress} />
 
       {/* Dashboard Cards */}
       <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
@@ -109,17 +134,17 @@ export default function ProfilePage() {
           {
             label: "Earnings",
             value: "$0.00",
-            icon: "💰",
+            icon: "\uD83D\uDCB0",
           },
           {
             label: "Buying",
             value: "0 Properties",
-            icon: "🏠",
+            icon: "\uD83C\uDFE0",
           },
           {
             label: "Selling",
             value: "0 Properties",
-            icon: "📤",
+            icon: "\uD83D\uDCE4",
           },
         ].map((card) => (
           <div
