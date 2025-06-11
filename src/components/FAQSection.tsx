@@ -20,6 +20,12 @@ const FAQSection: React.FC = () => {
         "No, SyncFolio does not use cryptocurrency or blockchain for real estate deals. The app uses the same cryptographic system as Ethereum (Keccak256 hashing and ECDSA signatures) to generate and verify accounts. This enables secure, private deal submission so your data is encrypted and even the site admin cannot view anything unless you choose to share it. While we may collect platform fees in ETH or USD for features or services, no cryptocurrency is used in any deals.",
     },
     {
+      question: "Are users listing and selling houses?",
+      answer:
+        "No, users are not listing or marketing properties. Instead, they are transacting rights to contract placement, essentially selling the opportunity in exchange for a finder’s rewards from future deals.",
+    },
+
+    {
       question: "How do I submit a deal?",
       answer:
         "Fill out the property questionnaire on the home page and click 'Save' or 'Update'. Your deal will be added to your dashboard.",
