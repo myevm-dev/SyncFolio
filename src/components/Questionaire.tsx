@@ -197,7 +197,7 @@ export default function Questionaire({
           <button
             type="button"
             onClick={() => setShowScriptModal(true)}
-            className="px-4 py-1 text-sm bg-purple-700 text-white rounded hover:bg-purple-800 transition"
+            className="px-4 py-1 text-sm bg-cyan-700 text-white rounded hover:bg-purple-800 transition"
           >
             Open Call Script
           </button>
