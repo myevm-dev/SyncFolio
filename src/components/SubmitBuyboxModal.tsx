@@ -1,9 +1,10 @@
-// SubmitBuyboxModal.tsx (Parent)
 import React, { useState } from "react";
 import StepOneBuyBoxForm from "./StepOneBuyBoxForm";
 import StepTwoContactForm from "./StepTwoContactForm";
 import StepThreeDeposit from "./StepThreeDeposit";
 import { BuyBox } from "../types/BuyBox";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 interface Props {
   onClose: () => void;
@@ -12,6 +13,7 @@ interface Props {
 
 const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
   const [step, setStep] = useState(1);
+
   const [buybox, setBuybox] = useState<BuyBox>({
     cities: [],
     propertyType: "single family",
@@ -20,13 +22,29 @@ const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
     sqftMin: undefined,
     hoa: false,
   });
+
   const [contact, setContact] = useState({ name: "", email: "", phone: "" });
   const [depositConfirmed, setDepositConfirmed] = useState(false);
 
   const next = () => setStep((s) => s + 1);
   const prev = () => setStep((s) => s - 1);
 
-  const handleFinalSubmit = () => {
+  const handleFinalSubmit = async () => {
+    const cities = buybox.cities || [];
+
+    for (const city of cities) {
+      const individualBuybox = {
+        ...buybox,
+        city,
+        cities: undefined, // remove multi-city field
+        contact,
+        depositConfirmed,
+        timestamp: Date.now(),
+      };
+
+      await addDoc(collection(db, "buyboxes"), individualBuybox);
+    }
+
     onSubmit({ buybox, contact, depositConfirmed });
     onClose();
   };
