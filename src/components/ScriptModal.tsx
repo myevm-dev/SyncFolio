@@ -277,7 +277,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
           <div className="space-y-2">
             <div className="flex items-start gap-2">
-              <p className="font-medium text-base text-cyan-400 flex-1">If I put something together that made sense, is it okay to shoot you a text first or do you prefer email?</p>
+              <p className="font-medium text-base text-cyan-400 flex-1">If I put an offer together that made sense, is it okay to shoot you a text first or do you prefer email?</p>
               <div className="flex gap-1">
                 <button onClick={() => setEditingQuestion(9)} className="text-cyan-400">
                   <Pencil size={16} />
