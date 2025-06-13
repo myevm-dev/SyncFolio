@@ -1,8 +1,11 @@
 // components/ScriptModal.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle } from "./Dialog";
 import { DealInput } from "../types/DealInput";
 import { Pencil, X, ArrowUp, ArrowDown } from "lucide-react";
+import { db } from "../lib/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useActiveAccount } from "thirdweb/react";
 
 interface Props {
   open: boolean;
@@ -23,12 +26,12 @@ const defaultQuestions = [
     hint: "Understand the seller's motivation."
   },
   {
-    label: "Is it currently occupied? And assuming it’s cleaned up or updated, what would you estimate market rent at?",
+    label: "What would market rent be fore this property if we had it looking nice?",
     field: "rentalValue",
     hint: "Get an estimate for potential rental income."
   },
   {
-    label: "What kind of updates would a new buyer need to plan for?",
+    label: "Is there any defered maintainence or repairs I cant see in the pictures?",
     field: "rehabCost",
     hint: "Get them to provide the cost to repair."
   },
@@ -38,7 +41,7 @@ const defaultQuestions = [
     hint: "Collect ongoing cost estimates."
   },
   {
-    label: "Have any comps come in recently? Or what do you think ARV would look like if it's updated?",
+    label: "What are updated homes going for recently? Do you have any comps picked out?",
     field: "arv",
     hint: "Estimate after repair value."
   },
@@ -60,12 +63,34 @@ const defaultQuestions = [
 ];
 
 export default function ScriptModal({ open, onClose, formData, setFormData }: Props) {
+  const account = useActiveAccount();
+  const walletAddress = account?.address;
   const [agentConsent, setAgentConsent] = useState("text");
   const [timelineResponse, setTimelineResponse] = useState("");
   const [contactValue, setContactValue] = useState("");
   const [editingQuestion, setEditingQuestion] = useState<number | null>(null);
   const [customLabels, setCustomLabels] = useState<string[]>(defaultQuestions.map((q) => q.label));
   const [questionOrder, setQuestionOrder] = useState<number[]>(defaultQuestions.map((_, idx) => idx));
+
+  useEffect(() => {
+    if (!walletAddress) return;
+    const loadUserScript = async () => {
+      const ref = doc(db, "scripts", walletAddress);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.labels && Array.isArray(data.labels)) setCustomLabels(data.labels);
+        if (data.order && Array.isArray(data.order)) setQuestionOrder(data.order);
+      }
+    };
+    loadUserScript();
+  }, [walletAddress]);
+
+  useEffect(() => {
+    if (!walletAddress) return;
+    const ref = doc(db, "scripts", walletAddress);
+    setDoc(ref, { labels: customLabels, order: questionOrder }, { merge: true });
+  }, [customLabels, questionOrder, walletAddress]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -100,32 +125,13 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
   const handleDone = () => {
     const notesParts: string[] = [];
+    if (formData.notes?.trim()) notesParts.push(formData.notes);
+    if (formData.method) notesParts.push(`Creative offer response: ${formData.method}`);
+    if (agentConsent) notesParts.push(`${agentConsent} offer`);
+    if (contactValue.trim()) notesParts.push(`${agentConsent}: ${contactValue}`);
+    if (timelineResponse) notesParts.push(`Include credibility packet: ${timelineResponse}`);
 
-    if (formData.notes?.trim()) {
-      notesParts.push(formData.notes);
-    }
-
-    if (formData.method) {
-      notesParts.push(`Creative offer response: ${formData.method}`);
-    }
-
-    if (agentConsent) {
-      notesParts.push(`${agentConsent} offer`);
-    }
-
-    if (contactValue.trim()) {
-      notesParts.push(`${agentConsent}: ${contactValue}`);
-    }
-
-    if (timelineResponse) {
-      notesParts.push(`Include credibility packet: ${timelineResponse}`);
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      notes: notesParts.join("\n"),
-    }));
-
+    setFormData((prev) => ({ ...prev, notes: notesParts.join("\n") }));
     onClose();
   };
 
@@ -145,7 +151,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
           <div className="bg-zinc-800 p-4 rounded-md border border-neutral-700">
             <p className="text-base text-cyan-400">
-              Hi, I’m calling about <span className="font-semibold text-white">{formData.address || "[Property]"}</span> are you the listing agent on that one?
+              Hi, I’m calling about <span className="font-semibold text-white">{formData.address || "[Property]"}</span> are you the listing agent on this property?
             </p>
           </div>
 
