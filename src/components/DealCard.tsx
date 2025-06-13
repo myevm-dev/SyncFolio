@@ -25,7 +25,11 @@ const DealCard: React.FC<DealCardProps> = ({
   const isCash = method.toLowerCase() === "cash";
 
   return (
-    <div className="bg-[#050505] border border-neutral-700 rounded-lg shadow-md overflow-hidden flex flex-col">
+    <div className="relative bg-[#050505] border border-neutral-700 rounded-lg shadow-md overflow-hidden flex flex-col">
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px] flex items-center justify-center z-10">
+        <span className="text-white text-2xl font-bold">Coming Soon</span>
+      </div>
+
       <img
         src={placeholder}
         alt="Property"
