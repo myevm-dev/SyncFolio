@@ -1,4 +1,3 @@
-// components/ScriptModal.tsx
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle } from "./Dialog";
 import { DealInput } from "../types/DealInput";
@@ -138,17 +137,15 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[90vh] overflow-y-auto bg-zinc-900 text-white w-[95vw] max-w-2xl p-6 rounded-xl">
+        <div className="text-center text-4xl font-extrabold text-white mb-4">
+          {formData.agentPhone || "No phone provided"}
+        </div>
+
         <DialogTitle className="text-lg font-semibold text-[#6e5690] mb-4 text-center">
           Discovery Call Script
         </DialogTitle>
 
         <div className="space-y-6">
-          {formData.agentPhone && (
-            <div className="text-center text-3xl font-bold text-white">
-              {formData.agentPhone}
-            </div>
-          )}
-
           <div className="bg-zinc-800 p-4 rounded-md border border-neutral-700">
             <p className="text-base text-cyan-400">
               Hi, I’m calling about <span className="font-semibold text-white">{formData.address || "[Property]"}</span> are you the listing agent on this property?

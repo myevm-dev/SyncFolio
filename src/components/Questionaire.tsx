@@ -192,7 +192,7 @@ export default function Questionaire({
           </div>
         </div>
 
-        <h2 className="text-center text-xl font-semibold text-[#6e5690] mt-8">Discovery</h2>
+        <h2 className="text-center text-xl font-semibold text-[#6e5690] mt-8">Discovery Call</h2>
         <div className="flex justify-center mt-2 mb-4">
           <button
             type="button"
@@ -248,7 +248,7 @@ export default function Questionaire({
           </div>
         </div>
 
-        <h2 className="text-center text-xl font-semibold text-[#6e5690] mt-4">Low Equity?</h2>
+        <h2 className="text-center text-xl font-semibold text-[#6e5690] mt-4">Is there a Mortgage?</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4  pt-6">
           {renderField("loanAmount", "Original Loan Amount")}
