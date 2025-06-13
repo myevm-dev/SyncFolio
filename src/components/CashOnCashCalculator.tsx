@@ -148,7 +148,7 @@ export default function CashOnCashCalculator() {
 
           <p className="text-lg font-bold">
             Cash-on-Cash Return:
-            <span className={cashOnCash >= 20 ? "text-green-500 ml-2" : "text-red-500 ml-2"}>
+            <span className={cashOnCash >= 15 ? "text-green-500 ml-2" : "text-red-500 ml-2"}>
               {cashOnCash.toFixed(2)}%
             </span>
           </p>
