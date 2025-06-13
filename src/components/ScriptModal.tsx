@@ -160,8 +160,15 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
       <DialogContent className="max-h-[90vh] overflow-y-auto bg-zinc-900 text-white w-full max-w-2xl p-6 rounded-xl mx-auto"
 >
         <div className="text-center text-4xl font-extrabold text-white mb-4">
-          {formData.agentPhone || "No phone provided"}
+          {formData.agentPhone ? (
+            <a href={`tel:${formData.agentPhone}`} className="hover:underline text-white">
+              {formData.agentPhone}
+            </a>
+          ) : (
+            "No phone provided"
+          )}
         </div>
+
         {formData.agentTimezone && (
         <div className="text-center text-md text-neutral-400 mb-2">
           Local Time: {getTimeInAgentTimezone(formData.agentTimezone)}
