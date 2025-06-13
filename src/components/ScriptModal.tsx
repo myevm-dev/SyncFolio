@@ -59,6 +59,7 @@ const defaultQuestions = [
     fields: ["loanAmount", "interestRate", "loanPayment"],
     hint: "Learn more about financing details."
   }
+
 ];
 
 export default function ScriptModal({ open, onClose, formData, setFormData }: Props) {
@@ -196,8 +197,12 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                     <p className="font-medium text-base text-cyan-400 flex-1">{customLabels[questionIndex]}</p>
                   )}
                   <div className="flex gap-1">
-                    <button onClick={() => moveQuestion(questionIndex, "up")} className="text-white"><ArrowUp size={16} /></button>
-                    <button onClick={() => moveQuestion(questionIndex, "down")} className="text-white"><ArrowDown size={16} /></button>
+                    <button onClick={() => moveQuestion(questionIndex, "up")} className="text-white">
+                      <ArrowUp size={16} />
+                    </button>
+                    <button onClick={() => moveQuestion(questionIndex, "down")} className="text-white">
+                      <ArrowDown size={16} />
+                    </button>
                     <button onClick={() => setEditingQuestion(questionIndex)} className="text-cyan-400">
                       <Pencil size={16} />
                     </button>
@@ -206,7 +211,18 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                     </button>
                   </div>
                 </div>
-                {q.field === "occupancyStatus" ? (
+
+                {/* Custom render for mortgageBalance */}
+                {q.field === "mortgageBalance" ? (
+                  <input
+                    type="number"
+                    name="mortgageBalance"
+                    placeholder="Enter mortgage balance"
+                    value={formData.mortgageBalance || ""}
+                    onChange={(e) => handleChange(e, "mortgageBalance")}
+                    className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                ) : q.field === "occupancyStatus" ? (
                   <select
                     name="occupancyStatus"
                     value={formData.occupancyStatus || ""}
@@ -242,6 +258,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
               </div>
             );
           })}
+
 
           <div className="space-y-2">
             <div className="flex items-start gap-2">
