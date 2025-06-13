@@ -16,9 +16,9 @@ const StepOneBuyBoxForm: React.FC<Props> = ({ form, setForm, onNext, onClose }) 
 
     if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
-      setForm((prev) => ({ ...prev, [name]: checked }));
+      setForm((prev: BuyBox) => ({ ...prev, [name]: checked }));
     } else {
-      setForm((prev) => ({
+      setForm((prev: BuyBox) => ({
         ...prev,
         [name]: type === "number" ? +value : value,
       }));
@@ -35,10 +35,10 @@ const StepOneBuyBoxForm: React.FC<Props> = ({ form, setForm, onNext, onClose }) 
         onBlur={() => {
           const parsed = citiesInput
             .split(",")
-            .map((c) => c.trim())
-            .filter((c) => c.length > 0);
+            .map((c: string) => c.trim())
+            .filter((c: string) => c.length > 0);
 
-          setForm((prev) => ({ ...prev, cities: parsed }));
+          setForm((prev: BuyBox) => ({ ...prev, cities: parsed }));
         }}
         className="input"
       />
@@ -151,7 +151,6 @@ const StepOneBuyBoxForm: React.FC<Props> = ({ form, setForm, onNext, onClose }) 
         <span>HOA</span>
       </label>
 
-      {/* Pricing note below city input */}
       <div className="sm:col-span-2 text-sm text-gray-400 -mt-2">
         $500 refundable deposit per city or unlock unlimited cities with a $2,500 deposit (Step 3)
       </div>

@@ -8,7 +8,11 @@ import { db } from "../lib/firebase";
 
 interface Props {
   onClose: () => void;
-  onSubmit: (data: { buybox: BuyBox; contact: any; depositConfirmed: boolean }) => void;
+  onSubmit: (data: {
+    buybox: BuyBox;
+    contact: { name: string; email: string; phone: string };
+    depositConfirmed: boolean;
+  }) => void;
 }
 
 const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
@@ -23,7 +27,12 @@ const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
     hoa: false,
   });
 
-  const [contact, setContact] = useState({ name: "", email: "", phone: "" });
+  const [contact, setContact] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  });
+
   const [depositConfirmed, setDepositConfirmed] = useState(false);
 
   const next = () => setStep((s) => s + 1);
@@ -32,18 +41,30 @@ const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
   const handleFinalSubmit = async () => {
     const cities = buybox.cities || [];
 
-    for (const city of cities) {
-      const individualBuybox = {
-        ...buybox,
-        city,
-        cities: undefined, // remove multi-city field
-        contact,
-        depositConfirmed,
-        timestamp: Date.now(),
-      };
-
-      await addDoc(collection(db, "buyboxes"), individualBuybox);
+    if (
+      !buybox.bedMin ||
+      !buybox.bathMin ||
+      !buybox.sqftMin ||
+      cities.length === 0 ||
+      !depositConfirmed
+    ) {
+      alert("Please complete all required fields and confirm deposit.");
+      return;
     }
+
+    await Promise.all(
+      cities.map((city) => {
+        const individualBuybox = {
+          ...buybox,
+          city,
+          cities: undefined,
+          contact,
+          depositConfirmed,
+          timestamp: Date.now(),
+        };
+        return addDoc(collection(db, "buyboxes"), individualBuybox);
+      })
+    );
 
     onSubmit({ buybox, contact, depositConfirmed });
     onClose();
@@ -61,7 +82,9 @@ const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
             <div
               key={index}
               className={`flex-1 text-center border-b-2 pb-2 ${
-                step === index + 1 ? "border-cyan-400 text-white" : "border-gray-600"
+                step === index + 1
+                  ? "border-cyan-400 text-white"
+                  : "border-gray-600"
               }`}
             >
               Step {index + 1}: {title}
