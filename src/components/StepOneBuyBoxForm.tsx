@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BuyBox } from "../types/BuyBox";
+import { BuyBox } from "../types/Buybox";
 
 interface Props {
   form: BuyBox;
