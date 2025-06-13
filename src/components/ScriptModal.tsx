@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "./Dialog";
 import { DealInput } from "../types/DealInput";
-import { Pencil, X } from "lucide-react";
+import { Pencil, X, ArrowUp, ArrowDown } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -11,7 +11,7 @@ interface Props {
   setFormData: React.Dispatch<React.SetStateAction<DealInput>>;
 }
 
-const questions = [
+const defaultQuestions = [
   {
     label: "Has this been a rental or owner-occupied?",
     field: "occupancyStatus",
@@ -64,7 +64,8 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
   const [timelineResponse, setTimelineResponse] = useState("");
   const [contactValue, setContactValue] = useState("");
   const [editingQuestion, setEditingQuestion] = useState<number | null>(null);
-  const [customLabels, setCustomLabels] = useState<string[]>(questions.map((q) => q.label));
+  const [customLabels, setCustomLabels] = useState<string[]>(defaultQuestions.map((q) => q.label));
+  const [questionOrder, setQuestionOrder] = useState<number[]>(defaultQuestions.map((_, idx) => idx));
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -83,9 +84,18 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
     const confirmed = window.confirm("Reset question to default?");
     if (confirmed) {
       const updated = [...customLabels];
-      updated[index] = questions[index].label;
+      updated[index] = defaultQuestions[index].label;
       setCustomLabels(updated);
     }
+  };
+
+  const moveQuestion = (index: number, direction: "up" | "down") => {
+    const newOrder = [...questionOrder];
+    const pos = newOrder.indexOf(index);
+    const swapWith = direction === "up" ? pos - 1 : pos + 1;
+    if (swapWith < 0 || swapWith >= newOrder.length) return;
+    [newOrder[pos], newOrder[swapWith]] = [newOrder[swapWith], newOrder[pos]];
+    setQuestionOrder(newOrder);
   };
 
   const handleDone = () => {
@@ -139,65 +149,70 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
             </p>
           </div>
 
-          {questions.map((q, index) => (
-            <div key={index} className="space-y-2">
-              <div className="flex items-start gap-2">
-                {editingQuestion === index ? (
-                  <input
-                    value={customLabels[index]}
-                    placeholder={q.hint || "Edit question"}
-                    onChange={(e) => handleEditChange(index, e.target.value)}
-                    onBlur={() => setEditingQuestion(null)}
-                    autoFocus
-                    className="flex-1 bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                ) : (
-                  <p className="font-medium text-base text-cyan-400 flex-1">{customLabels[index]}</p>
-                )}
-                <div className="flex gap-1">
-                  <button onClick={() => setEditingQuestion(index)} className="text-cyan-400">
-                    <Pencil size={16} />
-                  </button>
-                  <button onClick={() => resetToDefault(index)} className="text-red-400">
-                    <X size={16} />
-                  </button>
-                </div>
-              </div>
-              {q.field === "occupancyStatus" ? (
-                <select
-                  name="occupancyStatus"
-                  value={formData.occupancyStatus || ""}
-                  onChange={(e) => handleChange(e, "occupancyStatus")}
-                  className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select Status</option>
-                  <option value="vacant">Vacant</option>
-                  <option value="rented">Rented</option>
-                  <option value="owner occupied">Owner Occupied</option>
-                </select>
-              ) : q.field && !q.fields ? (
-                <input
-                  name={q.field}
-                  value={formData[q.field as keyof DealInput] || ""}
-                  onChange={(e) => handleChange(e, q.field as keyof DealInput)}
-                  className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              ) : q.fields && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {(q.fields as (keyof DealInput)[]).map((f) => (
+          {questionOrder.map((questionIndex) => {
+            const q = defaultQuestions[questionIndex];
+            return (
+              <div key={questionIndex} className="space-y-2">
+                <div className="flex items-start gap-2">
+                  {editingQuestion === questionIndex ? (
                     <input
-                      key={f}
-                      name={f}
-                      placeholder={f.replace(/([A-Z])/g, ' $1')}
-                      value={formData[f] || ""}
-                      onChange={(e) => handleChange(e, f)}
-                      className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={customLabels[questionIndex]}
+                      placeholder={q.hint || "Edit question"}
+                      onChange={(e) => handleEditChange(questionIndex, e.target.value)}
+                      onBlur={() => setEditingQuestion(null)}
+                      autoFocus
+                      className="flex-1 bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                  ))}
+                  ) : (
+                    <p className="font-medium text-base text-cyan-400 flex-1">{customLabels[questionIndex]}</p>
+                  )}
+                  <div className="flex gap-1">
+                    <button onClick={() => moveQuestion(questionIndex, "up")} className="text-white"><ArrowUp size={16} /></button>
+                    <button onClick={() => moveQuestion(questionIndex, "down")} className="text-white"><ArrowDown size={16} /></button>
+                    <button onClick={() => setEditingQuestion(questionIndex)} className="text-cyan-400">
+                      <Pencil size={16} />
+                    </button>
+                    <button onClick={() => resetToDefault(questionIndex)} className="text-red-400">
+                      <X size={16} />
+                    </button>
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+                {q.field === "occupancyStatus" ? (
+                  <select
+                    name="occupancyStatus"
+                    value={formData.occupancyStatus || ""}
+                    onChange={(e) => handleChange(e, "occupancyStatus")}
+                    className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select Status</option>
+                    <option value="vacant">Vacant</option>
+                    <option value="rented">Rented</option>
+                    <option value="owner occupied">Owner Occupied</option>
+                  </select>
+                ) : q.field && !q.fields ? (
+                  <input
+                    name={q.field}
+                    value={formData[q.field as keyof DealInput] || ""}
+                    onChange={(e) => handleChange(e, q.field as keyof DealInput)}
+                    className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                ) : q.fields && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {(q.fields as (keyof DealInput)[]).map((f) => (
+                      <input
+                        key={f}
+                        name={f}
+                        placeholder={f.replace(/([A-Z])/g, ' $1')}
+                        value={formData[f] || ""}
+                        onChange={(e) => handleChange(e, f)}
+                        className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
 
           <div className="space-y-2">
             <div className="flex items-start gap-2">
