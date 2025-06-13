@@ -41,7 +41,7 @@ const mockDeals = [
   {
     address: "101 River Rd, Orlando, FL",
     daysLeft: 4,
-    method: "Lease Option",
+    method: "Morby Method",
     returnValue: "19.8%",
     monthlyCashflow: "$1,050",
     price: "$13,200",

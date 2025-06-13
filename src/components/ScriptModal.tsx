@@ -70,6 +70,26 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
   const [editingQuestion, setEditingQuestion] = useState<number | null>(null);
   const [customLabels, setCustomLabels] = useState<string[]>(defaultQuestions.map((q) => q.label));
   const [questionOrder, setQuestionOrder] = useState<number[]>(defaultQuestions.map((_, idx) => idx));
+  const getTimeInAgentTimezone = (timezoneLabel: string): string => {
+  const timezoneMap: { [key: string]: string } = {
+    Hawaii: "Pacific/Honolulu",
+    Pacific: "America/Los_Angeles",
+    Mountain: "America/Denver",
+    Central: "America/Chicago",
+    Eastern: "America/New_York",
+  };
+
+  const tz = timezoneMap[timezoneLabel];
+  if (!tz) return "";
+
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: tz,
+  }).format(new Date());
+};
+
 
   useEffect(() => {
     if (!walletAddress) return;
@@ -140,6 +160,12 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
         <div className="text-center text-4xl font-extrabold text-white mb-4">
           {formData.agentPhone || "No phone provided"}
         </div>
+        {formData.agentTimezone && (
+        <div className="text-center text-md text-neutral-400 mb-2">
+          Local Time: {getTimeInAgentTimezone(formData.agentTimezone)}
+        </div>
+      )}
+
 
         <DialogTitle className="text-lg font-semibold text-[#6e5690] mb-4 text-center">
           Discovery Call Script
