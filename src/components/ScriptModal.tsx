@@ -165,7 +165,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
             href={`tel:${formData.agentPhone}`}
             className="inline-block text-4xl font-extrabold text-blue-400 hover:underline hover:text-blue-300 transition duration-200"
           >
-            📞 {formData.agentPhone}
+            {formData.agentPhone}
           </a>
           <div className="text-sm text-neutral-400 mt-1">Tap to call</div>
         </div>
