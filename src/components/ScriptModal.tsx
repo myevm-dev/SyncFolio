@@ -157,7 +157,8 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto bg-zinc-900 text-white w-[95vw] max-w-2xl p-6 rounded-xl">
+      <DialogContent className="max-h-[90vh] overflow-y-auto bg-zinc-900 text-white w-full max-w-2xl p-6 rounded-xl mx-auto"
+>
         <div className="text-center text-4xl font-extrabold text-white mb-4">
           {formData.agentPhone || "No phone provided"}
         </div>
