@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "./Dialog";
 import { DealInput } from "../types/DealInput";
+import { Pencil, X } from "lucide-react";
 
 interface Props {
   open: boolean;
@@ -14,51 +15,77 @@ const questions = [
   {
     label: "Has this been a rental or owner-occupied?",
     field: "occupancyStatus",
+    hint: "Understand how the property was used."
   },
   {
     label: "What’s got the seller looking to let it go right now?",
     field: "notes",
+    hint: "Understand the seller's motivation."
   },
   {
     label: "Is it currently occupied? And assuming it’s cleaned up or updated, what would you estimate market rent at?",
     field: "rentalValue",
+    hint: "Get an estimate for potential rental income."
   },
   {
     label: "What kind of updates would a new buyer need to plan for?",
     field: "rehabCost",
+    hint: "Get them to provide the cost to repair."
   },
   {
     label: "Do you happen to know what the taxes and HOA run?",
     fields: ["taxes", "hoa"],
+    hint: "Collect ongoing cost estimates."
   },
   {
     label: "Have any comps come in recently? Or what do you think ARV would look like if it's updated?",
     field: "arv",
+    hint: "Estimate after repair value."
   },
   {
     label: "Depending on what’s owed and how the numbers look, we sometimes come in with creative offers like seller finance or subject-to. Is the seller open to something like that if it nets them what they want?",
     field: "method",
+    hint: "Gauge seller openness to creative financing."
   },
   {
     label: "Do you know what’s owed or the current mortgage balance?",
     field: "mortgageBalance",
+    hint: "Find out how much is owed."
   },
   {
     label: "Do you know the original loan amount, interest rate, or monthly payment?",
     fields: ["loanAmount", "interestRate", "loanPayment"],
-  },
+    hint: "Learn more about financing details."
+  }
 ];
 
 export default function ScriptModal({ open, onClose, formData, setFormData }: Props) {
   const [agentConsent, setAgentConsent] = useState("text");
   const [timelineResponse, setTimelineResponse] = useState("");
   const [contactValue, setContactValue] = useState("");
+  const [editingQuestion, setEditingQuestion] = useState<number | null>(null);
+  const [customLabels, setCustomLabels] = useState<string[]>(questions.map((q) => q.label));
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
     field: keyof DealInput
   ) => {
     setFormData({ ...formData, [field]: e.target.value });
+  };
+
+  const handleEditChange = (index: number, value: string) => {
+    const updated = [...customLabels];
+    updated[index] = value;
+    setCustomLabels(updated);
+  };
+
+  const resetToDefault = (index: number) => {
+    const confirmed = window.confirm("Reset question to default?");
+    if (confirmed) {
+      const updated = [...customLabels];
+      updated[index] = questions[index].label;
+      setCustomLabels(updated);
+    }
   };
 
   const handleDone = () => {
@@ -108,13 +135,34 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
           <div className="bg-zinc-800 p-4 rounded-md border border-neutral-700">
             <p className="text-base text-cyan-400">
-              Hi, I’m calling about <span className="font-semibold text-white">{formData.address || "[Property]"}</span>  are you the listing agent on that one?
+              Hi, I’m calling about <span className="font-semibold text-white">{formData.address || "[Property]"}</span> are you the listing agent on that one?
             </p>
           </div>
 
           {questions.map((q, index) => (
             <div key={index} className="space-y-2">
-              <p className="font-medium text-base text-cyan-400">{q.label}</p>
+              <div className="flex items-start gap-2">
+                {editingQuestion === index ? (
+                  <input
+                    value={customLabels[index]}
+                    placeholder={q.hint || "Edit question"}
+                    onChange={(e) => handleEditChange(index, e.target.value)}
+                    onBlur={() => setEditingQuestion(null)}
+                    autoFocus
+                    className="flex-1 bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                ) : (
+                  <p className="font-medium text-base text-cyan-400 flex-1">{customLabels[index]}</p>
+                )}
+                <div className="flex gap-1">
+                  <button onClick={() => setEditingQuestion(index)} className="text-cyan-400">
+                    <Pencil size={16} />
+                  </button>
+                  <button onClick={() => resetToDefault(index)} className="text-red-400">
+                    <X size={16} />
+                  </button>
+                </div>
+              </div>
               {q.field === "occupancyStatus" ? (
                 <select
                   name="occupancyStatus"
@@ -152,7 +200,17 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
           ))}
 
           <div className="space-y-2">
-            <p className="font-medium text-base text-cyan-400">If I put something together that made sense, is it okay to shoot you a text first or do you prefer email?</p>
+            <div className="flex items-start gap-2">
+              <p className="font-medium text-base text-cyan-400 flex-1">If I put something together that made sense, is it okay to shoot you a text first or do you prefer email?</p>
+              <div className="flex gap-1">
+                <button onClick={() => setEditingQuestion(9)} className="text-cyan-400">
+                  <Pencil size={16} />
+                </button>
+                <button onClick={() => resetToDefault(9)} className="text-red-400">
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
             <select
               value={agentConsent}
               onChange={(e) => setAgentConsent(e.target.value)}
@@ -170,7 +228,17 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
           </div>
 
           <div className="space-y-2">
-            <p className="font-medium text-base text-cyan-400">Thanks, I’ll include proof of funds and a short credibility packet with a few of our recent closings.</p>
+            <div className="flex items-start gap-2">
+              <p className="font-medium text-base text-cyan-400 flex-1">Thanks, I’ll include proof of funds and a short credibility packet with a few of our recent closings.</p>
+              <div className="flex gap-1">
+                <button onClick={() => setEditingQuestion(10)} className="text-cyan-400">
+                  <Pencil size={16} />
+                </button>
+                <button onClick={() => resetToDefault(10)} className="text-red-400">
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className="flex justify-center pt-6">
