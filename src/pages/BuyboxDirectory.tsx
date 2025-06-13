@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import * as buyboxes from "../buyboxes";
 
 type BuyBox = {
-  city: string;
+  cities: string[];
   county?: string;
   propertyType: string;
   bedMin: number;

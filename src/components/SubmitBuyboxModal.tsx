@@ -13,11 +13,11 @@ interface Props {
 const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
   const [step, setStep] = useState(1);
   const [buybox, setBuybox] = useState<BuyBox>({
-    city: "",
+    cities: [],
     propertyType: "single family",
-    bedMin: 1,
-    bathMin: 1,
-    sqftMin: 0,
+    bedMin: undefined,
+    bathMin: undefined,
+    sqftMin: undefined,
     hoa: false,
   });
   const [contact, setContact] = useState({ name: "", email: "", phone: "" });
@@ -40,17 +40,44 @@ const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
 
         <div className="flex justify-between text-sm font-medium text-gray-300">
           {stepTitles.map((title, index) => (
-            <div key={index} className={`flex-1 text-center border-b-2 pb-2 ${
-              step === index + 1 ? "border-cyan-400 text-white" : "border-gray-600"
-            }`}>
+            <div
+              key={index}
+              className={`flex-1 text-center border-b-2 pb-2 ${
+                step === index + 1 ? "border-cyan-400 text-white" : "border-gray-600"
+              }`}
+            >
               Step {index + 1}: {title}
             </div>
           ))}
         </div>
 
-        {step === 1 && <StepOneBuyBoxForm form={buybox} setForm={setBuybox} onNext={next} onClose={onClose} />}
-        {step === 2 && <StepTwoContactForm contact={contact} setContact={setContact} onNext={next} onBack={prev} />}
-        {step === 3 && <StepThreeDeposit confirmed={depositConfirmed} setConfirmed={setDepositConfirmed} onBack={prev} onSubmit={handleFinalSubmit} />}
+        {step === 1 && (
+          <StepOneBuyBoxForm
+            form={buybox}
+            setForm={setBuybox}
+            onNext={next}
+            onClose={onClose}
+          />
+        )}
+
+        {step === 2 && (
+          <StepTwoContactForm
+            contact={contact}
+            setContact={setContact}
+            onNext={next}
+            onBack={prev}
+          />
+        )}
+
+        {step === 3 && (
+          <StepThreeDeposit
+            form={buybox}
+            confirmed={depositConfirmed}
+            setConfirmed={setDepositConfirmed}
+            onBack={prev}
+            onSubmit={handleFinalSubmit}
+          />
+        )}
       </div>
     </div>
   );
