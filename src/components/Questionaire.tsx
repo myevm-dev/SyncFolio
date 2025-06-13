@@ -192,7 +192,7 @@ export default function Questionaire({
           </div>
         </div>
 
-        <h2 className="text-center text-xl font-semibold text-[#6e5690] mt-8">Discovery During Call</h2>
+        <h2 className="text-center text-xl font-semibold text-[#6e5690] mt-8">Discovery</h2>
         <div className="flex justify-center mt-2 mb-4">
           <button
             type="button"

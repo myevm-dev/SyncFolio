@@ -52,6 +52,7 @@ const questions = [
 export default function ScriptModal({ open, onClose, formData, setFormData }: Props) {
   const [agentConsent, setAgentConsent] = useState("text");
   const [timelineResponse, setTimelineResponse] = useState("");
+  const [contactValue, setContactValue] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -75,6 +76,10 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
       notesParts.push(`${agentConsent} offer`);
     }
 
+    if (contactValue.trim()) {
+      notesParts.push(`${agentConsent}: ${contactValue}`);
+    }
+
     if (timelineResponse) {
       notesParts.push(`Include credibility packet: ${timelineResponse}`);
     }
@@ -90,20 +95,26 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[90vh] overflow-y-auto bg-zinc-900 text-white w-[95vw] max-w-2xl p-6 rounded-xl">
-        <DialogTitle className="text-lg font-semibold text-[#6e5690] mb-4">
-          Call Script  Discovery Questions
+        <DialogTitle className="text-lg font-semibold text-[#6e5690] mb-4 text-center">
+          Discovery Call Script
         </DialogTitle>
 
         <div className="space-y-6">
+          {formData.agentPhone && (
+            <div className="text-center text-3xl font-bold text-white">
+              {formData.agentPhone}
+            </div>
+          )}
+
           <div className="bg-zinc-800 p-4 rounded-md border border-neutral-700">
-            <p className="text-sm text-cyan-400">
-              Hi, I’m calling about <span className="font-semibold text-[#6e5690]">{formData.address || "[XYZ Property]"}</span>  are you the listing agent on that one?
+            <p className="text-base text-cyan-400">
+              Hi, I’m calling about <span className="font-semibold text-white">{formData.address || "[Property]"}</span>  are you the listing agent on that one?
             </p>
           </div>
 
           {questions.map((q, index) => (
             <div key={index} className="space-y-2">
-              <p className="font-medium text-sm text-cyan-400">{q.label}</p>
+              <p className="font-medium text-base text-cyan-400">{q.label}</p>
               {q.field === "occupancyStatus" ? (
                 <select
                   name="occupancyStatus"
@@ -141,7 +152,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
           ))}
 
           <div className="space-y-2">
-            <p className="font-medium text-sm text-cyan-400">If I put something together that made sense, is it okay to shoot you a text first or do you prefer email?</p>
+            <p className="font-medium text-base text-cyan-400">If I put something together that made sense, is it okay to shoot you a text first or do you prefer email?</p>
             <select
               value={agentConsent}
               onChange={(e) => setAgentConsent(e.target.value)}
@@ -150,11 +161,16 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
               <option value="text">Text</option>
               <option value="email">Email</option>
             </select>
+            <input
+              placeholder={`Enter ${agentConsent} (if provided)`}
+              value={contactValue}
+              onChange={(e) => setContactValue(e.target.value)}
+              className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mt-2"
+            />
           </div>
 
           <div className="space-y-2">
-            <p className="font-medium text-sm text-cyan-400">Thanks, I’ll include proof of funds and a short credibility packet with a few of our recent closings.</p>
-
+            <p className="font-medium text-base text-cyan-400">Thanks, I’ll include proof of funds and a short credibility packet with a few of our recent closings.</p>
           </div>
 
           <div className="flex justify-center pt-6">
