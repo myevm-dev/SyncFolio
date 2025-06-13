@@ -21,9 +21,6 @@ const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
   const [buybox, setBuybox] = useState<BuyBox>({
     cities: [],
     propertyType: "single family",
-    bedMin: undefined,
-    bathMin: undefined,
-    sqftMin: undefined,
     hoa: false,
   });
 
@@ -57,7 +54,7 @@ const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
         const individualBuybox = {
           ...buybox,
           city,
-          cities: undefined, // remove multi-city array
+          cities: undefined,
           contact,
           depositConfirmed,
           timestamp: Date.now(),
