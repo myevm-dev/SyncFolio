@@ -53,11 +53,11 @@ const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
     }
 
     await Promise.all(
-      cities.map((city) => {
+      cities.map((city: string) => {
         const individualBuybox = {
           ...buybox,
           city,
-          cities: undefined,
+          cities: undefined, // remove multi-city array
           contact,
           depositConfirmed,
           timestamp: Date.now(),
