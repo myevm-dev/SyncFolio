@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import DealCard from "./DealCard";
 import { Users } from "lucide-react";
-import SubmitBuyboxModal from "./SubmitBuyboxModal"; // Make sure this is the correct path
+import SubmitBuyboxModal from "./SubmitBuyboxModal"; 
 
 const mockDeals = [
   {
