@@ -1,28 +1,18 @@
+// SubmitBuyboxModal.tsx (Parent)
 import React, { useState } from "react";
-
-export type BuyBox = {
-  city: string;
-  county?: string;
-  propertyType: string;
-  bedMin: number;
-  bathMin: number;
-  yearBuiltMin?: number;
-  sqftMin: number;
-  sqftMax?: number;
-  arvPercentMax?: number;
-  maxRehabCost?: number;
-  maxPrice?: number;
-  hoa?: boolean;
-  foundation?: string;
-};
+import StepOneBuyBoxForm from "./StepOneBuyBoxForm";
+import StepTwoContactForm from "./StepTwoContactForm";
+import StepThreeDeposit from "./StepThreeDeposit";
+import { BuyBox } from "../types/BuyBox";
 
 interface Props {
   onClose: () => void;
-  onSubmit: (buybox: BuyBox) => void;
+  onSubmit: (data: { buybox: BuyBox; contact: any; depositConfirmed: boolean }) => void;
 }
 
 const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
-  const [form, setForm] = useState<BuyBox>({
+  const [step, setStep] = useState(1);
+  const [buybox, setBuybox] = useState<BuyBox>({
     city: "",
     propertyType: "single family",
     bedMin: 1,
@@ -30,68 +20,37 @@ const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
     sqftMin: 0,
     hoa: false,
   });
+  const [contact, setContact] = useState({ name: "", email: "", phone: "" });
+  const [depositConfirmed, setDepositConfirmed] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    
-    if (type === "checkbox") {
-        const checked = (e.target as HTMLInputElement).checked;
-        setForm((prev) => ({
-        ...prev,
-        [name]: checked,
-        }));
-    } else {
-        setForm((prev) => ({
-        ...prev,
-        [name]: type === "number" ? +value : value,
-        }));
-    }
-    };
+  const next = () => setStep((s) => s + 1);
+  const prev = () => setStep((s) => s - 1);
 
-
-  const handleSubmit = () => {
-    onSubmit(form);
+  const handleFinalSubmit = () => {
+    onSubmit({ buybox, contact, depositConfirmed });
     onClose();
   };
 
+  const stepTitles = ["Buy Box", "User Details", "Deposit"];
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
-      <div className="bg-[#0B1519] text-white p-6 rounded-xl border border-cyan-400 w-full max-w-2xl space-y-4">
+      <div className="bg-[#0B1519] text-white p-6 rounded-xl border border-cyan-400 w-full max-w-2xl space-y-6 overflow-y-auto max-h-screen">
         <h2 className="text-2xl font-bold text-cyan-400">Submit Your BuyBox</h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <input name="city" placeholder="City*" value={form.city} onChange={handleChange} className="input" />
-          <input name="county" placeholder="County (optional)" value={form.county || ""} onChange={handleChange} className="input" />
-
-          <select name="propertyType" value={form.propertyType} onChange={handleChange} className="input">
-            <option value="single family">Single Family</option>
-            <option value="multi family">Multi Family</option>
-            <option value="land">Land</option>
-            <option value="mobile home">Mobile Home</option>
-          </select>
-          <input type="number" name="bedMin" placeholder="Min Beds*" value={form.bedMin} onChange={handleChange} className="input" />
-          <input type="number" name="bathMin" placeholder="Min Baths*" value={form.bathMin} onChange={handleChange} className="input" />
-          <input type="number" name="yearBuiltMin" placeholder="Min Year Built" value={form.yearBuiltMin || ""} onChange={handleChange} className="input" />
-          <input type="number" name="sqftMin" placeholder="Min Sqft*" value={form.sqftMin} onChange={handleChange} className="input" />
-          <input type="number" name="sqftMax" placeholder="Max Sqft" value={form.sqftMax || ""} onChange={handleChange} className="input" />
-          <input type="number" name="arvPercentMax" placeholder="ARV % Max" value={form.arvPercentMax || ""} onChange={handleChange} className="input" />
-          <input type="number" name="maxRehabCost" placeholder="Max Rehab Cost" value={form.maxRehabCost || ""} onChange={handleChange} className="input" />
-          <input type="number" name="maxPrice" placeholder="Max Price" value={form.maxPrice || ""} onChange={handleChange} className="input" />
-          <input name="foundation" placeholder="Foundation Type" value={form.foundation || ""} onChange={handleChange} className="input" />
-          
-          <label className="flex items-center space-x-2">
-            <input type="checkbox" name="hoa" checked={form.hoa || false} onChange={handleChange} />
-            <span>HOA</span>
-          </label>
+        <div className="flex justify-between text-sm font-medium text-gray-300">
+          {stepTitles.map((title, index) => (
+            <div key={index} className={`flex-1 text-center border-b-2 pb-2 ${
+              step === index + 1 ? "border-cyan-400 text-white" : "border-gray-600"
+            }`}>
+              Step {index + 1}: {title}
+            </div>
+          ))}
         </div>
 
-        <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="px-4 py-2 bg-zinc-700 rounded hover:bg-zinc-600">Cancel</button>
-          <button disabled className="px-4 py-2 bg-zinc-600 text-gray-300 font-semibold rounded cursor-not-allowed">
-            Submit (Coming Soon)
-            </button>
-
-        </div>
+        {step === 1 && <StepOneBuyBoxForm form={buybox} setForm={setBuybox} onNext={next} onClose={onClose} />}
+        {step === 2 && <StepTwoContactForm contact={contact} setContact={setContact} onNext={next} onBack={prev} />}
+        {step === 3 && <StepThreeDeposit confirmed={depositConfirmed} setConfirmed={setDepositConfirmed} onBack={prev} onSubmit={handleFinalSubmit} />}
       </div>
     </div>
   );
