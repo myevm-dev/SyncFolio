@@ -158,16 +158,23 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-h-[90vh] overflow-y-auto bg-zinc-900 text-white w-full max-w-2xl p-6 rounded-xl mx-auto"
->
-        <div className="text-center text-4xl font-extrabold text-white mb-4">
-          {formData.agentPhone ? (
-            <a href={`tel:${formData.agentPhone}`} className="hover:underline text-white">
-              {formData.agentPhone}
-            </a>
-          ) : (
-            "No phone provided"
-          )}
+      >
+      {formData.agentPhone ? (
+        <div className="text-center mb-4">
+          <a
+            href={`tel:${formData.agentPhone}`}
+            className="inline-block text-4xl font-extrabold text-blue-400 hover:underline hover:text-blue-300 transition duration-200"
+          >
+            📞 {formData.agentPhone}
+          </a>
+          <div className="text-sm text-neutral-400 mt-1">Tap to call</div>
         </div>
+      ) : (
+        <div className="text-center text-4xl font-extrabold text-white mb-4">
+          No phone provided
+        </div>
+      )}
+
 
         {formData.agentTimezone && (
         <div className="text-center text-md text-neutral-400 mb-2">
