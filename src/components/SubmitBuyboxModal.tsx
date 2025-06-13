@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import StepOneBuyBoxForm from "./StepOneBuyBoxForm";
 import StepTwoContactForm from "./StepTwoContactForm";
 import StepThreeDeposit from "./StepThreeDeposit";
-import { BuyBox } from "../types/BuyBox";
+import { BuyBox } from "../types/Buybox";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 
