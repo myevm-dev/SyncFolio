@@ -75,7 +75,7 @@ export default function TeamShareModal({
                     <div
                       className="w-10 h-10 rounded-full overflow-hidden"
                       dangerouslySetInnerHTML={{
-                        __html: window.multiavatar(member.displayName),
+                        __html: window.multiavatar(`${member.displayName}-${member.address}`),
                       }}
                     />
                     <div>

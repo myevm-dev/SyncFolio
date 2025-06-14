@@ -4,6 +4,7 @@ import { db } from "../lib/firebase";
 import { doc, getDoc, setDoc, collection, getDocs } from "firebase/firestore";
 import { Pencil } from "lucide-react";
 import TeamSection from "../components/TeamSection";
+import IncomingInvites from "../components/IncomingInvites";
 
 declare global {
   interface Window {
@@ -20,6 +21,22 @@ export default function ProfilePage() {
   const [liveName, setLiveName] = useState("");
   const [loading, setLoading] = useState(true);
   const [nameTaken, setNameTaken] = useState(false);
+  const [reloadFlag, setReloadFlag] = useState(0); // 🔁 triggers team/invite refresh
+
+  useEffect(() => {
+    const ensureUserRecord = async () => {
+      if (!walletAddress) return;
+      const ref = doc(db, "users", walletAddress);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) {
+        await setDoc(ref, {
+          displayName: "Unnamed",
+          team: [],
+        });
+      }
+    };
+    ensureUserRecord();
+  }, [walletAddress]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -58,7 +75,6 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     if (!walletAddress || !liveName || nameTaken) return;
-
     const ref = doc(db, "users", walletAddress);
     await setDoc(ref, { displayName: liveName }, { merge: true });
     setDisplayName(liveName);
@@ -83,7 +99,8 @@ export default function ProfilePage() {
     );
   }
 
-  const svg = window.multiavatar(liveName);
+  const avatarSeed = `${liveName}-${walletAddress}`;
+  const svg = window.multiavatar(avatarSeed);
 
   return (
     <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
@@ -130,21 +147,9 @@ export default function ProfilePage() {
       {/* Dashboard Cards */}
       <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
         {[
-          {
-            label: "Earnings",
-            value: "$0.00",
-            icon: "💰",
-          },
-          {
-            label: "Buying",
-            value: "0 Properties",
-            icon: "🏠",
-          },
-          {
-            label: "Selling",
-            value: "0 Properties",
-            icon: "📤",
-          },
+          { label: "Earnings", value: "$0.00", icon: "💰" },
+          { label: "Buying", value: "0 Properties", icon: "🏠" },
+          { label: "Selling", value: "0 Properties", icon: "📤" },
         ].map((card) => (
           <div
             key={card.label}
@@ -160,7 +165,13 @@ export default function ProfilePage() {
       </div>
 
       {/* Team Section */}
-      <TeamSection walletAddress={walletAddress} />
+      <TeamSection walletAddress={walletAddress} reloadFlag={reloadFlag} />
+
+      {/* Incoming Invites */}
+      <IncomingInvites
+        walletAddress={walletAddress}
+        onUpdateTeam={() => setReloadFlag((n) => n + 1)}
+      />
     </div>
   );
 }

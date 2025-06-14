@@ -1,82 +1,104 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../lib/firebase";
-import { doc, getDoc, setDoc, collection, getDocs, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  getDocs,
+  updateDoc,
+  arrayRemove,
+} from "firebase/firestore";
 import { X } from "lucide-react";
 
 interface TeamSectionProps {
   walletAddress: string;
+  reloadFlag: number;
 }
 
-const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress }) => {
+const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) => {
   const [newMember, setNewMember] = useState("");
-  const [team, setTeam] = useState<string[]>([]);
-  const [teamProfiles, setTeamProfiles] = useState<{
-    address: string;
-    displayName: string;
-  }[]>([]);
-  const [allNames, setAllNames] = useState<string[]>([]);
+  const [teamProfiles, setTeamProfiles] = useState<
+    { address: string; displayName: string; status: "accepted" | "pending" }[]
+  >([]);
   const [activeX, setActiveX] = useState<string | null>(null);
 
   useEffect(() => {
     if (!walletAddress) return;
-    loadTeam();
-    loadAllDisplayNames();
-  }, [walletAddress]);
+    loadTeamAndInvites();
+  }, [walletAddress, reloadFlag]);
 
-  const loadAllDisplayNames = async () => {
-    const usersSnapshot = await getDocs(collection(db, "users"));
-    const names: string[] = [];
-    usersSnapshot.forEach((doc) => {
-      const data = doc.data();
-      if (data.displayName) {
-        names.push(data.displayName);
-      }
-    });
-    setAllNames(names);
-  };
-
-  const loadTeam = async () => {
+  const loadTeamAndInvites = async () => {
     const ref = doc(db, "users", walletAddress);
     const snap = await getDoc(ref);
-    if (snap.exists()) {
-      const data = snap.data();
-      const rawTeam: string[] = data.team || [];
+    const data = snap.exists() ? snap.data() : {};
+    const team: string[] = data.team || [];
 
-      const profilePromises = rawTeam.map(async (addr) => {
+    const invitesSnapshot = await getDocs(collection(db, "users", walletAddress, "sentInvites"));
+
+    // ✅ Only keep sent invites still pending
+    const pendingSent = invitesSnapshot.docs
+      .filter((d) => d.data().status === "pending")
+      .map((d) => d.data().to);
+
+    const acceptedProfiles = await Promise.all(
+      team.map(async (addr) => {
         const teammateRef = doc(db, "users", addr);
         const teammateSnap = await getDoc(teammateRef);
-        const teammateData = teammateSnap.exists() ? teammateSnap.data() : {};
-        return {
-          address: addr,
-          displayName: teammateData.displayName || addr,
-        };
-      });
+        const displayName = teammateSnap.exists()
+          ? teammateSnap.data().displayName || addr
+          : addr;
+        return { address: addr, displayName, status: "accepted" as const };
+      })
+    );
 
-      const resolvedProfiles = await Promise.all(profilePromises);
-      setTeam(rawTeam);
-      setTeamProfiles(resolvedProfiles);
-    }
+    const pendingProfiles = await Promise.all(
+      pendingSent.map(async (addr) => {
+        const teammateRef = doc(db, "users", addr);
+        const teammateSnap = await getDoc(teammateRef);
+        const displayName = teammateSnap.exists()
+          ? teammateSnap.data().displayName || addr
+          : addr;
+        return { address: addr, displayName, status: "pending" as const };
+      })
+    );
+
+    // ✅ Prevent duplicates if same address ends up in both lists
+    const allProfiles = [...acceptedProfiles, ...pendingProfiles].filter(
+      (profile, index, self) =>
+        index === self.findIndex((p) => p.address === profile.address)
+    );
+
+    setTeamProfiles(allProfiles);
   };
 
-  const addTeamMember = async () => {
+  const sendInvite = async () => {
     if (!newMember || !walletAddress) return;
-    if (team.includes(newMember)) return;
-    const teammateRef = doc(db, "users", newMember);
-    const teammateSnap = await getDoc(teammateRef);
-    if (!teammateSnap.exists()) return;
 
-    const teammateData = teammateSnap.data();
-    const newName = teammateData.displayName;
-    if (!newName || allNames.filter(name => name === newName).length > 1) {
-      alert("Display name must be unique. This one is already used.");
-      return;
-    }
+    const toRef = doc(db, "users", newMember);
+    const toSnap = await getDoc(toRef);
+    if (!toSnap.exists()) return alert("User not found.");
 
-    const ref = doc(db, "users", walletAddress);
-    const updatedTeam = [...team, newMember];
-    await setDoc(ref, { team: updatedTeam }, { merge: true });
+    if (teamProfiles.some((t) => t.address === newMember)) return;
+
+    const inviteRef = doc(collection(db, "users", newMember, "teamInvites"));
+    await setDoc(inviteRef, {
+      from: walletAddress,
+      to: newMember,
+      status: "pending",
+      createdAt: new Date(),
+    });
+
+    const sentRef = doc(collection(db, "users", walletAddress, "sentInvites"));
+    await setDoc(sentRef, {
+      to: newMember,
+      status: "pending",
+      createdAt: new Date(),
+    });
+
+    alert("Invite sent.");
     setNewMember("");
-    loadTeam();
+    loadTeamAndInvites();
   };
 
   const removeTeamMember = async (memberAddress: string) => {
@@ -100,9 +122,11 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress }) => {
     modal.querySelector("#confirmYes")?.addEventListener("click", async () => {
       try {
         const ref = doc(db, "users", walletAddress);
-        const updatedTeam = team.filter((addr) => addr !== memberAddress);
-        await updateDoc(ref, { team: updatedTeam });
-        setTeam(updatedTeam);
+        await updateDoc(ref, { team: arrayRemove(memberAddress) });
+
+        const theirRef = doc(db, "users", memberAddress);
+        await updateDoc(theirRef, { team: arrayRemove(walletAddress) });
+
         setTeamProfiles((prev) => prev.filter((m) => m.address !== memberAddress));
       } catch (err) {
         console.error("Failed to remove team member:", err);
@@ -128,10 +152,10 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress }) => {
           className="bg-zinc-800 px-3 py-1 rounded text-sm w-full"
         />
         <button
-          onClick={addTeamMember}
+          onClick={sendInvite}
           className="border border-white px-4 py-1 rounded text-sm hover:bg-accent hover:text-black"
         >
-          Add
+          Invite
         </button>
       </div>
 
@@ -140,12 +164,16 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress }) => {
           <div
             key={idx}
             className="relative text-center cursor-pointer"
-            onClick={() => setActiveX(activeX === member.address ? null : member.address)}
+            onClick={() =>
+              member.status === "accepted"
+                ? setActiveX(activeX === member.address ? null : member.address)
+                : null
+            }
           >
             <div
               className="w-16 h-16"
               dangerouslySetInnerHTML={{
-                __html: window.multiavatar(member.displayName),
+                __html: window.multiavatar(`${member.displayName}-${member.address}`),
               }}
             />
             {activeX === member.address && (
@@ -163,6 +191,9 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress }) => {
             <p className="text-xs mt-1 text-gray-400 break-all max-w-[4rem] truncate">
               {member.displayName}
             </p>
+            {member.status === "pending" && (
+              <p className="text-[10px] text-yellow-400 italic mt-1">Pending</p>
+            )}
           </div>
         ))}
       </div>
