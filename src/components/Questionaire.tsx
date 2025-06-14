@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DealInput } from "../types/DealInput";
 import ScriptModal from "./ScriptModal";
 
@@ -61,6 +61,19 @@ export default function Questionaire({
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [showScriptModal, setShowScriptModal] = useState(false);
 
+  // Auto-calculate insurance on load
+  useEffect(() => {
+    const price = parseFloat(formData.listingPrice);
+    const isHighRisk = formData.highRiskArea === "yes";
+    if (!isNaN(price)) {
+      const rate = isHighRisk ? 0.012 : 0.005;
+      const monthlyInsurance = ((price * rate) / 12).toFixed(2);
+      if (formData.insurance !== monthlyInsurance) {
+        setFormData(prev => ({ ...prev, insurance: monthlyInsurance }));
+      }
+    }
+  }, [formData.listingPrice, formData.highRiskArea]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -79,24 +92,24 @@ export default function Questionaire({
       }
     }
 
-    let updatedForm = { ...formData, [name]: value };
-
-    // Auto-calculate insurance
     if (name === "listingPrice" || name === "highRiskArea") {
+      const newFormData = { ...formData, [name]: value };
       const price = parseFloat(
-        name === "listingPrice" ? value : formData.listingPrice || ""
+        name === "listingPrice" ? value : formData.listingPrice
       );
-      const highRisk =
-        name === "highRiskArea" ? value : formData.highRiskArea || "no";
+      const isHighRisk =
+        name === "highRiskArea" ? value === "yes" : formData.highRiskArea === "yes";
 
       if (!isNaN(price)) {
-        const annualRate = highRisk === "yes" ? 0.012 : 0.005;
-        const monthlyInsurance = ((price * annualRate) / 12).toFixed(2);
-        updatedForm.insurance = monthlyInsurance;
+        const rate = isHighRisk ? 0.012 : 0.005;
+        newFormData.insurance = ((price * rate) / 12).toFixed(2);
       }
+
+      setFormData(newFormData);
+      return;
     }
 
-    setFormData(updatedForm);
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -109,6 +122,7 @@ export default function Questionaire({
 
     try {
       const dealsRef = collection(db, `users/${walletAddress}/deals`);
+
       let preserved: Partial<DealInput & { createdAt?: any }> = {};
 
       if (currentDealId) {
@@ -164,7 +178,6 @@ export default function Questionaire({
       />
     </div>
   );
-
 
   return (
     <>
@@ -297,7 +310,7 @@ export default function Questionaire({
             type="submit"
             className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
           >
-            Submit
+            Calculate
           </button>
           <button
             type="button"
