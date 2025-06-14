@@ -63,16 +63,14 @@ export default function Questionaire({
 
   // Auto-calculate insurance on load
   useEffect(() => {
-    const price = parseFloat(
-      name === "listingPrice" ? value : formData.listingPrice || ""
-    );
+    const price = parseFloat(formData.listingPrice || "");
+    const isHighRisk = (formData.highRiskArea || "") === "yes";
 
-    const isHighRisk = formData.highRiskArea === "yes";
     if (!isNaN(price)) {
       const rate = isHighRisk ? 0.012 : 0.005;
       const monthlyInsurance = ((price * rate) / 12).toFixed(2);
       if (formData.insurance !== monthlyInsurance) {
-        setFormData(prev => ({ ...prev, insurance: monthlyInsurance }));
+        setFormData((prev) => ({ ...prev, insurance: monthlyInsurance }));
       }
     }
   }, [formData.listingPrice, formData.highRiskArea]);
@@ -98,7 +96,7 @@ export default function Questionaire({
     if (name === "listingPrice" || name === "highRiskArea") {
       const newFormData = { ...formData, [name]: value };
       const price = parseFloat(
-        name === "listingPrice" ? value : formData.listingPrice
+        name === "listingPrice" ? value : formData.listingPrice || ""
       );
       const isHighRisk =
         name === "highRiskArea" ? value === "yes" : formData.highRiskArea === "yes";
@@ -160,7 +158,7 @@ export default function Questionaire({
         setFormData(emptyForm);
       }
     } catch (error: any) {
-      console.error("🔥 Firebase Save Error:", error?.message || error);
+      console.error("\ud83d\udd25 Firebase Save Error:", error?.message || error);
     }
   };
 
