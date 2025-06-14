@@ -22,12 +22,6 @@ export default function Offers({ results, cashOnCashResults }: Props) {
     hybrid: "Hybrid",
   };
 
-  const [finderFees, setFinderFees] = useState<Record<string, string>>({});
-
-  const handleFeeChange = (key: string, value: string) => {
-    setFinderFees((prev) => ({ ...prev, [key]: value }));
-  };
-
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 max-w-6xl mx-auto">
       {Object.entries(results).map(([key, value]) => {
@@ -84,23 +78,7 @@ export default function Offers({ results, cashOnCashResults }: Props) {
               </div>
             )}
 
-            {!isComingSoon && (
-              <div className="mb-4 text-sm text-left">
-                <label htmlFor={`finderFee-${key}`} className="block mb-1 text-white">
-                  Finder’s Fee (optional)
-                </label>
-                <input
-                  id={`finderFee-${key}`}
-                  type="text"
-                  value={finderFees[key] || ""}
-                  onChange={(e) => handleFeeChange(key, e.target.value)}
-                  className="w-full px-3 py-2 rounded bg-zinc-900 border border-zinc-700 text-white text-sm"
-                  placeholder="e.g. 1000"
-                />
-              </div>
-            )}
-
-            <div className="mt-auto">
+            <div className="mt-auto flex gap-2">
               <button
                 className={`px-4 py-2 rounded-full transition w-full ${
                   isComingSoon
@@ -110,6 +88,16 @@ export default function Offers({ results, cashOnCashResults }: Props) {
                 disabled={isComingSoon}
               >
                 Details
+              </button>
+              <button
+                className={`px-4 py-2 rounded-full transition w-full ${
+                  isComingSoon
+                    ? "bg-gray-500 text-gray-200 cursor-not-allowed"
+                    : "bg-green-600 text-white hover:bg-green-700"
+                }`}
+                disabled={isComingSoon}
+              >
+                Accepted
               </button>
             </div>
           </div>
