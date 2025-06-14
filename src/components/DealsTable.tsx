@@ -35,6 +35,7 @@ interface Deal {
   createdAt?: any;
   agentName?: string;
   agentPhone?: string;
+  agentTimezone?: string;
 }
 
 interface TeamMember {
