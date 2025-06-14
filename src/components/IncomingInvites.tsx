@@ -20,6 +20,12 @@ interface Props {
   onUpdateTeam: () => void;
 }
 
+interface InviteData {
+  id: string;
+  from: string;
+  status: string;
+}
+
 export default function IncomingInvites({ walletAddress, onUpdateTeam }: Props) {
   const [invites, setInvites] = useState<
     { id: string; from: string; displayName: string }[]
@@ -33,9 +39,9 @@ export default function IncomingInvites({ walletAddress, onUpdateTeam }: Props) 
         collection(db, "users", walletAddress, "teamInvites")
       );
 
-      const pending = snapshot.docs
+      const pending: InviteData[] = snapshot.docs
         .filter((doc) => doc.data().status === "pending")
-        .map((doc) => ({ id: doc.id, ...doc.data() }));
+        .map((doc) => ({ id: doc.id, ...(doc.data() as { from: string; status: string }) }));
 
       const enriched = await Promise.all(
         pending.map(async (invite) => {
@@ -73,10 +79,9 @@ export default function IncomingInvites({ walletAddress, onUpdateTeam }: Props) 
       await updateDoc(myRef, { team: arrayUnion(from) });
       await updateDoc(theirRef, { team: arrayUnion(walletAddress) });
 
-      // ✅ Update the inviter's sentInvites record to reflect acceptance
       const sentRefSnapshot = await getDocs(collection(db, "users", from, "sentInvites"));
       const match = sentRefSnapshot.docs.find(
-        (doc) => doc.data().to?.toLowerCase() === walletAddress.toLowerCase()
+        (doc) => (doc.data() as any).to?.toLowerCase() === walletAddress.toLowerCase()
       );
       if (match) {
         await updateDoc(doc(db, "users", from, "sentInvites", match.id), {
