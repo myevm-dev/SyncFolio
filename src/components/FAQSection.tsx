@@ -33,7 +33,7 @@ const FAQSection: React.FC = () => {
     {
       question: "Who sees the deals I submit?",
       answer:
-        "If one of our current 100+ Buyers are subscribed to your criteria or region, they will see your deals when you submit them to the platform.",
+        "If one of our current 2100+ Buyers are subscribed to your criteria or region, they will see your deals when you submit them to the platform.",
     },
     {
       question: "Do I need to pay to use SyncFolio?",
