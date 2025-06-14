@@ -5,6 +5,8 @@ import { doc, getDoc, setDoc, collection, getDocs } from "firebase/firestore";
 import { Pencil } from "lucide-react";
 import TeamSection from "../components/TeamSection";
 import IncomingInvites from "../components/IncomingInvites";
+import Lottie from "lottie-react";
+import animationData from "../lottie/Animation - 1749869487293.json";
 
 declare global {
   interface Window {
@@ -21,7 +23,7 @@ export default function ProfilePage() {
   const [liveName, setLiveName] = useState("");
   const [loading, setLoading] = useState(true);
   const [nameTaken, setNameTaken] = useState(false);
-  const [reloadFlag, setReloadFlag] = useState(0); // 🔁 triggers team/invite refresh
+  const [reloadFlag, setReloadFlag] = useState(0);
 
   useEffect(() => {
     const ensureUserRecord = async () => {
@@ -83,9 +85,13 @@ export default function ProfilePage() {
 
   if (!walletAddress) {
     return (
-      <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
-        <h1 className="text-3xl font-bold mb-6">User Profile</h1>
-        <p className="text-gray-400">Please sign in to view your dashboard.</p>
+      <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20 flex flex-col items-center justify-center">
+        <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
+        <div className="w-72 h-72">
+          <Lottie animationData={animationData} loop autoplay />
+        </div>
+        <p className="text-gray-400 mb-6">Please sign in to view your dashboard.</p>
+
       </div>
     );
   }
@@ -93,7 +99,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
-        <h1 className="text-3xl font-bold mb-6">User Profile</h1>
+        <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
         <p className="text-gray-400">Loading profile...</p>
       </div>
     );
@@ -104,7 +110,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
-      <h1 className="text-3xl font-bold mb-6">User Profile</h1>
+      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
       <div
         className="w-28 h-28 mx-auto mb-4"
@@ -116,7 +122,9 @@ export default function ProfilePage() {
           <input
             value={liveName}
             onChange={(e) => setLiveName(e.target.value)}
-            className={`bg-zinc-800 px-3 py-1 rounded text-sm ${nameTaken ? "border border-red-500 text-red-400" : ""}`}
+            className={`bg-zinc-800 px-3 py-1 rounded text-sm ${
+              nameTaken ? "border border-red-500 text-red-400" : ""
+            }`}
           />
           {nameTaken && (
             <p className="text-red-500 text-xs">Name already taken</p>
@@ -164,10 +172,8 @@ export default function ProfilePage() {
         ))}
       </div>
 
-      {/* Team Section */}
       <TeamSection walletAddress={walletAddress} reloadFlag={reloadFlag} />
 
-      {/* Incoming Invites */}
       <IncomingInvites
         walletAddress={walletAddress}
         onUpdateTeam={() => setReloadFlag((n) => n + 1)}
