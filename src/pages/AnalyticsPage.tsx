@@ -64,16 +64,6 @@ export default function AnalyticsPage() {
 
         <div className="flex justify-center mb-6 gap-3">
           <button
-            onClick={() => setViewMode("card")}
-            className={`px-4 py-1 rounded border transition ${
-              viewMode === "card"
-                ? "bg-[#6e5690] text-black border-[#6e5690]"
-                : "bg-transparent text-gray-400 border-zinc-600"
-            }`}
-          >
-            Cards
-          </button>
-          <button
             onClick={() => setViewMode("table")}
             className={`px-4 py-1 rounded border transition ${
               viewMode === "table"
@@ -82,6 +72,16 @@ export default function AnalyticsPage() {
             }`}
           >
             Table
+          </button>
+          <button
+            onClick={() => setViewMode("card")}
+            className={`px-4 py-1 rounded border transition ${
+              viewMode === "card"
+                ? "bg-[#6e5690] text-black border-[#6e5690]"
+                : "bg-transparent text-gray-400 border-zinc-600"
+            }`}
+          >
+            Cards
           </button>
         </div>
 
@@ -98,7 +98,9 @@ export default function AnalyticsPage() {
                   className="w-16 h-16 rounded-full overflow-hidden mb-3 mx-auto"
                   dangerouslySetInnerHTML={{ __html: user.avatar }}
                 />
-                <h2 className="text-center font-semibold text-[#068989] mb-1">{user.displayName}</h2>
+                <h2 className="text-center font-semibold text-[#068989] mb-1">
+                  {user.displayName}
+                </h2>
                 <p className="text-center text-gray-400 text-xs break-all">{user.id}</p>
                 <p className="text-center text-gray-500 text-xs mt-1">
                   Signed up:{" "}
