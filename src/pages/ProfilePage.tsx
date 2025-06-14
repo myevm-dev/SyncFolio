@@ -34,6 +34,7 @@ export default function ProfilePage() {
         await setDoc(ref, {
           displayName: "Unnamed",
           team: [],
+          createdAt: new Date(), // capture sign-up date
         });
       }
     };
@@ -91,7 +92,6 @@ export default function ProfilePage() {
           <Lottie animationData={animationData} loop autoplay />
         </div>
         <p className="text-gray-400 mb-6">Please sign in to view your dashboard.</p>
-
       </div>
     );
   }

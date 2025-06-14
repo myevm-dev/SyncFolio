@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { useActiveAccount } from "thirdweb/react";
 import { db } from "../lib/firebase";
 
@@ -24,8 +24,16 @@ export default function AnalyticsPage() {
       const all = await Promise.all(
         snap.docs.map(async (docSnap) => {
           const data = docSnap.data();
-          const meta = await getDoc(doc(db, "users", docSnap.id));
-          const createdAt = meta.exists() ? meta.data()?.createdAt?.toDate?.() : null;
+          const ref = doc(db, "users", docSnap.id);
+          const meta = await getDoc(ref);
+          let createdAt = meta.exists() ? meta.data()?.createdAt?.toDate?.() : null;
+
+          // Backfill createdAt if missing
+          if (!createdAt) {
+            await updateDoc(ref, { createdAt: serverTimestamp() });
+            createdAt = new Date();
+          }
+
           return {
             id: docSnap.id,
             ...data,
@@ -58,8 +66,8 @@ export default function AnalyticsPage() {
           🧠 SyncFolio Analytics
         </h1>
 
-        <p className="text-center text-4xl font-bold mb-6 text-white">
-          Total Users: {users.length}
+        <p className="text-center text-white text-2xl font-bold mb-6">
+          Total Users: <span className="text-accent font-semibold">{users.length}</span>
         </p>
 
         <div className="flex justify-center mb-6 gap-3">
@@ -98,15 +106,10 @@ export default function AnalyticsPage() {
                   className="w-16 h-16 rounded-full overflow-hidden mb-3 mx-auto"
                   dangerouslySetInnerHTML={{ __html: user.avatar }}
                 />
-                <h2 className="text-center font-semibold text-[#068989] mb-1">
-                  {user.displayName}
-                </h2>
+                <h2 className="text-center font-semibold text-[#068989] mb-1">{user.displayName}</h2>
                 <p className="text-center text-gray-400 text-xs break-all">{user.id}</p>
                 <p className="text-center text-gray-500 text-xs mt-1">
-                  Signed up:{" "}
-                  {user.createdAt
-                    ? new Date(user.createdAt).toLocaleDateString()
-                    : "Unknown"}
+                  Signed up: {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Unknown"}
                 </p>
               </div>
             ))}
@@ -134,9 +137,7 @@ export default function AnalyticsPage() {
                     <td className="px-4 py-2">{user.displayName}</td>
                     <td className="px-4 py-2 break-all text-accent">{user.id}</td>
                     <td className="px-4 py-2">
-                      {user.createdAt
-                        ? new Date(user.createdAt).toLocaleDateString()
-                        : "Unknown"}
+                      {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Unknown"}
                     </td>
                   </tr>
                 ))}
