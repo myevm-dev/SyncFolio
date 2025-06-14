@@ -234,6 +234,7 @@ export default function DealsTable({
       </h2>
 
 
+
       <div className="mb-4 flex flex-wrap items-center gap-2 sm:flex-nowrap sm:justify-between">
         <span className="text-sm">Filter:</span>
         <button onClick={() => setFilter("")} className={`text-xs px-3 py-1 rounded-full border ${filter === "" ? "bg-blue-600 text-white" : "bg-white text-black"}`}>All</button>
