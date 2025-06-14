@@ -335,12 +335,20 @@ export default function Questionaire({
         </div>
       </form>
 
+      <button
+        id="openScriptModalTrigger"
+        onClick={() => setShowScriptModal(true)}
+        className="hidden"
+        type="button"
+      />
+
       <ScriptModal
         open={showScriptModal}
         onClose={() => setShowScriptModal(false)}
         formData={formData}
         setFormData={setFormData}
       />
+
     </>
   );
 }

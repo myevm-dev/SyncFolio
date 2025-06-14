@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Dice5Icon } from "lucide-react";
+
 import {
   collection,
   getDocs,
@@ -211,7 +213,27 @@ export default function DealsTable({
 
   return (
     <div className="max-w-6xl mx-auto px-4 mb-20">
-      <h2 className="text-xl font-semibold mb-4">Saved Deals</h2>
+      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+        Saved Deals
+        <button
+          title="Randomize Lead"
+          onClick={() => {
+            const leadDeals = deals.filter((d) => d.status === "lead");
+            if (!leadDeals.length) return;
+            const random = leadDeals[Math.floor(Math.random() * leadDeals.length)];
+            onLoad(random); // This should handle setting formData
+            setTimeout(() => {
+              const modalTrigger = document.querySelector("#openScriptModalTrigger") as HTMLButtonElement;
+              if (modalTrigger) modalTrigger.click();
+            }, 100); // short delay ensures state updates
+          }}
+          className="hover:opacity-80 transition"
+        >
+          <Dice5Icon className="w-5 h-5 text-purple-500" />
+        </button>
+      </h2>
+
+
       <div className="mb-4 flex flex-wrap items-center gap-2 sm:flex-nowrap sm:justify-between">
         <span className="text-sm">Filter:</span>
         <button onClick={() => setFilter("")} className={`text-xs px-3 py-1 rounded-full border ${filter === "" ? "bg-blue-600 text-white" : "bg-white text-black"}`}>All</button>
