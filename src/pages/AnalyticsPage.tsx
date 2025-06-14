@@ -42,7 +42,10 @@ export default function AnalyticsPage() {
           };
         })
       );
-      setUsers(all);
+
+      // Sort newest users first
+      const sorted = all.sort((a, b) => (b.createdAt?.getTime?.() || 0) - (a.createdAt?.getTime?.() || 0));
+      setUsers(sorted);
       setLoading(false);
     };
 
@@ -62,7 +65,7 @@ export default function AnalyticsPage() {
   return (
     <div className="min-h-screen w-full bg-[#0B1519] text-white px-6 py-20">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-10 text-[#6e5690]">
+        <h1 className="text-4xl font-bold text-center mb-10 text-[#00FFFF]">
           🧠 SyncFolio Analytics
         </h1>
 
