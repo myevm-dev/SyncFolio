@@ -63,7 +63,10 @@ export default function Questionaire({
 
   // Auto-calculate insurance on load
   useEffect(() => {
-    const price = parseFloat(formData.listingPrice);
+    const price = parseFloat(
+      name === "listingPrice" ? value : formData.listingPrice || ""
+    );
+
     const isHighRisk = formData.highRiskArea === "yes";
     if (!isNaN(price)) {
       const rate = isHighRisk ? 0.012 : 0.005;
