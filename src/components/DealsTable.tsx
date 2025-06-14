@@ -71,6 +71,7 @@ export default function DealsTable({
   onLoad: (deal: Deal) => void;
   walletAddress: string;
 }) {
+  const [toast, setToast] = useState<string | null>(null);
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("");
@@ -92,13 +93,19 @@ export default function DealsTable({
         status: doc.data().status || "lead",
         createdAt: doc.data().createdAt || { seconds: 0 },
       }));
-      setDeals(data);
+
+      const ADMIN = "0x91706ECbA7af59616D4005F37979528226532E6B".toLowerCase();
+      const isAdmin = walletAddress.toLowerCase() === ADMIN;
+      const limitedData = isAdmin ? data : data.slice(0, 100);
+
+      setDeals(limitedData);
     } catch (err) {
       console.error("Error fetching deals:", err);
     } finally {
       setLoading(false);
     }
   };
+
 
   const fetchTeamMembers = async () => {
     if (!walletAddress) return;
@@ -218,20 +225,50 @@ export default function DealsTable({
         <button
           title="Randomize Lead"
           onClick={() => {
-            const leadDeals = deals.filter((d) => d.status === "lead");
-            if (!leadDeals.length) return;
-            const random = leadDeals[Math.floor(Math.random() * leadDeals.length)];
-            onLoad(random); // This should handle setting formData
+            const nowUTC = new Date();
+            const timezoneOffsets: Record<string, number> = {
+              Hawaii: -10,
+              Pacific: -8,
+              Mountain: -7,
+              Central: -6,
+              Eastern: -5,
+            };
+
+            const validLeads = deals.filter((d) => {
+              if (d.status !== "lead") return false;
+              const offset = timezoneOffsets[d.agentTimezone || ""] ?? null;
+              if (offset === null) return false;
+
+              const localHour = (nowUTC.getUTCHours() + offset + 24) % 24;
+              return localHour >= 8 && localHour < 17;
+            });
+
+            if (!validLeads.length) {
+              setToast("No leads are currently within working hours (8 AM – 5 PM).");
+              setTimeout(() => setToast(null), 4000); // Auto-hide after 4 sec
+              return;
+            }
+
+            const random = validLeads[Math.floor(Math.random() * validLeads.length)];
+            onLoad(random);
+
             setTimeout(() => {
               const modalTrigger = document.querySelector("#openScriptModalTrigger") as HTMLButtonElement;
               if (modalTrigger) modalTrigger.click();
-            }, 100); // short delay ensures state updates
+            }, 100);
           }}
           className="hover:opacity-80 transition"
         >
           <Dice5Icon className="w-5 h-5 text-purple-500" />
         </button>
       </h2>
+      {toast && (
+        <div className="bg-yellow-600 text-white px-4 py-2 rounded shadow mb-4 animate-fade-in">
+          {toast}
+        </div>
+      )}
+
+
 
 
 
