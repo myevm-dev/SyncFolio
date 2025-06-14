@@ -89,7 +89,7 @@ export default function App() {
   return (
     <div className="w-full min-h-screen flex flex-col overflow-hidden">
       <LinkBar walletAddress={walletAddress} />
-      <div className="flex-grow space-y-8 overflow-y-auto px-4 py-8">
+      <div className="flex-grow space-y-8 overflow-y-auto px-4 py-8 pb-32">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-white mb-2">Earn by Finding Deals</h1>
           <p className="text-gray-400">Manage real estate leads and send deals to Investors</p>
@@ -115,6 +115,9 @@ export default function App() {
           onLoad={handleLoadDeal}
           walletAddress={walletAddress}
         />
+
+        <div className="h-[100px]" /> {/* Adjust height to match or slightly exceed mobile footer/menu height */}
+
       </div>
     </div>
   );
