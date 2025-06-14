@@ -22,7 +22,7 @@ const FAQSection: React.FC = () => {
     {
       question: "Are users listing and selling houses?",
       answer:
-        "No, users are not listing or marketing properties. Instead, they are transacting rights to contract placement, essentially selling the opportunity in exchange for a finder’s rewards from future deals.",
+        "No, users are not listing or marketing properties. Instead, they are transacting rights to contract placement, essentially selling the opportunity for a finder's fee.",
     },
 
     {
