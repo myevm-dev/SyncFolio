@@ -46,6 +46,7 @@ const statuses = [
   "closed",
 ];
 
+
 const statusColors: Record<string, string> = {
   lead: "bg-yellow-400 text-black",
   called: "bg-blue-400 text-black",
@@ -183,9 +184,16 @@ export default function DealsTable({
 
   const filteredDeals = deals.filter((deal) => {
     const matchesStatus = filter ? deal.status === filter : true;
-    const matchesSearch = deal.address.toLowerCase().includes(search.toLowerCase());
+    const lowerSearch = search.toLowerCase();
+
+    const matchesSearch =
+      deal.address?.toLowerCase().includes(lowerSearch) ||
+      deal.agentName?.toLowerCase().includes(lowerSearch) ||
+      deal.agentPhone?.toLowerCase().includes(lowerSearch);
+
     return matchesStatus && matchesSearch;
   });
+
 
   if (!walletAddress) {
     return <div className="text-center text-sm text-zinc-400">Sign In to view saved deals.</div>;
@@ -197,19 +205,20 @@ export default function DealsTable({
   return (
     <div className="max-w-6xl mx-auto px-4 mb-20">
       <h2 className="text-xl font-semibold mb-4">Saved Deals</h2>
-      <div className="mb-4 flex gap-2 flex-wrap items-center">
-        <span className="text-sm">Filter by status:</span>
+      <div className="mb-4 flex flex-wrap items-center gap-2 sm:flex-nowrap sm:justify-between">
+        <span className="text-sm">Filter:</span>
         <button onClick={() => setFilter("")} className={`text-xs px-3 py-1 rounded-full border ${filter === "" ? "bg-blue-600 text-white" : "bg-white text-black"}`}>All</button>
         {statuses.map((status) => (
           <button key={status} onClick={() => setFilter(status)} className={`text-xs px-3 py-1 rounded-full border ${filter === status ? "bg-blue-600 text-white" : "bg-white text-black"}`}>{status}</button>
         ))}
         <input
           type="text"
-          placeholder="Search address..."
+          placeholder="Search address, agent, or phone"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="ml-auto px-3 py-1 rounded border text-sm bg-white text-black"
+          className="flex-1 min-w-[200px] max-w-xs px-4 py-2 rounded border text-sm bg-white text-black"
         />
+
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto border-collapse border border-neutral-700 text-sm">
