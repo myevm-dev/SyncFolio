@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ConnectButton } from "thirdweb/react";
+import { ConnectButton, useActiveAccount } from "thirdweb/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import favicon from "../favicon.png";
 import { client } from "../client";
@@ -32,18 +32,23 @@ const wallets = [
   createWallet("io.zerion.wallet"),
 ];
 
-const pageLabels: Record<string, string> = {
-  "/": "EARN",
-  "/buy": "BUY",
-  "/sell": "SELL",
-  "/profile": "DASHBOARD",
-  "/about": "ABOUT",
-};
-
 export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const account = useActiveAccount();
+  const walletAddress = account?.address || "";
+  const isAdmin = walletAddress.toLowerCase() === "0x91706ecba7af59616d4005f37979528226532e6b";
+
+  const pageLabels: Record<string, string> = {
+    ...(isAdmin && { "/analytics": "ADMIN" }),
+    "/": "EARN",
+    "/buy": "BUY",
+    "/sell": "SELL",
+    "/profile": "DASHBOARD",
+    "/about": "ABOUT",
+  };
 
   const currentPath = location.pathname;
   const currentLabel = pageLabels[currentPath] || "Page";
@@ -103,7 +108,6 @@ export default function Navbar() {
               label: "sign in",
             }}
           />
-
         </div>
       </nav>
 

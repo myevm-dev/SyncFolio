@@ -1,0 +1,148 @@
+import { useEffect, useState } from "react";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { useActiveAccount } from "thirdweb/react";
+import { db } from "../lib/firebase";
+
+declare global {
+  interface Window {
+    multiavatar: (id: string) => string;
+  }
+}
+
+export default function AnalyticsPage() {
+  const account = useActiveAccount();
+  const walletAddress = account?.address || "";
+  const ADMIN = "0x91706ECbA7af59616D4005F37979528226532E6B".toLowerCase();
+
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<"card" | "table">("table");
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const snap = await getDocs(collection(db, "users"));
+      const all = await Promise.all(
+        snap.docs.map(async (docSnap) => {
+          const data = docSnap.data();
+          const meta = await getDoc(doc(db, "users", docSnap.id));
+          const createdAt = meta.exists() ? meta.data()?.createdAt?.toDate?.() : null;
+          return {
+            id: docSnap.id,
+            ...data,
+            createdAt,
+            avatar: window.multiavatar(`${data.displayName}-${docSnap.id}`),
+          };
+        })
+      );
+      setUsers(all);
+      setLoading(false);
+    };
+
+    if (walletAddress.toLowerCase() === ADMIN) {
+      fetchUsers();
+    }
+  }, [walletAddress]);
+
+  if (walletAddress.toLowerCase() !== ADMIN) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white bg-[#0B1519]">
+        <p className="text-lg">Access restricted.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen w-full bg-[#0B1519] text-white px-6 py-20">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-4xl font-bold text-center mb-10 text-[#6e5690]">
+          🧠 SyncFolio Analytics
+        </h1>
+
+        <p className="text-center text-4xl font-bold mb-6 text-white">
+          Total Users: {users.length}
+        </p>
+
+        <div className="flex justify-center mb-6 gap-3">
+          <button
+            onClick={() => setViewMode("card")}
+            className={`px-4 py-1 rounded border transition ${
+              viewMode === "card"
+                ? "bg-[#6e5690] text-black border-[#6e5690]"
+                : "bg-transparent text-gray-400 border-zinc-600"
+            }`}
+          >
+            Cards
+          </button>
+          <button
+            onClick={() => setViewMode("table")}
+            className={`px-4 py-1 rounded border transition ${
+              viewMode === "table"
+                ? "bg-[#6e5690] text-black border-[#6e5690]"
+                : "bg-transparent text-gray-400 border-zinc-600"
+            }`}
+          >
+            Table
+          </button>
+        </div>
+
+        {loading ? (
+          <p className="text-center text-gray-500">Loading...</p>
+        ) : viewMode === "card" ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {users.map((user) => (
+              <div
+                key={user.id}
+                className="bg-[#050505] border border-neutral-700 rounded-lg p-4 shadow-md"
+              >
+                <div
+                  className="w-16 h-16 rounded-full overflow-hidden mb-3 mx-auto"
+                  dangerouslySetInnerHTML={{ __html: user.avatar }}
+                />
+                <h2 className="text-center font-semibold text-[#068989] mb-1">{user.displayName}</h2>
+                <p className="text-center text-gray-400 text-xs break-all">{user.id}</p>
+                <p className="text-center text-gray-500 text-xs mt-1">
+                  Signed up:{" "}
+                  {user.createdAt
+                    ? new Date(user.createdAt).toLocaleDateString()
+                    : "Unknown"}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="overflow-x-auto mt-6">
+            <table className="min-w-full bg-[#050505] border border-neutral-700 text-sm text-left text-white rounded-md overflow-hidden">
+              <thead className="bg-[#0B1519] border-b border-neutral-700">
+                <tr>
+                  <th className="px-4 py-3">Avatar</th>
+                  <th className="px-4 py-3">Name</th>
+                  <th className="px-4 py-3">Wallet</th>
+                  <th className="px-4 py-3">Signup Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user) => (
+                  <tr key={user.id} className="border-b border-zinc-700">
+                    <td className="px-4 py-2">
+                      <div
+                        className="w-8 h-8 rounded-full overflow-hidden"
+                        dangerouslySetInnerHTML={{ __html: user.avatar }}
+                      />
+                    </td>
+                    <td className="px-4 py-2">{user.displayName}</td>
+                    <td className="px-4 py-2 break-all text-accent">{user.id}</td>
+                    <td className="px-4 py-2">
+                      {user.createdAt
+                        ? new Date(user.createdAt).toLocaleDateString()
+                        : "Unknown"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
