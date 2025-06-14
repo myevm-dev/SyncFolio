@@ -97,7 +97,7 @@ export default function Offers({ results, cashOnCashResults }: Props) {
                 }`}
                 disabled={isComingSoon}
               >
-                Accepted
+                Finalize
               </button>
             </div>
           </div>
