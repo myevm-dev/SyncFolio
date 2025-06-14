@@ -87,7 +87,7 @@ const Marketplace: React.FC = () => {
             <Users size={16} />
             <span>Total Buyers</span>
           </div>
-          <div className="text-white text-base font-bold leading-none">112</div>
+          <div className="text-white text-base font-bold leading-none">2112</div>
         </Link>
 
         <div className="flex gap-2 w-full sm:w-auto justify-center sm:justify-end">
