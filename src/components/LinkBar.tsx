@@ -151,7 +151,7 @@ export default function LinkBar({ walletAddress }: { walletAddress: string }) {
             <button
               disabled
               className="px-4 py-1 bg-gray-700 text-gray-400 text-sm rounded cursor-not-allowed w-full md:w-auto"
-              title="Login to save links"
+              title="Sign in to save links"
             >
               Login to add quick links
             </button>

@@ -79,7 +79,24 @@ export default function Questionaire({
       }
     }
 
-    setFormData({ ...formData, [name]: value });
+    let updatedForm = { ...formData, [name]: value };
+
+    // Auto-calculate insurance
+    if (name === "listingPrice" || name === "highRiskArea") {
+      const price = parseFloat(
+        name === "listingPrice" ? value : formData.listingPrice || ""
+      );
+      const highRisk =
+        name === "highRiskArea" ? value : formData.highRiskArea || "no";
+
+      if (!isNaN(price)) {
+        const annualRate = highRisk === "yes" ? 0.012 : 0.005;
+        const monthlyInsurance = ((price * annualRate) / 12).toFixed(2);
+        updatedForm.insurance = monthlyInsurance;
+      }
+    }
+
+    setFormData(updatedForm);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -92,7 +109,6 @@ export default function Questionaire({
 
     try {
       const dealsRef = collection(db, `users/${walletAddress}/deals`);
-
       let preserved: Partial<DealInput & { createdAt?: any }> = {};
 
       if (currentDealId) {
@@ -148,6 +164,7 @@ export default function Questionaire({
       />
     </div>
   );
+
 
   return (
     <>
@@ -232,7 +249,7 @@ export default function Questionaire({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {renderField("insurance", "Monthly Insurance")}
+          {renderField("insurance", "Monthly Insurance Estimate")}
           <div>
             <label className="block text-sm font-medium mb-1">High Risk Area?</label>
             <select
@@ -241,9 +258,8 @@ export default function Questionaire({
               onChange={handleChange}
               className="w-full bg-zinc-900 text-white border border-neutral-700 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select</option>
-              <option value="yes">Yes</option>
               <option value="no">No</option>
+              <option value="yes">Yes</option>
             </select>
           </div>
         </div>
