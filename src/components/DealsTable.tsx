@@ -224,7 +224,7 @@ export default function DealsTable({
       <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
         Saved Deals
         <button
-          title="Randomize Lead"
+          title="Call Random Lead"
           onClick={() => {
             const nowUTC = new Date();
             const timezoneOffsets: Record<string, number> = {

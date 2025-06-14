@@ -40,6 +40,11 @@ const FAQSection: React.FC = () => {
       answer:
         "The platform charges fees on a transactional basis when a deal is complete. In the future, you will also have the option to purchase credits if you want to use AI-powered assistance.",
     },
+      {
+      question: "How many leads can I manage?",
+      answer:
+        "You may save and manage to 100 leads for no cost. In the future, we may offer a way to purchase additional lead management credits.",
+    },
   ];
 
   const handleToggle = (index: number) => {
