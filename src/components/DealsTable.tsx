@@ -30,6 +30,9 @@ interface Deal {
   mortgageBalance?: string;
   interestRate?: string;
   loanPayment?: string;
+  createdAt?: any;
+  agentName?: string;
+  agentPhone?: string;
 }
 
 interface TeamMember {
@@ -45,7 +48,6 @@ const statuses = [
   "contract sent",
   "closed",
 ];
-
 
 const statusColors: Record<string, string> = {
   lead: "bg-yellow-400 text-black",
@@ -71,6 +73,7 @@ export default function DealsTable({
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("");
   const [search, setSearch] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
   const [editingStatusId, setEditingStatusId] = useState<string | null>(null);
   const [editingMethodId, setEditingMethodId] = useState<string | null>(null);
   const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
@@ -85,6 +88,7 @@ export default function DealsTable({
         ...(doc.data() as Deal),
         id: doc.id,
         status: doc.data().status || "lead",
+        createdAt: doc.data().createdAt || { seconds: 0 },
       }));
       setDeals(data);
     } catch (err) {
@@ -182,18 +186,21 @@ export default function DealsTable({
     }
   };
 
-  const filteredDeals = deals.filter((deal) => {
+  const sortedDeals = [...deals].sort((a, b) => {
+    const aTime = a?.createdAt?.seconds || 0;
+    const bTime = b?.createdAt?.seconds || 0;
+    return sortOrder === "newest" ? bTime - aTime : aTime - bTime;
+  });
+
+  const filteredDeals = sortedDeals.filter((deal) => {
     const matchesStatus = filter ? deal.status === filter : true;
     const lowerSearch = search.toLowerCase();
-
     const matchesSearch =
       deal.address?.toLowerCase().includes(lowerSearch) ||
       deal.agentName?.toLowerCase().includes(lowerSearch) ||
       deal.agentPhone?.toLowerCase().includes(lowerSearch);
-
     return matchesStatus && matchesSearch;
   });
-
 
   if (!walletAddress) {
     return <div className="text-center text-sm text-zinc-400">Sign In to view saved deals.</div>;
@@ -211,6 +218,17 @@ export default function DealsTable({
         {statuses.map((status) => (
           <button key={status} onClick={() => setFilter(status)} className={`text-xs px-3 py-1 rounded-full border ${filter === status ? "bg-blue-600 text-white" : "bg-white text-black"}`}>{status}</button>
         ))}
+        <button
+          onClick={() => setSortOrder(sortOrder === "newest" ? "oldest" : "newest")}
+          className={`text-xs px-3 py-1 rounded border text-white ${
+            sortOrder === "newest"
+              ? "bg-[#068989] hover:bg-[#057676]"
+              : "bg-[#6e5690] hover:bg-[#5b4677]"
+          }`}
+        >
+          {sortOrder === "newest" ? "Sort: Newest First" : "Sort: Oldest First"}
+        </button>
+
         <input
           type="text"
           placeholder="Search address, agent, or phone"
@@ -218,7 +236,6 @@ export default function DealsTable({
           onChange={(e) => setSearch(e.target.value)}
           className="flex-1 min-w-[200px] max-w-xs px-4 py-2 rounded border text-sm bg-white text-black"
         />
-
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto border-collapse border border-neutral-700 text-sm">
