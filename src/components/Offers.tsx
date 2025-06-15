@@ -81,11 +81,14 @@ export default function Offers({ results, cashOnCashResults }: Props) {
             <div className="mt-auto flex flex-col gap-2 items-center">
               {coc?.pass && (
                 <div className="text-center mt-2">
-                  <p className="text-xs text-gray-400">You Earn</p>
-                  <p className="text-3xl mb-4 text-green-500 font-bold">$2350</p>
+                  <p className="text-md text-gray-400">You Earn</p>
+                  <p className="text-3xl mb-2 text-green-500 font-bold">$2350</p>
+                  <p className="text-[13px] text-gray-500 max-w-[200px] leading-tight">
+                    For every $1,000 they accept below the generated offer, you earn an extra $300.
+                  </p>
                 </div>
               )}
-              <div className="flex w-full gap-2">
+              <div className="flex w-full gap-2 mt-2">
                 <button
                   className={`px-4 py-2 rounded-full transition w-full ${
                     isComingSoon
