@@ -82,7 +82,7 @@ export default function Offers({ results, cashOnCashResults }: Props) {
               {coc?.pass && (
                 <div className="text-center mt-2">
                   <p className="text-md text-gray-400">You Earn</p>
-                  <p className="text-3xl mb-2 text-green-500 font-bold">$2350</p>
+                  <p className="text-3xl mb-2 text-green-500 font-bold">$2325</p>
                   <p className="text-[13px] text-gray-500 max-w-[200px] leading-tight">
                     For every $1,000 they accept below the generated offer, you earn an extra $300.
                   </p>
