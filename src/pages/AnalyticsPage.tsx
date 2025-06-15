@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { useActiveAccount } from "thirdweb/react";
 import { db } from "../lib/firebase";
+import UserGrowthChart from "../components/UserGrowthChart";
+import UserTable from "../components/UserTable";
 
 declare global {
   interface Window {
@@ -28,7 +30,6 @@ export default function AnalyticsPage() {
           const meta = await getDoc(ref);
           let createdAt = meta.exists() ? meta.data()?.createdAt?.toDate?.() : null;
 
-          // Backfill createdAt if missing
           if (!createdAt) {
             await updateDoc(ref, { createdAt: serverTimestamp() });
             createdAt = new Date();
@@ -43,7 +44,6 @@ export default function AnalyticsPage() {
         })
       );
 
-      // Sort newest users first
       const sorted = all.sort((a, b) => (b.createdAt?.getTime?.() || 0) - (a.createdAt?.getTime?.() || 0));
       setUsers(sorted);
       setLoading(false);
@@ -73,6 +73,10 @@ export default function AnalyticsPage() {
           Total Users: <span className="text-accent font-semibold">{users.length}</span>
         </p>
 
+        {/* Chart */}
+        <UserGrowthChart users={users} />
+
+        {/* View toggle */}
         <div className="flex justify-center mb-6 gap-3">
           <button
             onClick={() => setViewMode("table")}
@@ -96,6 +100,7 @@ export default function AnalyticsPage() {
           </button>
         </div>
 
+        {/* View Content */}
         {loading ? (
           <p className="text-center text-gray-500">Loading...</p>
         ) : viewMode === "card" ? (
@@ -118,35 +123,7 @@ export default function AnalyticsPage() {
             ))}
           </div>
         ) : (
-          <div className="overflow-x-auto mt-6">
-            <table className="min-w-full bg-[#050505] border border-neutral-700 text-sm text-left text-white rounded-md overflow-hidden">
-              <thead className="bg-[#0B1519] border-b border-neutral-700">
-                <tr>
-                  <th className="px-4 py-3">Avatar</th>
-                  <th className="px-4 py-3">Name</th>
-                  <th className="px-4 py-3">Wallet</th>
-                  <th className="px-4 py-3">Signup Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user.id} className="border-b border-zinc-700">
-                    <td className="px-4 py-2">
-                      <div
-                        className="w-8 h-8 rounded-full overflow-hidden"
-                        dangerouslySetInnerHTML={{ __html: user.avatar }}
-                      />
-                    </td>
-                    <td className="px-4 py-2">{user.displayName}</td>
-                    <td className="px-4 py-2 break-all text-accent">{user.id}</td>
-                    <td className="px-4 py-2">
-                      {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Unknown"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <UserTable users={users} />
         )}
       </div>
     </div>

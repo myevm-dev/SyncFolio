@@ -24,6 +24,7 @@
 		"react": "^18.3",
 		"react-dom": "^18.3",
 		"react-router-dom": "^7.6.2",
+		"recharts": "^2.15.3",
 		"thirdweb": "^5"
 	},
 	"devDependencies": {
