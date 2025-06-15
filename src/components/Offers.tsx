@@ -78,27 +78,35 @@ export default function Offers({ results, cashOnCashResults }: Props) {
               </div>
             )}
 
-            <div className="mt-auto flex gap-2">
-              <button
-                className={`px-4 py-2 rounded-full transition w-full ${
-                  isComingSoon
-                    ? "bg-gray-500 text-gray-200 cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
-                }`}
-                disabled={isComingSoon}
-              >
-                Details
-              </button>
-              <button
-                className={`px-4 py-2 rounded-full transition w-full ${
-                  isComingSoon
-                    ? "bg-gray-500 text-gray-200 cursor-not-allowed"
-                    : "bg-green-600 text-white hover:bg-green-700"
-                }`}
-                disabled={isComingSoon}
-              >
-                Finalize
-              </button>
+            <div className="mt-auto flex flex-col gap-2 items-center">
+              {coc?.pass && (
+                <div className="text-center mt-2">
+                  <p className="text-xs text-gray-400">You Earn</p>
+                  <p className="text-3xl mb-4 text-green-500 font-bold">$2350</p>
+                </div>
+              )}
+              <div className="flex w-full gap-2">
+                <button
+                  className={`px-4 py-2 rounded-full transition w-full ${
+                    isComingSoon
+                      ? "bg-gray-500 text-gray-200 cursor-not-allowed"
+                      : "bg-blue-600 text-white hover:bg-blue-700"
+                  }`}
+                  disabled={isComingSoon}
+                >
+                  Details
+                </button>
+                <button
+                  className={`px-4 py-2 rounded-full transition w-full ${
+                    isComingSoon
+                      ? "bg-gray-500 text-gray-200 cursor-not-allowed"
+                      : "bg-green-600 text-white hover:bg-green-700"
+                  }`}
+                  disabled={isComingSoon}
+                >
+                  Finalize
+                </button>
+              </div>
             </div>
           </div>
         );
