@@ -227,20 +227,27 @@ export default function DealsTable({
           title="Call Random Lead"
           onClick={() => {
             const nowUTC = new Date();
-            const timezoneOffsets: Record<string, number> = {
-              Hawaii: -10,
-              Pacific: -8,
-              Mountain: -7,
-              Central: -6,
-              Eastern: -5,
-            };
 
             const validLeads = deals.filter((d) => {
               if (d.status !== "lead") return false;
-              const offset = timezoneOffsets[d.agentTimezone || ""] ?? null;
-              if (offset === null) return false;
+            const timeZoneMap: Record<string, string> = {
+              Hawaii: "Pacific/Honolulu",
+              Pacific: "America/Los_Angeles",
+              Mountain: "America/Denver",
+              Central: "America/Chicago",
+              Eastern: "America/New_York",
+            };
+              const timeZone = timeZoneMap[d.agentTimezone || ""];
+              if (!timeZone) return false;
 
-              const localHour = (nowUTC.getUTCHours() + offset + 24) % 24;
+              const localHour = parseInt(
+                new Intl.DateTimeFormat("en-US", {
+                  hour: "numeric",
+                  hour12: false,
+                  timeZone,
+                }).format(new Date())
+              );
+
               return localHour >= 8 && localHour < 17;
             });
 
