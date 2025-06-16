@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import { Dialog, DialogContent, DialogTitle } from "./Dialog";
 import { DealInput } from "../types/DealInput";
 import { Pencil, X, ArrowUp, ArrowDown } from "lucide-react";
@@ -15,6 +16,7 @@ interface Props {
   formData: DealInput;
   setFormData: React.Dispatch<React.SetStateAction<DealInput>>;
 }
+
 
 const defaultQuestions = [
   {
@@ -71,6 +73,7 @@ const defaultQuestions = [
 
 export default function ScriptModal({ open, onClose, formData, setFormData }: Props) {
   const account = useActiveAccount();
+  const [tempLabel, setTempLabel] = useState("");
   const walletAddress = account?.address;
   const [agentConsent, setAgentConsent] = useState("text");
   const [timelineResponse, setTimelineResponse] = useState("");
@@ -199,9 +202,16 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                     }
                     return prev;
                   })}><ArrowDown size={16} /></button>
-                  <button onClick={() => setEditingQuestion(questionIndex)} className="text-cyan-400">
+                  <button
+                    onClick={() => {
+                      setEditingQuestion(questionIndex);
+                      setTempLabel(customLabels[questionIndex]);
+                    }}
+                    className="text-cyan-400"
+                  >
                     <Pencil size={16} />
                   </button>
+
                   <button onClick={() => setCustomLabels((prev) => prev.map((l, i) => i === questionIndex ? defaultQuestions[questionIndex].label : l))} className="text-red-400">
                     <X size={16} />
                   </button>
@@ -209,11 +219,36 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
               </div>
 
               {editingQuestion === questionIndex && (
-                <input
-                  value={customLabels[questionIndex]}
-                  onChange={(e) => setCustomLabels((prev) => prev.map((l, i) => i === questionIndex ? e.target.value : l))}
-                  className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
-                />
+                <div className="flex flex-col gap-2">
+                  <input
+                    value={tempLabel}
+                    onChange={(e) => setTempLabel(e.target.value)}
+                    placeholder={!tempLabel ? q.hint : ""}
+                    className="w-full bg-zinc-800 border border-cyan-500 text-white rounded px-3 py-2"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                      onClick={() => {
+                        setCustomLabels((prev) =>
+                          prev.map((l, i) => (i === questionIndex ? tempLabel : l))
+                        );
+                        setEditingQuestion(null);
+                      }}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
+                      onClick={() => {
+                        setEditingQuestion(null);
+                        setTempLabel("");
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
               )}
 
               {q.field && !q.fields && q.field === "occupancyStatus" ? (
