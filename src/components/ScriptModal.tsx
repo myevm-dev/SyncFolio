@@ -295,7 +295,10 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                             );
                           })}
                         </div>
-                        <p className="text-sm text-neutral-400 mt-2">Estimated Total: ${formData.rehabCost}</p>
+                        <p className="text-sm text-neutral-400 mt-2">
+                          Estimated Total: ${formData.rehabCost}{' '}
+                          <span className="text-xs text-neutral-500 italic">*US Average Cost per sqft</span>
+                        </p>
                       </>
 
 
