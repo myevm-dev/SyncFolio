@@ -345,9 +345,13 @@ export default function Questionaire({
       <ScriptModal
         open={showScriptModal}
         onClose={() => setShowScriptModal(false)}
-        formData={formData}
+        formData={{
+          ...formData,
+          taxes: formData.taxes ? (parseFloat(formData.taxes) * 12).toFixed(2) : "",
+        }}
         setFormData={setFormData}
       />
+
 
     </>
   );

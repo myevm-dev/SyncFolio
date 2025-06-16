@@ -43,12 +43,12 @@ const defaultQuestions = [
     hint: "Collect ongoing cost estimates."
   },
   {
-    label: "What are updated homes going for recently? Do you have any comps picked out?",
+    label: "What are updated homes going for recently? (What’s the ARV?)",
     field: "arv",
     hint: "Estimate after repair value."
   },
   {
-    label: "Please list the comps the seller provided (if any):",
+    label: "Do you have any comps picked out? (if any):",
     field: "arvComps",
     hint: "List any comparable properties shared by the seller."
   },
@@ -121,7 +121,11 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
     field: keyof DealInput | string
   ) => {
-    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+    setFormData((prev) => {
+      const value = e.target.value;
+      const updatedValue = field === "taxes" ? (parseFloat(value) / 12).toFixed(2) : value;
+      return { ...prev, [field]: updatedValue };
+    });
   };
 
   const handleDone = () => {
