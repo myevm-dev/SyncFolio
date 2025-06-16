@@ -152,13 +152,18 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
       <DialogContent className="max-h-[90vh] overflow-y-auto bg-zinc-900 text-white w-full max-w-2xl p-6 rounded-xl mx-auto">
         {formData.agentPhone ? (
           <div className="text-center mb-4">
-            <a href={`tel:${formData.agentPhone}`} className="inline-block text-4xl font-extrabold text-blue-400 hover:underline hover:text-blue-300">
+            <a
+              href={`tel:${formData.agentPhone}`}
+              className="inline-block text-4xl font-extrabold text-blue-400 hover:underline hover:text-blue-300"
+            >
               {formData.agentPhone}
             </a>
             <div className="text-sm text-neutral-400 mt-1">Tap to call</div>
           </div>
         ) : (
-          <div className="text-center text-4xl font-extrabold text-white mb-4">No phone provided</div>
+          <div className="text-center text-4xl font-extrabold text-white mb-4">
+            No phone provided
+          </div>
         )}
 
         {formData.agentTimezone && (
@@ -173,35 +178,68 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
         <div className="bg-zinc-800 p-4 rounded-md border border-neutral-700 mb-4">
           <p className="text-base text-cyan-400">
-            Hi, I’m calling about <span className="font-semibold text-white">{formData.address || "[Property]"}</span> are you the listing agent on this property?
+            Hi, I’m calling about{" "}
+            <span className="font-semibold text-white">
+              {formData.address || "[Property]"}
+            </span>{" "}
+            are you the listing agent on this property?
           </p>
         </div>
 
         {questionOrder.map((questionIndex) => {
           const q = defaultQuestions[questionIndex];
+
+            // Skip mortgage-related questions unless seller is open to creative financing
+            if (
+              (q.field === "mortgageBalance" || q.fields?.includes("loanAmount")) &&
+              formData.method !== "yes"
+            ) {
+              return null;
+            }
+
           return (
             <div key={questionIndex} className="space-y-2 mt-6">
               <div className="flex items-start gap-2">
-                <p className="font-medium text-base text-cyan-400 flex-1">{customLabels[questionIndex]}</p>
+                <p className="font-medium text-base text-cyan-400 flex-1">
+                  {customLabels[questionIndex]}
+                </p>
                 <div className="flex gap-1">
-                  <button onClick={() => setQuestionOrder((prev) => {
-                    const idx = prev.indexOf(questionIndex);
-                    if (idx > 0) {
-                      const newOrder = [...prev];
-                      [newOrder[idx], newOrder[idx - 1]] = [newOrder[idx - 1], newOrder[idx]];
-                      return newOrder;
+                  <button
+                    onClick={() =>
+                      setQuestionOrder((prev) => {
+                        const idx = prev.indexOf(questionIndex);
+                        if (idx > 0) {
+                          const newOrder = [...prev];
+                          [newOrder[idx], newOrder[idx - 1]] = [
+                            newOrder[idx - 1],
+                            newOrder[idx],
+                          ];
+                          return newOrder;
+                        }
+                        return prev;
+                      })
                     }
-                    return prev;
-                  })}><ArrowUp size={16} /></button>
-                  <button onClick={() => setQuestionOrder((prev) => {
-                    const idx = prev.indexOf(questionIndex);
-                    if (idx < prev.length - 1) {
-                      const newOrder = [...prev];
-                      [newOrder[idx], newOrder[idx + 1]] = [newOrder[idx + 1], newOrder[idx]];
-                      return newOrder;
+                  >
+                    <ArrowUp size={16} />
+                  </button>
+                  <button
+                    onClick={() =>
+                      setQuestionOrder((prev) => {
+                        const idx = prev.indexOf(questionIndex);
+                        if (idx < prev.length - 1) {
+                          const newOrder = [...prev];
+                          [newOrder[idx], newOrder[idx + 1]] = [
+                            newOrder[idx + 1],
+                            newOrder[idx],
+                          ];
+                          return newOrder;
+                        }
+                        return prev;
+                      })
                     }
-                    return prev;
-                  })}><ArrowDown size={16} /></button>
+                  >
+                    <ArrowDown size={16} />
+                  </button>
                   <button
                     onClick={() => {
                       setEditingQuestion(questionIndex);
@@ -211,8 +249,18 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                   >
                     <Pencil size={16} />
                   </button>
-
-                  <button onClick={() => setCustomLabels((prev) => prev.map((l, i) => i === questionIndex ? defaultQuestions[questionIndex].label : l))} className="text-red-400">
+                  <button
+                    onClick={() =>
+                      setCustomLabels((prev) =>
+                        prev.map((l, i) =>
+                          i === questionIndex
+                            ? defaultQuestions[questionIndex].label
+                            : l
+                        )
+                      )
+                    }
+                    className="text-red-400"
+                  >
                     <X size={16} />
                   </button>
                 </div>
@@ -231,7 +279,9 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                       className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
                       onClick={() => {
                         setCustomLabels((prev) =>
-                          prev.map((l, i) => (i === questionIndex ? tempLabel : l))
+                          prev.map((l, i) =>
+                            i === questionIndex ? tempLabel : l
+                          )
                         );
                         setEditingQuestion(null);
                       }}
@@ -251,112 +301,136 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                 </div>
               )}
 
-              {q.field && !q.fields && q.field === "occupancyStatus" ? (
-                <select
-                  value={formData.occupancyStatus || ""}
-                  onChange={(e) => handleChange(e, "occupancyStatus")}
-                  className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
-                >
-                  <option value="">Select Status</option>
-                  <option value="vacant">Vacant</option>
-                  <option value="rented">Rented</option>
-                  <option value="owner occupied">Owner Occupied</option>
-                </select>
-              ) : q.field && !q.fields ? (
-      
-                    q.field === "rehabCost" ? (
-                      <>
-                        <label className="block text-sm text-white mb-1">Select Repairs Needed</label>
-                        <div className="space-y-1">
-                          {rehabCategories.map((cat) => {
-                            const isChecked = formData.repairKeys?.includes(cat.key) || false;
-                            return (
-                              <div key={cat.key} className="text-sm text-white">
-                                <label className="flex items-center gap-2">
-                                  <input
-                                    type="checkbox"
-                                    checked={isChecked}
-                                    onChange={() => {
-                                    const prevKeys = formData.repairKeys || [];
-                                    const updatedKeys = isChecked
-                                      ? prevKeys.filter((k) => k !== cat.key)
-                                      : [...prevKeys, cat.key];
+              {q.field && !q.fields ? (
+                q.field === "occupancyStatus" ? (
+                  <select
+                    value={formData.occupancyStatus || ""}
+                    onChange={(e) => handleChange(e, "occupancyStatus")}
+                    className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
+                  >
+                    <option value="">Select Status</option>
+                    <option value="vacant">Vacant</option>
+                    <option value="rented">Rented</option>
+                    <option value="owner occupied">Owner Occupied</option>
+                  </select>
+                ) : q.field === "method" ? (
+                  <select
+                    value={formData.method || ""}
+                    onChange={(e) => handleChange(e, "method")}
+                    className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
+                  >
+                    <option value="">Select</option>
+                    <option value="yes">Yes — open to creative financing</option>
+                    <option value="no">No — not open to creative financing</option>
+                  </select>
+                ) : q.field === "rehabCost" ? (
+                  <>
+                    <label className="block text-sm text-white mb-1">
+                      Select Repairs Needed
+                    </label>
+                    <div className="space-y-1">
+                      {rehabCategories.map((cat) => {
+                        const isChecked =
+                          formData.repairKeys?.includes(cat.key) || false;
+                        return (
+                          <div key={cat.key} className="text-sm text-white">
+                            <label className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={() => {
+                                  const prevKeys = formData.repairKeys || [];
+                                  const updatedKeys = isChecked
+                                    ? prevKeys.filter((k) => k !== cat.key)
+                                    : [...prevKeys, cat.key];
 
-                                    const updatedTotal = calculateRehabCost(updatedKeys, Number(formData.sqft || 0));
+                                  const updatedTotal = calculateRehabCost(
+                                    updatedKeys,
+                                    Number(formData.sqft || 0)
+                                  );
 
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      repairKeys: updatedKeys,
-                                      rehabCost: updatedTotal.toFixed(0),
-                                    }));
-                                  }}
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    repairKeys: updatedKeys,
+                                    rehabCost: updatedTotal.toFixed(0),
+                                  }));
+                                }}
+                              />
+                              {cat.label} (${cat.avgCostPerSqFt ?? 0}/sqft)
+                            </label>
 
-
-                                  />
-                                  {cat.label} (${cat.avgCostPerSqFt ?? 0}/sqft)
-                                </label>
-
-                                {/* 👇 Foundation Sub-Checklist Appears If Selected */}
-                                {cat.key === "foundation" && isChecked && (
-                                  <div className="ml-6 mt-1 space-y-1">
-                                    <p className="text-sm text-red-400 font-medium">Dealbreaker Red Flags:</p>
-                                    {[
-                                      "Horizontal cracks in walls",
-                                      "Water intrusion in basement",
-                                      "Sloping floors",
-                                      "Doors/windows not closing properly",
-                                      "Previous foundation repair attempts",
-                                    ].map((item) => {
-                                      const selected = formData.foundationFlags || [];
-                                      const included = selected.includes(item);
-                                      return (
-                                        <label key={item} className="flex items-center gap-2 text-sm text-white">
-                                          <input
-                                            type="checkbox"
-                                            checked={included}
-                                            onChange={() => {
-                                              const updated = included
-                                                ? selected.filter((v) => v !== item)
-                                                : [...selected, item];
-                                              setFormData((prev) => ({
-                                                ...prev,
-                                                foundationFlags: updated,
-                                              }));
-                                            }}
-                                          />
-                                          {item}
-                                        </label>
-                                      );
-                                    })}
-                                  </div>
-                                )}
+                            {cat.key === "foundation" && isChecked && (
+                              <div className="ml-6 mt-1 space-y-1">
+                                <p className="text-sm text-red-400 font-medium">
+                                  Dealbreaker Red Flags:
+                                </p>
+                                {[
+                                  "Horizontal cracks in walls",
+                                  "Water intrusion in basement",
+                                  "Sloping floors",
+                                  "Doors/windows not closing properly",
+                                  "Previous foundation repair attempts",
+                                ].map((item) => {
+                                  const selected =
+                                    formData.foundationFlags || [];
+                                  const included = selected.includes(item);
+                                  return (
+                                    <label
+                                      key={item}
+                                      className="flex items-center gap-2 text-sm text-white"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        checked={included}
+                                        onChange={() => {
+                                          const updated = included
+                                            ? selected.filter((v) => v !== item)
+                                            : [...selected, item];
+                                          setFormData((prev) => ({
+                                            ...prev,
+                                            foundationFlags: updated,
+                                          }));
+                                        }}
+                                      />
+                                      {item}
+                                    </label>
+                                  );
+                                })}
                               </div>
-                            );
-                          })}
-                        </div>
-                        <p className="text-sm text-neutral-400 mt-2">
-                          Estimated Total: ${formData.rehabCost}{' '}
-                          <span className="text-xs text-neutral-500 italic">*US Average Cost per sqft</span>
-                        </p>
-                      </>
-
-
-                    ) : (
-                      <input
-                        value={(formData as any)[q.field] || ""}
-                        onChange={(e) => handleChange(e, q.field)}
-                        className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
-                      />
-                    )
-                  ) : null}
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <p className="text-sm text-neutral-400 mt-2">
+                      Estimated Total: ${formData.rehabCost}{" "}
+                      <span className="text-xs text-neutral-500 italic">
+                        *US Average Cost per sqft
+                      </span>
+                    </p>
+                  </>
+                ) : (
+                  <input
+                    value={(formData as any)[q.field] || ""}
+                    onChange={(e) => handleChange(e, q.field)}
+                    className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
+                  />
+                )
+              ) : null}
 
               {q.fields && (
-                <div className={`grid gap-4 ${q.fields.length === 3 ? "grid-cols-1 md:grid-cols-3" : "grid-cols-1 md:grid-cols-2"}`}>
+                <div
+                  className={`grid gap-4 ${
+                    q.fields.length === 3
+                      ? "grid-cols-1 md:grid-cols-3"
+                      : "grid-cols-1 md:grid-cols-2"
+                  }`}
+                >
                   {q.fields.map((f: string) => (
                     <input
                       key={f}
                       name={f}
-                      placeholder={f.replace(/([A-Z])/g, ' $1')}
+                      placeholder={f.replace(/([A-Z])/g, " $1")}
                       value={(formData as any)[f] || ""}
                       onChange={(e) => handleChange(e, f)}
                       className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
@@ -369,7 +443,9 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
         })}
 
         <div className="space-y-4 mt-6">
-          <label className="text-cyan-400 block font-medium">Preferred Contact Method</label>
+          <label className="text-cyan-400 block font-medium">
+            Preferred Contact Method
+          </label>
           <select
             value={agentConsent}
             onChange={(e) => {
@@ -398,7 +474,9 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
         </div>
 
         <p className="mt-14 text-base text-cyan-400">
-          Awesome, thanks for your time today. We’ll likely reach out with an offer and include proof of funds along with a credibility packet showing properties we’ve purchased over the last couple years.
+          Awesome, thanks for your time today. We’ll likely reach out with an
+          offer and include proof of funds along with a credibility packet showing
+          properties we’ve purchased over the last couple years.
         </p>
 
         <div className="pt-6 text-center">
@@ -412,4 +490,5 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
       </DialogContent>
     </Dialog>
   );
-}
+} // ← closes the ScriptModal function
+
