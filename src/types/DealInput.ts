@@ -25,6 +25,6 @@ export interface DealInput {
   method?: string;
   occupancyStatus?: string;
   highRiskArea?: string; 
-
-
+  repairKeys?: string[];
+  foundationFlags?: string[];
 }

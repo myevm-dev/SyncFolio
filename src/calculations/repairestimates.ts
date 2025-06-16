@@ -78,12 +78,20 @@ export const rehabCategories: RehabCategory[] = [
     avgCostPerSqFt: 3.5,
   },
   {
-    key: "misc",
-    label: "Permits, Trash, Pests",
-    estimatedTotal: "$1,000–$3,000",
-    costPerSqFt: "—",
-    avgCostPerSqFt: null,
+    key: "foundation",
+    label: "Foundation Repair",
+    estimatedTotal: "$8,000–$25,000+",
+    costPerSqFt: "$8–$15 (estimates vary wildly)",
+    avgCostPerSqFt: 11.5,
   },
+];
+
+export const foundationDealBreakers: string[] = [
+  "Horizontal cracks in walls",
+  "Water intrusion in basement",
+  "Sloping floors",
+  "Doors/windows not closing properly",
+  "Previous foundation repair attempts",
 ];
 
 export function calculateRehabCost(

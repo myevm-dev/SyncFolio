@@ -230,31 +230,72 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                           {rehabCategories.map((cat) => {
                             const isChecked = formData.repairKeys?.includes(cat.key) || false;
                             return (
-                              <label key={cat.key} className="flex items-center gap-2 text-sm text-white">
-                                <input
-                                  type="checkbox"
-                                  checked={isChecked}
-                                  onChange={() => {
-                                    const updated = isChecked
-                                      ? (formData.repairKeys || []).filter((k) => k !== cat.key)
-                                      : [...(formData.repairKeys || []), cat.key];
+                              <div key={cat.key} className="text-sm text-white">
+                                <label className="flex items-center gap-2">
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={() => {
+                                    const prevKeys = formData.repairKeys || [];
+                                    const updatedKeys = isChecked
+                                      ? prevKeys.filter((k) => k !== cat.key)
+                                      : [...prevKeys, cat.key];
 
-                                    const total = calculateRehabCost(updated, Number(formData.sqft || 0));
+                                    const updatedTotal = calculateRehabCost(updatedKeys, Number(formData.sqft || 0));
 
                                     setFormData((prev) => ({
                                       ...prev,
-                                      repairKeys: updated,
-                                      rehabCost: total.toFixed(0),
+                                      repairKeys: updatedKeys,
+                                      rehabCost: updatedTotal.toFixed(0),
                                     }));
                                   }}
-                                />
-                                {cat.label} (${cat.avgCostPerSqFt ?? 0}/sqft)
-                              </label>
+
+
+                                  />
+                                  {cat.label} (${cat.avgCostPerSqFt ?? 0}/sqft)
+                                </label>
+
+                                {/* 👇 Foundation Sub-Checklist Appears If Selected */}
+                                {cat.key === "foundation" && isChecked && (
+                                  <div className="ml-6 mt-1 space-y-1">
+                                    <p className="text-sm text-red-400 font-medium">Dealbreaker Red Flags:</p>
+                                    {[
+                                      "Horizontal cracks in walls",
+                                      "Water intrusion in basement",
+                                      "Sloping floors",
+                                      "Doors/windows not closing properly",
+                                      "Previous foundation repair attempts",
+                                    ].map((item) => {
+                                      const selected = formData.foundationFlags || [];
+                                      const included = selected.includes(item);
+                                      return (
+                                        <label key={item} className="flex items-center gap-2 text-sm text-white">
+                                          <input
+                                            type="checkbox"
+                                            checked={included}
+                                            onChange={() => {
+                                              const updated = included
+                                                ? selected.filter((v) => v !== item)
+                                                : [...selected, item];
+                                              setFormData((prev) => ({
+                                                ...prev,
+                                                foundationFlags: updated,
+                                              }));
+                                            }}
+                                          />
+                                          {item}
+                                        </label>
+                                      );
+                                    })}
+                                  </div>
+                                )}
+                              </div>
                             );
                           })}
                         </div>
                         <p className="text-sm text-neutral-400 mt-2">Est. Total: ${formData.rehabCost}</p>
                       </>
+
 
                     ) : (
                       <input
