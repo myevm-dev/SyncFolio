@@ -42,7 +42,7 @@ export default function Navbar() {
   const isAdmin = walletAddress.toLowerCase() === "0x91706ecba7af59616d4005f37979528226532e6b";
 
   const pageLabels: Record<string, string> = {
-    ...(isAdmin && { "/analytics": "ADMIN" }),
+    ...(isAdmin && { "/analytics": "STATS" }),
     "/": "EARN",
     "/buy": "BUY",
     "/sell": "SELL",
