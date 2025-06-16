@@ -53,7 +53,7 @@ const defaultQuestions = [
     hint: "List any comparable properties shared by the seller."
   },
   {
-    label: "Depending on how the numbers look, we sometimes come in with creative offers like seller finance or mortgage takeover. Is the seller open to something like that if it nets them what they want?",
+    label: "Depending on how the numbers look, we sometimes come in with creative offers like seller finance or mortgage takeover via trust acquisition. Is the seller open to something like that if it nets them what they want?",
     field: "method",
     hint: "Gauge seller openness to creative financing."
   },
