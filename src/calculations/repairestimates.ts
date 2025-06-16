@@ -85,3 +85,14 @@ export const rehabCategories: RehabCategory[] = [
     avgCostPerSqFt: null,
   },
 ];
+
+export function calculateRehabCost(
+  selectedKeys: string[],
+  sqft: number
+): number {
+  return selectedKeys.reduce((total, key) => {
+    const category = rehabCategories.find((c) => c.key === key);
+    if (!category || category.avgCostPerSqFt === null) return total;
+    return total + category.avgCostPerSqFt * sqft;
+  }, 0);
+}

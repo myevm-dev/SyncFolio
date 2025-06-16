@@ -5,6 +5,7 @@ import { Pencil, X, ArrowUp, ArrowDown } from "lucide-react";
 import { db } from "../lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useActiveAccount } from "thirdweb/react";
+import { rehabCategories, calculateRehabCost } from "../calculations/repairestimates.ts";
 
 interface Props {
   open: boolean;
@@ -221,12 +222,48 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                   <option value="owner occupied">Owner Occupied</option>
                 </select>
               ) : q.field && !q.fields ? (
-                <input
-                  value={(formData as any)[q.field] || ""}
-                  onChange={(e) => handleChange(e, q.field)}
-                  className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
-                />
-              ) : null}
+      
+                    q.field === "rehabCost" ? (
+                      <>
+                        <label className="block text-sm text-white mb-1">Select Repairs Needed</label>
+                        <div className="space-y-1">
+                          {rehabCategories.map((cat) => {
+                            const isChecked = formData.repairKeys?.includes(cat.key) || false;
+                            return (
+                              <label key={cat.key} className="flex items-center gap-2 text-sm text-white">
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={() => {
+                                    const updated = isChecked
+                                      ? (formData.repairKeys || []).filter((k) => k !== cat.key)
+                                      : [...(formData.repairKeys || []), cat.key];
+
+                                    const total = calculateRehabCost(updated, Number(formData.sqft || 0));
+
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      repairKeys: updated,
+                                      rehabCost: total.toFixed(0),
+                                    }));
+                                  }}
+                                />
+                                {cat.label} (${cat.avgCostPerSqFt ?? 0}/sqft)
+                              </label>
+                            );
+                          })}
+                        </div>
+                        <p className="text-sm text-neutral-400 mt-2">Est. Total: ${formData.rehabCost}</p>
+                      </>
+
+                    ) : (
+                      <input
+                        value={(formData as any)[q.field] || ""}
+                        onChange={(e) => handleChange(e, q.field)}
+                        className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
+                      />
+                    )
+                  ) : null}
 
               {q.fields && (
                 <div className={`grid gap-4 ${q.fields.length === 3 ? "grid-cols-1 md:grid-cols-3" : "grid-cols-1 md:grid-cols-2"}`}>
