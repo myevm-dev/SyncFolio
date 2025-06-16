@@ -170,7 +170,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
         {questionOrder.map((questionIndex) => {
           const q = defaultQuestions[questionIndex];
           return (
-            <div key={questionIndex} className="space-y-2">
+            <div key={questionIndex} className="space-y-2 mt-6">
               <div className="flex items-start gap-2">
                 <p className="font-medium text-base text-cyan-400 flex-1">{customLabels[questionIndex]}</p>
                 <div className="flex gap-1">
@@ -209,7 +209,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                 />
               )}
 
-              {q.field && q.field === "occupancyStatus" ? (
+              {q.field && !q.fields && q.field === "occupancyStatus" ? (
                 <select
                   value={formData.occupancyStatus || ""}
                   onChange={(e) => handleChange(e, "occupancyStatus")}
@@ -220,17 +220,16 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                   <option value="rented">Rented</option>
                   <option value="owner occupied">Owner Occupied</option>
                 </select>
-              ) : (
+              ) : q.field && !q.fields ? (
                 <input
                   value={(formData as any)[q.field] || ""}
                   onChange={(e) => handleChange(e, q.field)}
                   className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
                 />
-              )}
-
+              ) : null}
 
               {q.fields && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className={`grid gap-4 ${q.fields.length === 3 ? "grid-cols-1 md:grid-cols-3" : "grid-cols-1 md:grid-cols-2"}`}>
                   {q.fields.map((f: string) => (
                     <input
                       key={f}
