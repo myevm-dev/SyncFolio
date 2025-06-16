@@ -5,7 +5,9 @@ import { Pencil, X, ArrowUp, ArrowDown } from "lucide-react";
 import { db } from "../lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useActiveAccount } from "thirdweb/react";
-import { rehabCategories, calculateRehabCost } from "../calculations/repairestimates.ts";
+
+import { rehabCategories, calculateRehabCost } from "../calculations/repairestimates";
+
 
 interface Props {
   open: boolean;
