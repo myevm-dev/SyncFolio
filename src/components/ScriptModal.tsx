@@ -209,13 +209,25 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                 />
               )}
 
-              {q.field && (
+              {q.field && q.field === "occupancyStatus" ? (
+                <select
+                  value={formData.occupancyStatus || ""}
+                  onChange={(e) => handleChange(e, "occupancyStatus")}
+                  className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
+                >
+                  <option value="">Select Status</option>
+                  <option value="vacant">Vacant</option>
+                  <option value="rented">Rented</option>
+                  <option value="owner occupied">Owner Occupied</option>
+                </select>
+              ) : (
                 <input
                   value={(formData as any)[q.field] || ""}
                   onChange={(e) => handleChange(e, q.field)}
                   className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
                 />
               )}
+
 
               {q.fields && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
