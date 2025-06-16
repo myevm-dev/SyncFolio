@@ -18,17 +18,17 @@ interface Props {
 
 const defaultQuestions = [
   {
-    label: "Has this been a rental or owner-occupied?",
+    label: "Has this been a rental or owner-occupied? Is it currenly occupied?",
     field: "occupancyStatus",
     hint: "Understand how the property was used."
   },
   {
-    label: "What’s got the seller looking to let it go right now?",
+    label: "This place as a lot of opportunity, what’s got the seller looking to let it go right now?",
     field: "notes",
     hint: "Understand the seller's motivation."
   },
   {
-    label: "What would market rent be fore this property if we had it looking nice?",
+    label: "Any idea what it could bring in rent if we had it looking nice?",
     field: "rentalValue",
     hint: "Get an estimate for potential rental income."
   },
@@ -38,7 +38,7 @@ const defaultQuestions = [
     hint: "Get them to provide the cost to repair."
   },
   {
-    label: "Do you happen to know what the taxes and HOA run?",
+    label: "Do you happen to know what the annual taxes and monthly HOA are?",
     fields: ["taxes", "hoa"],
     hint: "Collect ongoing cost estimates."
   },
