@@ -3,6 +3,7 @@ import FAQSection from "../components/FAQSection";
 import DisclaimerSection from "../components/DisclaimerSection";
 import HeroHeader from "../components/HeroHeader";
 import ComingSoonSection from "../components/ComingSoonSection";
+import { ChevronDown } from "lucide-react";
 
 const roles = [
   {
@@ -21,15 +22,18 @@ const roles = [
 
 const comingSoonItems = [
   { label: "Team Collaboration", percent: 80 },
-  { label: "Portfolio Management", percent: 10 },
-  { label: "Employable AI Agents", percent: 30 },
-  { label: "Tradable Trust Rights", percent: 10 },
-  { label: "Funding & Yield Plugins", percent: 85 },
-  { label: "Lead Gamification", percent: 60 },
-  { label: "Deal Marketplace", percent: 55 },
   { label: "Earn Platform Credits", percent: 65 },
-];
+  { label: "Lead Gamification", percent: 60 },
+  { label: "Employable AI Agents", percent: 55 },
+  { label: "Deal Marketplace", percent: 50 },
+  { label: "Funding & Yield Plugins", percent: 25 },
+  { label: "Portfolio Management", percent: 10 },
+  { label: "Tokenbid Deal flow", percent: 10 },
+  { label: "Platform Acreditation", percent: 10 },
+  { label: "Tradable Trust Rights", percent: 5 },
 
+
+];
 export default function AboutPage() {
   return (
     <div className="min-h-screen w-full bg-[#0B1519] text-white px-6 py-20 flex flex-col">
@@ -41,12 +45,12 @@ export default function AboutPage() {
           {roles.map((card) => (
             <div
               key={card.title}
-              className="bg-[#050505] border border-neutral-700 rounded-lg p-6 shadow-md transition hover:bg-[#6e5690] hover:text-black hover:border-[#6e5690]"
+              className="bg-[#050505] border border-neutral-700 rounded-lg p-6 shadow-md transition hover:bg-[#6e5690] hover:text-black hover:border-[#6e5690] cursor-pointer group"
             >
-              <h2 className="text-lg font-semibold mb-2" style={{ color: "#068989" }}>
+              <h2 className="text-lg font-semibold mb-2 group-hover:text-black" style={{ color: "#068989" }}>
                 {card.title}
               </h2>
-              <p className="text-gray-300 text-sm leading-relaxed">{card.text}</p>
+              <p className="text-gray-300 text-sm leading-relaxed group-hover:text-black">{card.text}</p>
             </div>
           ))}
         </section>

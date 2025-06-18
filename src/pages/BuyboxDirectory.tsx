@@ -1,22 +1,6 @@
 import React, { useState } from "react";
 import * as buyboxes from "../buyboxes";
-export interface BuyBox {
-  cities?: string[]; // Submitted by users
-  city?: string;     // Used when saving one per city
-  county?: string;
-  propertyType: string;
-  bedMin: number;
-  bathMin: number;
-  yearBuiltMin?: number;
-  sqftMin: number;
-  sqftMax?: number;
-  arvPercentMax?: number;
-  maxRehabCost?: number;
-  maxPrice?: number;
-  hoa?: boolean;
-  foundation?: string;
-}
-
+import { BuyBox } from "../types/BuyBox";
 
 const allBuyboxes: { name: string; data: BuyBox[] }[] = [
   { name: "Alabama", data: buyboxes.alabamaBuyboxes },
@@ -57,15 +41,32 @@ const allBuyboxes: { name: string; data: BuyBox[] }[] = [
   { name: "Wyoming", data: buyboxes.wyomingBuyboxes },
 ];
 
+const BuyboxCard: React.FC<{ box: BuyBox }> = ({ box }) => (
+  <div className="bg-[#1a1a1a] p-4 rounded-md border border-zinc-800 text-sm grid grid-cols-2 gap-4">
+    <div>
+      <p><strong>City:</strong> {box.city || "-"}</p>
+      <p><strong>County:</strong> {box.county || "-"}</p>
+      <p><strong>Type:</strong> {box.propertyType}</p>
+      <p><strong>Beds Min:</strong> {box.bedMin}</p>
+      <p><strong>Baths Min:</strong> {box.bathMin}</p>
+      <p><strong>Year Built Min:</strong> {box.yearBuiltMin || "-"}</p>
+    </div>
+    <div>
+      <p><strong>Sqft:</strong> {box.sqftMin} - {box.sqftMax || "Max"}</p>
+      <p><strong>ARV % Max:</strong> {box.arvPercentMax || "-"}</p>
+      <p><strong>Max Rehab:</strong> {box.maxRehabCost || "-"}</p>
+      <p><strong>Max Price:</strong> {box.maxPrice || "-"}</p>
+      <p><strong>HOA:</strong> {box.hoa ? "Yes" : "No"}</p>
+      <p><strong>Foundation:</strong> {box.foundation || "-"}</p>
+    </div>
+  </div>
+);
+
 const BuyboxDirectory: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-  const handleToggle = (index: number) => {
-    setActiveIndex(activeIndex === index ? null : index);
-  };
-
   return (
-    <section className="mt-20 bg-[#050505] border border-neutral-700 rounded-lg p-8 shadow-md hover:shadow-lg transition text-white">
+    <section className="mt-20 bg-[#050505] border border-neutral-700 rounded-lg p-8 shadow-md text-white">
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-2" style={{ color: "#068989" }}>
         State Buyboxes
       </h2>
@@ -78,7 +79,7 @@ const BuyboxDirectory: React.FC = () => {
         {allBuyboxes.map((state, index) => (
           <div key={index} className="border border-zinc-700 bg-[#0B1519] rounded-md overflow-hidden">
             <button
-              onClick={() => handleToggle(index)}
+              onClick={() => setActiveIndex(activeIndex === index ? null : index)}
               className="w-full text-left px-4 py-3 flex justify-between items-center hover:bg-[#6e5690] hover:text-black transition"
             >
               <span className="font-semibold">{state.name}</span>
@@ -86,14 +87,9 @@ const BuyboxDirectory: React.FC = () => {
             </button>
 
             {activeIndex === index && (
-              <div className="px-4 pb-4 mt-2 text-sm text-gray-300 space-y-2">
-                {state.data.map((box: BuyBox, i: number) => (
-                  <pre
-                    key={i}
-                    className="bg-[#1a1a1a] p-3 rounded text-xs whitespace-pre-wrap border border-zinc-800"
-                  >
-                    {JSON.stringify(box, null, 2)}
-                  </pre>
+              <div className="px-4 pb-4 mt-2 space-y-3">
+                {state.data.map((box, i) => (
+                  <BuyboxCard key={i} box={box} />
                 ))}
               </div>
             )}
