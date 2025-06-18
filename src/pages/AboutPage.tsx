@@ -23,13 +23,15 @@ const roles = [
 const comingSoonItems = [
   { label: "Team Collaboration", percent: 80 },
   { label: "Earn Platform Credits", percent: 65 },
+  { label: "Auto-Offers", percent: 60 },
   { label: "Lead Gamification", percent: 60 },
   { label: "Employable AI Agents", percent: 55 },
+  { label: "Auto-Contracts", percent: 50 },
   { label: "Deal Marketplace", percent: 50 },
   { label: "Funding & Yield Plugins", percent: 25 },
   { label: "Portfolio Management", percent: 10 },
   { label: "Tokenbid Deal flow", percent: 10 },
-  { label: "Platform Acreditation", percent: 10 },
+  { label: "User Acreditation", percent: 10 },
   { label: "Tradable Trust Rights", percent: 5 },
 
 
