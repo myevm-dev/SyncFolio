@@ -3,7 +3,8 @@ import FAQSection from "../components/FAQSection";
 import DisclaimerSection from "../components/DisclaimerSection";
 import HeroHeader from "../components/HeroHeader";
 import ComingSoonSection from "../components/ComingSoonSection";
-import { ChevronDown } from "lucide-react";
+import FeaturesSection from "../components/FeaturesSection";
+
 
 const roles = [
   {
@@ -56,6 +57,8 @@ export default function AboutPage() {
             </div>
           ))}
         </section>
+        <FeaturesSection />
+
 
         {/* Coming Soon */}
         <ComingSoonSection items={comingSoonItems} />
