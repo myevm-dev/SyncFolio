@@ -35,7 +35,7 @@ const comingSoonItems = [
   { label: "Tokenlock Deal flow", percent: 10 },
   { label: "User Acreditation", percent: 10 },
   { label: "Tradable Trust Rights", percent: 5 },
-  { label: ".", percent: 0 },
+  { label: "Field Services Network", percent: 5 },
 ];
 export default function AboutPage() {
   return (
