@@ -95,7 +95,7 @@ const getPreviousTrending = () => {
 
 export default function BuyboxDirectory() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [viewMode, setViewMode] = useState<'state' | 'trending'>('state');
+  const [viewMode, setViewMode] = useState<'state' | 'trending'>('trending');
   const [trendingBoxes, setTrendingBoxes] = useState<BuyBox[]>(getPersistedTrending);
   const [previousBoxes, setPreviousBoxes] = useState<BuyBox[]>(getPreviousTrending);
 
@@ -126,19 +126,19 @@ export default function BuyboxDirectory() {
       <h2 className="text-3xl font-bold text-center mb-4">Buybox Directory</h2>
       <div className="flex justify-center space-x-4 mb-6">
         <button
-          className={`px-4 py-2 rounded ${viewMode === 'state' ? 'bg-[#6e5690] text-black' : 'bg-zinc-800 text-white'}`}
-          onClick={() => setViewMode('state')}
-        >
-          State A-Z
-        </button>
-        <button
           className={`px-4 py-2 rounded ${viewMode === 'trending' ? 'bg-[#6e5690] text-black' : 'bg-zinc-800 text-white'}`}
           onClick={() => setViewMode('trending')}
         >
           Trending
         </button>
+        <button
+          className={`px-4 py-2 rounded ${viewMode === 'state' ? 'bg-[#6e5690] text-black' : 'bg-zinc-800 text-white'}`}
+          onClick={() => setViewMode('state')}
+        >
+          State A-Z
+        </button>
       </div>
-      
+
       {viewMode === 'state' ? (
         allBuyboxes.map((state, i) => (
           <div key={i} className="border border-zinc-700 rounded mb-4">
