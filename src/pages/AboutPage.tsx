@@ -29,7 +29,7 @@ const comingSoonItems = [
   { label: "Employable AI Agents", percent: 55 },
   { label: "Auto-Contracts", percent: 50 },
   { label: "Deal Marketplace", percent: 50 },
-  { label: "Funding & Yield Plugins", percent: 25 },
+  { label: "Funding & Yield Plugins", percent: 40 },
   { label: "Referral Program", percent: 15 },
   { label: "Portfolio Management", percent: 10 },
   { label: "Tokenlock Deal flow", percent: 10 },
