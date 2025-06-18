@@ -29,12 +29,12 @@ const comingSoonItems = [
   { label: "Auto-Contracts", percent: 50 },
   { label: "Deal Marketplace", percent: 50 },
   { label: "Funding & Yield Plugins", percent: 25 },
+  { label: "Referral Program", percent: 15 },
   { label: "Portfolio Management", percent: 10 },
-  { label: "Tokenbid Deal flow", percent: 10 },
+  { label: "Tokenlock Deal flow", percent: 10 },
   { label: "User Acreditation", percent: 10 },
   { label: "Tradable Trust Rights", percent: 5 },
-
-
+  { label: ".", percent: 0 },
 ];
 export default function AboutPage() {
   return (
