@@ -58,6 +58,18 @@ const allBuyboxes: { name: string; data: BuyBox[] }[] = [
   { name: "Wyoming", data: buyboxes.wyomingBuyboxes }
 ];
 
+const TAGS = [
+  "🆕 New Buybox",
+  "⚡ Fast Response",
+  "📈 Active Buyer",
+  "🔥 High Demand"
+];
+
+const getRandomTags = () => {
+  const count = Math.floor(Math.random() * 2) + 1;
+  return TAGS.sort(() => 0.5 - Math.random()).slice(0, count);
+};
+
 const flattenBuyboxes = allBuyboxes.flatMap(state =>
   state.data.map(b => ({ ...b, state: state.name }))
 );
@@ -81,15 +93,11 @@ const getPreviousTrending = () => {
   return stored ? JSON.parse(stored) : [];
 };
 
-const BuyboxDirectory: React.FC = () => {
+export default function BuyboxDirectory() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [view, setView] = useState<'state' | 'trending'>('state');
+  const [viewMode, setViewMode] = useState<'state' | 'trending'>('state');
   const [trendingBoxes, setTrendingBoxes] = useState<BuyBox[]>(getPersistedTrending);
   const [previousBoxes, setPreviousBoxes] = useState<BuyBox[]>(getPreviousTrending);
-
-  const handleToggle = (index: number) => {
-    setActiveIndex(activeIndex === index ? null : index);
-  };
 
   const getRankChange = (box: BuyBox, currentIndex: number) => {
     const id = `${box.city}-${box.state}`;
@@ -108,110 +116,139 @@ const BuyboxDirectory: React.FC = () => {
       setPreviousBoxes(prev);
       localStorage.setItem("trendingBuyboxes", JSON.stringify(shuffled));
       localStorage.setItem("previousTrendingBuyboxes", JSON.stringify(prev));
-    }, 1000 * 60 * 60 * 1);
+    }, 1000 * 60 * 60 * 12);
 
     return () => clearInterval(interval);
   }, [trendingBoxes]);
 
   return (
-    <section className="mt-20 bg-[#050505] border border-neutral-700 rounded-lg p-8 shadow-md hover:shadow-lg transition text-white">
-      <h2 className="text-3xl md:text-4xl font-bold text-center mb-2" style={{ color: "#068989" }}>
-        State Buyboxes
-      </h2>
-      <div className="flex justify-center mb-6 space-x-2">
+    <div className="mt-20 max-w-6xl mx-auto px-4">
+      <h2 className="text-3xl font-bold text-center mb-4">Buybox Directory</h2>
+      <div className="flex justify-center space-x-4 mb-6">
         <button
-          className={`px-4 py-1 rounded-full text-sm ${view === 'state' ? 'bg-[#6e5690] text-black' : 'bg-zinc-800 text-white'}`}
-          onClick={() => setView('state')}
+          className={`px-4 py-2 rounded ${viewMode === 'state' ? 'bg-[#6e5690] text-black' : 'bg-zinc-800 text-white'}`}
+          onClick={() => setViewMode('state')}
         >
           State A-Z
         </button>
         <button
-          className={`px-4 py-1 rounded-full text-sm ${view === 'trending' ? 'bg-[#6e5690] text-black' : 'bg-zinc-800 text-white'}`}
-          onClick={() => setView('trending')}
+          className={`px-4 py-2 rounded ${viewMode === 'trending' ? 'bg-[#6e5690] text-black' : 'bg-zinc-800 text-white'}`}
+          onClick={() => setViewMode('trending')}
         >
           Trending
         </button>
       </div>
-
-      <p className="text-center text-sm text-gray-100 max-w-2xl mx-auto mb-8">
-        These buyboxes were submitted by investors targeting specific locations. While highlighting areas of interest,
-        creative finance deals can be structured & submitted anywhere with a strong rental market.
-      </p>
-
-      <div className="space-y-4">
-        {view === 'state' ? (
-          allBuyboxes.map((state, index) => (
-            <div key={index} className="border border-zinc-700 bg-[#0B1519] rounded-md overflow-hidden">
-              <button
-                onClick={() => handleToggle(index)}
-                className="w-full text-left px-4 py-3 flex justify-between items-center hover:bg-[#6e5690] hover:text-black transition"
-              >
-                <span className="font-semibold">{state.name}</span>
-                <span className="text-xl">{activeIndex === index ? "-" : "+"}</span>
-              </button>
-              {activeIndex === index && (
-                <div className="px-4 pb-4 mt-2 text-sm text-gray-300 space-y-4">
-                  {state.data.map((box: BuyBox, i: number) => (
-                    <div
-                      key={i}
-                      className="bg-[#1a1a1a] p-4 rounded border border-zinc-800 grid grid-cols-2 gap-x-4 text-xs"
-                    >
+      
+      {viewMode === 'state' ? (
+        allBuyboxes.map((state, i) => (
+          <div key={i} className="border border-zinc-700 rounded mb-4">
+            <button
+              onClick={() => setActiveIndex(activeIndex === i ? null : i)}
+              className="w-full px-4 py-3 flex justify-between items-center bg-[#0B1519] hover:bg-[#6e5690] hover:text-black"
+            >
+              <span className="font-semibold">{state.name}</span>
+              <span>{activeIndex === i ? '-' : '+'}</span>
+            </button>
+            {activeIndex === i && (
+              <div className="p-4 space-y-2">
+                {state.data.map((box, j) => (
+                  <div key={j} className="bg-[#1a1a1a] p-4 rounded border border-zinc-800 text-xs">
+                    <div className="grid grid-cols-2 gap-x-4">
                       <div>
-                        <p><strong>Property Type:</strong> {box.propertyType}</p>
-                        <p><strong>Bedrooms:</strong> {box.bedMin}</p>
-                        <p><strong>Bathrooms:</strong> {box.bathMin}</p>
-                        <p><strong>Sqft Min:</strong> {box.sqftMin}</p>
-                        <p><strong>Sqft Max:</strong> {box.sqftMax ?? 'N/A'}</p>
+                        <p><strong>Type:</strong> {box.propertyType}</p>
+                        <p><strong>Beds:</strong> {box.bedMin}</p>
+                        <p><strong>Baths:</strong> {box.bathMin}</p>
+                        <p><strong>Sqft:</strong> {box.sqftMin} - {box.sqftMax ?? 'N/A'}</p>
                       </div>
                       <div>
                         <p><strong>Max Price:</strong> ${box.maxPrice ?? 'N/A'}</p>
-                        <p><strong>ARV % Max:</strong> {box.arvPercentMax ?? 'N/A'}%</p>
+                        <p><strong>Max ARV%:</strong> {box.arvPercentMax ?? 'N/A'}%</p>
                         <p><strong>Max Rehab:</strong> ${box.maxRehabCost ?? 'N/A'}</p>
-                        <p><strong>HOA Allowed:</strong> {box.hoa ? 'Yes' : 'No'}</p>
-                        <p><strong>Foundation:</strong> {box.foundation ?? 'Any'}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))
+      ) : (
+        <>
+          <div className="border border-yellow-500 rounded mb-4 p-4 bg-[#1a1a1a] shadow-md">
+            <div className="flex justify-between items-center mb-2">
+              <div className="text-sm font-bold text-yellow-400">⭐ Promoted - Dallas, Texas</div>
+              <span className="text-xs text-yellow-300">Featured Area</span>
             </div>
-          ))
-        ) : (
-          trendingBoxes.slice(0, 20).map((box, index) => {
-            const rankChange = getRankChange(box, index);
-            return (
-              <div key={index} className="border border-zinc-700 bg-[#0B1519] rounded-md p-4">
-                <div className="text-sm font-semibold mb-2 text-[#6e5690]">
-                  #{index + 1} - {box.city ?? box.county ?? box.state} ({box.state}){' '}
-                  <span className="ml-2 text-xs">
-                    {rankChange === 'up' && '📈'}
-                    {rankChange === 'down' && '📉'}
-                    {rankChange === 'same' && '➖'}
+            <div className="grid grid-cols-2 gap-x-4 text-xs text-gray-300">
+              <div>
+                <p><strong>Type:</strong> single family</p>
+                <p><strong>Beds:</strong> 3</p>
+                <p><strong>Baths:</strong> 2</p>
+                <p><strong>Sqft:</strong> 1200 - 1800</p>
+              </div>
+              <div className="flex flex-col justify-between">
+                <div>
+                  <p><strong>Max Price:</strong> $450000</p>
+                  <p><strong>Max ARV%:</strong> 70%</p>
+                  <p><strong>Max Rehab:</strong> $60000</p>
+                </div>
+                <div className="flex flex-wrap justify-end gap-2 mt-2">
+                  <span className="bg-yellow-900 border border-yellow-600 text-yellow-300 px-2 py-0.5 rounded-full text-xs">
+                    🆕 New Buybox
                   </span>
+                  <span className="bg-yellow-900 border border-yellow-600 text-yellow-300 px-2 py-0.5 rounded-full text-xs">
+                    📈 Active Buyer
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {trendingBoxes.slice(0, 20).map((box, i) => {
+            const trend = getRankChange(box, i);
+            const tags = getRandomTags();
+            return (
+              <div key={i} className="border border-zinc-700 rounded mb-4 p-4 bg-[#0B1519]">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="text-sm font-semibold text-[#6e5690]">
+                    #{i + 1} - {box.city ?? box.county ?? 'Unknown'}, {box.state}
+                  </div>
+                  <div className="text-xs">
+                    {trend === 'up' && '📈'}
+                    {trend === 'down' && '📉'}
+                    {trend === 'same' && '➖'}
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-x-4 text-xs text-gray-300">
                   <div>
-                    <p><strong>Property Type:</strong> {box.propertyType}</p>
-                    <p><strong>Bedrooms:</strong> {box.bedMin}</p>
-                    <p><strong>Bathrooms:</strong> {box.bathMin}</p>
-                    <p><strong>Sqft Min:</strong> {box.sqftMin}</p>
-                    <p><strong>Sqft Max:</strong> {box.sqftMax ?? 'N/A'}</p>
+                    <p><strong>Type:</strong> {box.propertyType}</p>
+                    <p><strong>Beds:</strong> {box.bedMin}</p>
+                    <p><strong>Baths:</strong> {box.bathMin}</p>
+                    <p><strong>Sqft:</strong> {box.sqftMin} - {box.sqftMax ?? 'N/A'}</p>
                   </div>
-                  <div>
-                    <p><strong>Max Price:</strong> ${box.maxPrice ?? 'N/A'}</p>
-                    <p><strong>ARV % Max:</strong> {box.arvPercentMax ?? 'N/A'}%</p>
-                    <p><strong>Max Rehab:</strong> ${box.maxRehabCost ?? 'N/A'}</p>
-                    <p><strong>HOA Allowed:</strong> {box.hoa ? 'Yes' : 'No'}</p>
-                    <p><strong>Foundation:</strong> {box.foundation ?? 'Any'}</p>
+                  <div className="flex flex-col justify-between">
+                    <div>
+                      <p><strong>Max Price:</strong> ${box.maxPrice ?? 'N/A'}</p>
+                      <p><strong>Max ARV%:</strong> {box.arvPercentMax ?? 'N/A'}%</p>
+                      <p><strong>Max Rehab:</strong> ${box.maxRehabCost ?? 'N/A'}</p>
+                    </div>
+                    <div className="flex flex-wrap justify-end gap-2 mt-2">
+                      {tags.map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="bg-[#1a1a1a] border border-zinc-600 rounded-full px-2 py-0.5 text-white text-xs"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
             );
-          })
-        )}
-      </div>
-    </section>
+          })}
+        </>
+      )}
+    </div>
   );
-};
-
-export default BuyboxDirectory;
+}
