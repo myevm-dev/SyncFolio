@@ -32,7 +32,7 @@ const comingSoonItems = [
   { label: "Funding & Yield Plugins", percent: 40 },
   { label: "Referral Program", percent: 15 },
   { label: "Portfolio Management", percent: 10 },
-  { label: "Tokenlock Deal flow", percent: 10 },
+  { label: "Tokenlock Deal Flow", percent: 10 },
   { label: "User Acreditation", percent: 10 },
   { label: "Tradable Trust Rights", percent: 5 },
   { label: "Field Services Network", percent: 5 },

@@ -27,4 +27,6 @@ export interface DealInput {
   highRiskArea?: string; 
   repairKeys?: string[];
   foundationFlags?: string[];
+  agentRating?: number;
+
 }

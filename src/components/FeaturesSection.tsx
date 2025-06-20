@@ -5,6 +5,7 @@ const features = [
   { title: "Creative Offer Generator", description: "." },
   { title: "Customizable Call Scripts", description: "." },
   { title: "Quick Repair Calculator", description: "." },
+  { title: "Top Ranked Real Estate Agents", description: "." },
 ];
 
 export default function FeaturesSection() {
