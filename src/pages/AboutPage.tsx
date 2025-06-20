@@ -31,12 +31,13 @@ const comingSoonItems = [
   { label: "Deal Marketplace", percent: 50 },
   { label: "JV With Us", percent: 50 },
   { label: "Funding & Yield Plugins", percent: 40 },
-  { label: "Referral Program", percent: 15 },
+  { label: "Referral Program", percent: 35 },
+  { label: "AI Chat Assistant", percent: 25 },
+  { label: "Tokenlock Deal Flow", percent: 20 },
   { label: "Portfolio Management", percent: 10 },
-  { label: "Tokenlock Deal Flow", percent: 10 },
   { label: "User Acreditation", percent: 10 },
-  { label: "Tradable Trust Rights", percent: 5 },
-  { label: "Field Services Network", percent: 5 },
+ // { label: "Field Services Network", percent: 5 },
+ // { label: "Property Management", percent: 5 },
   { label: "White Label Website", percent: 1 },
 ];
 export default function AboutPage() {
