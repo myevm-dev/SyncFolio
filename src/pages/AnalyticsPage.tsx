@@ -19,24 +19,22 @@ declare global {
 }
 
 export default function AnalyticsPage() {
-  /* wallet / admin */
   const account = useActiveAccount();
   const wallet  = account?.address ?? "";
-  const ADMIN   = "0x91706ECbA7af59616D4005F37979528226532E6B".toLowerCase();
 
-  /* state */
   const [users,   setUsers]   = useState<any[]>([]);
   const [agents,  setAgents]  = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab,     setTab]     = useState<"users" | "agents">("users");
   const [view,    setView]    = useState<"table" | "card">("table");
 
-  /* fetch */
   useEffect(() => {
-    if (wallet.toLowerCase() !== ADMIN) return;
+    const normalizePhone = (phone = "") => phone.replace(/\D/g, "").slice(-10);
+    const agentKey = (name = "", phone = "", email = "") =>
+      email ? email.trim().toLowerCase() :
+      name && phone ? `${name.trim().toLowerCase()}-${normalizePhone(phone)}` : "unknown";
 
     (async () => {
-      /* ---------- users ---------- */
       const snap = await getDocs(collection(db, "users"));
       const allUsers = await Promise.all(
         snap.docs.map(async (d) => {
@@ -60,46 +58,55 @@ export default function AnalyticsPage() {
         allUsers.sort((a, b) => (b.createdAt?.getTime?.() ?? 0) - (a.createdAt?.getTime?.() ?? 0))
       );
 
-      /* ---------- agents ---------- */
-      const tempAgents: any[] = [];
+      const agentMap: { [key: string]: any } = {};
+
       for (const u of allUsers) {
         const deals = await getDocs(collection(db, `users/${u.id}/deals`));
         deals.forEach((deal) => {
           const ag = deal.data().agent;
-          if (ag && ag.rating && ag.rating > 0) {
-            tempAgents.push({
-              userId: u.id,
-              ...ag,
-            });
+          if (ag && ag.rating > 0) {
+            const key = agentKey(ag.name, ag.phone, ag.email);
+            if (!agentMap[key]) {
+              agentMap[key] = {
+                name: ag.name,
+                phone: ag.phone,
+                email: ag.email,
+                timezone: ag.timezone,
+                ratingSum: ag.rating,
+                ratingCount: 1,
+              };
+            } else {
+              agentMap[key].ratingSum += ag.rating;
+              agentMap[key].ratingCount += 1;
+            }
           }
         });
       }
+
+      const tempAgents = Object.values(agentMap).map((a: any) => ({
+        name: a.name,
+        phone: a.phone,
+        email: a.email,
+        timezone: a.timezone,
+        rating: a.ratingSum / a.ratingCount,
+        ratingCount: a.ratingCount,
+      }));
+
       setAgents(tempAgents);
       setLoading(false);
     })();
   }, [wallet]);
 
-  /* access gate after hooks */
-  if (wallet.toLowerCase() !== ADMIN) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-white bg-[#0B1519]">
-        <p className="text-lg">Access restricted.</p>
-      </div>
-    );
-  }
-
-  /* render */
   return (
     <div className="min-h-screen w-full bg-[#0B1519] text-white px-6 py-20">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-10 text-[#00FFFF]">🧠 SyncFolio Analytics</h1>
 
-        {/* Tabs */}
         <div className="flex justify-center gap-6 mb-10">
-          {(["users", "agents"] as const).map((t) => (
+          {["users", "agents"].map((t) => (
             <button
               key={t}
-              onClick={() => setTab(t)}
+              onClick={() => setTab(t as any)}
               className={`px-6 py-2 rounded-full transition ${
                 tab === t ? "bg-[#6e5690] text-black" : "bg-transparent border border-zinc-600 text-white"
               }`}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
 
+import ConversionChart from "./components/ConversionChart";
 import LinkBar from "./components/LinkBar";
 import Questionaire from "./components/Questionaire";
 import Offers from "./components/Offers";
@@ -48,7 +49,7 @@ const initialDeal: DealInput = {
 export default function App() {
   const account = useActiveAccount();
   const walletAddress = account?.address || "";
-
+  const [showChart, setShowChart] = useState(false);
   const [results, setResults] = useState<OfferResults | null>(null);
   const [cocResults, setCocResults] = useState<CashOnCashResult[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -109,12 +110,15 @@ export default function App() {
         {results && (
           <Offers results={results} cashOnCashResults={cocResults} />
         )}
-
+        {showChart && <ConversionChart walletAddress={walletAddress} />}
         <DealsTable
           refreshKey={refreshKey}
           onLoad={handleLoadDeal}
           walletAddress={walletAddress}
+          showChart={showChart}
+          setShowChart={setShowChart}
         />
+
 
         <div className="h-[100px]" /> {/* Adjust height to match or slightly exceed mobile footer/menu height */}
 

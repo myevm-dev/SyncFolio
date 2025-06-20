@@ -63,15 +63,20 @@ const statusColors: Record<string, string> = {
 
 const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
 
-export default function DealsTable({
-  refreshKey,
-  onLoad,
-  walletAddress,
-}: {
-  refreshKey: number;
-  onLoad: (deal: Deal) => void;
-  walletAddress: string;
-}) {
+  export default function DealsTable({
+    refreshKey,
+    onLoad,
+    walletAddress,
+    showChart,
+    setShowChart,
+  }: {
+    refreshKey: number;
+    onLoad: (deal: Deal) => void;
+    walletAddress: string;
+    showChart: boolean;
+    setShowChart: React.Dispatch<React.SetStateAction<boolean>>;
+  }) {
+
   const [toast, setToast] = useState<string | null>(null);
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
@@ -221,22 +226,30 @@ export default function DealsTable({
 
   return (
     <div className="max-w-6xl mx-auto px-4 mb-20">
-      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 flex-wrap">
         Saved Deals
+
+        {/* Toggle Chart */}
+        <button
+          onClick={() => setShowChart((prev) => !prev)}
+          className="text-xs px-2 py-1 bg-purple-600 text-white rounded hover:bg-purple-700"
+        >
+          {showChart ? "Hide Chart" : "Show Chart"}
+        </button>
+
+        {/* Call Random Lead */}
         <button
           title="Call Random Lead"
           onClick={() => {
-            const nowUTC = new Date();
-
             const validLeads = deals.filter((d) => {
               if (d.status !== "lead") return false;
-            const timeZoneMap: Record<string, string> = {
-              Hawaii: "Pacific/Honolulu",
-              Pacific: "America/Los_Angeles",
-              Mountain: "America/Denver",
-              Central: "America/Chicago",
-              Eastern: "America/New_York",
-            };
+              const timeZoneMap: Record<string, string> = {
+                Hawaii: "Pacific/Honolulu",
+                Pacific: "America/Los_Angeles",
+                Mountain: "America/Denver",
+                Central: "America/Chicago",
+                Eastern: "America/New_York",
+              };
               const timeZone = timeZoneMap[d.agentTimezone || ""];
               if (!timeZone) return false;
 
@@ -253,7 +266,7 @@ export default function DealsTable({
 
             if (!validLeads.length) {
               setToast("No leads are currently within working hours (8 AM – 5 PM).");
-              setTimeout(() => setToast(null), 4000); // Auto-hide after 4 sec
+              setTimeout(() => setToast(null), 4000);
               return;
             }
 
@@ -262,12 +275,12 @@ export default function DealsTable({
 
             setTimeout(() => {
               const modalTrigger = document.querySelector("#openScriptModalTrigger") as HTMLButtonElement;
-              if (modalTrigger) modalTrigger.click();
+              modalTrigger?.click();
             }, 100);
           }}
           className="hover:opacity-80 transition"
         >
-          <Dice5Icon className="w-5 h-5 text-purple-500" />
+          <Dice5Icon className="w-5 h-5 text-cyan-500" />
         </button>
       </h2>
       {toast && (
