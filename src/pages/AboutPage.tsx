@@ -38,7 +38,9 @@ const comingSoonItems = [
   { label: "User Acreditation", percent: 10 },
  // { label: "Field Services Network", percent: 5 },
  // { label: "Property Management", percent: 5 },
+ // { label: "Tradable Trust Rights", percent: 5 },
   { label: "White Label Website", percent: 1 },
+  { label: ".", percent: 1 },
 ];
 export default function AboutPage() {
   return (
