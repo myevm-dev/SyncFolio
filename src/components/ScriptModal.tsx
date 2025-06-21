@@ -342,7 +342,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                   </select>
                 ) : q.field === "rehabCost" ? (
                   <>
-                    <label className="block text-sm text-white mb-1">
+                    <label className="block text-sm text-[#6e5690] mb-1">
                       Select Repairs Needed
                     </label>
                     <div className="space-y-1">
