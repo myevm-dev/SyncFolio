@@ -51,23 +51,25 @@ const AgentsTab: React.FC<Props> = ({ agents, loading }) => {
           </tr>
         </thead>
         <tbody>
-          {agents.map((ag, i) => (
-            <tr key={i} className={i % 2 ? "bg-neutral-900" : "bg-neutral-950"}>
-              <td className="px-4 py-2 whitespace-nowrap">{ag.name}</td>
-              <td className="px-4 py-2 text-gray-400 whitespace-nowrap">{ag.phone || "—"}</td>
-              <td className="px-4 py-2 text-gray-400 whitespace-nowrap">{ag.email || "—"}</td>
-              <td className="px-4 py-2 text-gray-400 whitespace-nowrap">{ag.timezone || "—"}</td>
-              <td className="px-4 py-2">
-                <div className="flex justify-center gap-0.5">
-                  {Array.from({ length: 5 }, (_, j) => {
-                    const fill = Math.min(1, Math.max(0, ag.rating - j));
-                    return <Star key={j} fill={fill} />;
-                  })}
-                </div>
-              </td>
-              <td className="px-4 py-2 text-center text-gray-400">{ag.rating.toFixed(1)}</td>
-            </tr>
-          ))}
+          {[...agents]
+            .sort((a, b) => b.rating - a.rating)
+            .map((ag, i) => (
+              <tr key={i} className={i % 2 ? "bg-neutral-900" : "bg-neutral-950"}>
+                <td className="px-4 py-2 whitespace-nowrap">{ag.name}</td>
+                <td className="px-4 py-2 text-gray-400 whitespace-nowrap">{ag.phone || "—"}</td>
+                <td className="px-4 py-2 text-gray-400 whitespace-nowrap">{ag.email || "—"}</td>
+                <td className="px-4 py-2 text-gray-400 whitespace-nowrap">{ag.timezone || "—"}</td>
+                <td className="px-4 py-2">
+                  <div className="flex justify-center gap-0.5">
+                    {Array.from({ length: 5 }, (_, j) => {
+                      const fill = Math.min(1, Math.max(0, ag.rating - j));
+                      return <Star key={j} fill={fill} />;
+                    })}
+                  </div>
+                </td>
+                <td className="px-4 py-2 text-center text-gray-400">{ag.rating.toFixed(1)}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
