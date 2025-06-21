@@ -152,8 +152,15 @@ export default function BuyboxDirectory() {
             {activeIndex === i && (
               <div className="p-4 space-y-2">
                 {state.data.map((box, j) => (
-                  <div key={j} className="bg-[#1a1a1a] p-4 rounded border border-zinc-800 text-xs">
-                    <div className="grid grid-cols-2 gap-x-4">
+                  <div key={j} className="bg-[#0B1519] border border-zinc-700 rounded mb-4 p-4 text-sm shadow-md">
+                    <div className="flex justify-between items-center mb-2">
+                      <div className="text-sm font-semibold text-[#b28ae6]">
+                        {box.city ?? box.county ?? "Unknown"}, {state.name}
+                      </div>
+
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-x-4 text-xs text-gray-300">
                       <div>
                         <p><strong>Type:</strong> {box.propertyType}</p>
                         <p><strong>Beds:</strong> {box.bedMin}</p>
@@ -161,13 +168,21 @@ export default function BuyboxDirectory() {
                         <p><strong>Sqft:</strong> {box.sqftMin} - {box.sqftMax ?? 'N/A'}</p>
                       </div>
                       <div>
-                        <p><strong>Max Price:</strong> ${box.maxPrice ?? 'N/A'}</p>
+                        <p><strong>Max Price:</strong> ${box.maxPrice?.toLocaleString() ?? 'N/A'}</p>
                         <p><strong>Max ARV%:</strong> {box.arvPercentMax ?? 'N/A'}%</p>
-                        <p><strong>Max Rehab:</strong> ${box.maxRehabCost ?? 'N/A'}</p>
+                        <p><strong>Max Rehab:</strong> ${box.maxRehabCost?.toLocaleString() ?? 'N/A'}</p>
                       </div>
+                    </div>
+
+                    <div className="flex justify-end mt-3">
+                      <span className="bg-[#01fcfc] text-black px-2 py-0.5 rounded-full text-xs font-medium">
+                        🤖 SyncFolio Dispo
+                      </span>
                     </div>
                   </div>
                 ))}
+
+
               </div>
             )}
           </div>
