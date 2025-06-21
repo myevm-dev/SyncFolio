@@ -109,17 +109,30 @@ export default function BuyboxDirectory() {
   };
 
   useEffect(() => {
+    // 💥 Force clear old cached trending data
+    localStorage.removeItem("trendingBuyboxes");
+    localStorage.removeItem("previousTrendingBuyboxes");
+
+    // 🔄 Rebuild fresh trending data from current buyboxes
+    const shuffled = shuffleArray(flattenBuyboxes);
+    setTrendingBoxes(shuffled);
+    setPreviousBoxes([]);
+
+    localStorage.setItem("trendingBuyboxes", JSON.stringify(shuffled));
+    localStorage.setItem("previousTrendingBuyboxes", JSON.stringify([]));
+
     const interval = setInterval(() => {
-      const prev = trendingBoxes;
-      const shuffled = shuffleArray(flattenBuyboxes);
-      setTrendingBoxes(shuffled);
+      const prev = shuffled;
+      const reshuffled = shuffleArray(flattenBuyboxes);
+      setTrendingBoxes(reshuffled);
       setPreviousBoxes(prev);
-      localStorage.setItem("trendingBuyboxes", JSON.stringify(shuffled));
+      localStorage.setItem("trendingBuyboxes", JSON.stringify(reshuffled));
       localStorage.setItem("previousTrendingBuyboxes", JSON.stringify(prev));
     }, 1000 * 60 * 60 * 12);
 
     return () => clearInterval(interval);
-  }, [trendingBoxes]);
+  }, []);
+
 
   return (
     <div className="mt-20 max-w-6xl mx-auto px-4">
