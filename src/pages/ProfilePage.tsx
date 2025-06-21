@@ -8,6 +8,7 @@ import IncomingInvites from "../components/IncomingInvites";
 import Lottie from "lottie-react";
 import animationData from "../lottie/Animation - 1749869487293.json";
 import ReferralSection from "../components/ReferralSection";
+import DashboardCards from "../components/DashboardCards";
 
 
 declare global {
@@ -36,7 +37,7 @@ export default function ProfilePage() {
         await setDoc(ref, {
           displayName: "Unnamed",
           team: [],
-          createdAt: new Date(), // capture sign-up date
+          createdAt: new Date(),
         });
       }
     };
@@ -152,22 +153,23 @@ export default function ProfilePage() {
         </div>
       )}
 
-    <p className="text-gray-400 break-all">Account: {walletAddress}</p>
+      <p className="text-gray-400 break-all">Account: {walletAddress}</p>
 
-    {/* Dashboard Cards */}
-    <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-      {/* cards mapping here */}
+      <DashboardCards />
+
+      <div className="flex flex-col lg:flex-row justify-center items-start gap-8 max-w-6xl mx-auto mt-10">
+        <div className="flex-1 border border-zinc-700 rounded-xl p-6">
+          <TeamSection walletAddress={walletAddress} reloadFlag={reloadFlag} />
+        </div>
+        <div className="flex-1 border border-zinc-700 rounded-xl p-6">
+          <ReferralSection walletAddress={walletAddress} />
+        </div>
+      </div>
+
+      <IncomingInvites
+        walletAddress={walletAddress}
+        onUpdateTeam={() => setReloadFlag((n) => n + 1)}
+      />
     </div>
-
-    <TeamSection walletAddress={walletAddress} reloadFlag={reloadFlag} />
-
-
-    <IncomingInvites
-      walletAddress={walletAddress}
-      onUpdateTeam={() => setReloadFlag((n) => n + 1)}
-    />
-    <ReferralSection walletAddress={walletAddress} /> {/* ✅ HERE */}
-
-  </div>
   );
 }
