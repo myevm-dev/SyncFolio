@@ -217,10 +217,16 @@ export default function Questionaire({
       {/* hidden button triggers script modal from other components */}
       <button
         id="openScriptModalTrigger"
-        onClick={() => setShowScriptModal(true)}
+        onClick={() => {
+          if (formData.zillowUrl) {
+            window.open(formData.zillowUrl, "_blank");
+          }
+          setShowScriptModal(true);
+        }}
         className="hidden"
         type="button"
       />
+
 
       {/* Script modal */}
       <ScriptModal
