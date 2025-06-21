@@ -166,7 +166,7 @@ export default function ProfilePage() {
         </div>
         <div className="flex-1 border border-zinc-700 rounded-xl p-6">
           <p className="text-left text-gray-300 text-sm mb-3">
-            You’ll earn <span className="text-green-400 font-semibold">$300</span> for every closed deal made by someone you invite.
+            You’ll earn <span className="text-green-400 font-semibold">$300 for every closed deal </span>  made by someone you invite.
           </p>
           <ReferralSection walletAddress={walletAddress} />
         </div>
