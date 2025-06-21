@@ -149,8 +149,8 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
   };
 
   return (
-    <div className="mt-10 text-left max-w-2xl mx-auto">
-      <h2 className="text-xl font-bold text-white mb-2">Team Members</h2>
+    <div className="mt-4 text-left max-w-2xl mx-auto">
+      <h2 className="text-xl mt-10 font-bold text-white mb-2">Team Memebers</h2>
       <div className="flex items-center gap-2 mb-4">
         <input
           type="text"

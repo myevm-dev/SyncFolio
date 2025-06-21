@@ -11,7 +11,6 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ walletAddress }) => {
   const [referrals, setReferrals] = useState<any[]>([]);
 
   useEffect(() => {
-    // Store referrer code if present in the URL
     const params = new URLSearchParams(window.location.search);
     const referrer = params.get("ref");
     if (referrer) {
@@ -58,8 +57,10 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ walletAddress }) => {
   };
 
   return (
-    <div className="text-left max-w-2xl">
-      <h2 className="text-xl font-bold text-white mb-2">Referral</h2>
+    <div className="text-left flex flex-col justify-between h-full">
+      <div className="mt-4">
+        <h2 className="text-xl mt-4 font-bold text-white mb-2">Referral</h2>
+      </div>
       <div className="flex items-center gap-2 mb-4">
         <input
           type="text"
