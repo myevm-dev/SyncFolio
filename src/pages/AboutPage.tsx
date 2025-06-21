@@ -21,22 +21,22 @@ const roles = [
 ];
 
 const comingSoonItems = [
-  { label: "Team Collaboration", percent: 80 },
+  { label: "Referral Program", percent: 85 },
+  { label: "Team Collaboration", percent: 70 },
   { label: "Earn Platform Credits", percent: 65 },
   { label: "Auto-Offers", percent: 60 },
   { label: "Lead Gamification", percent: 60 },
-  { label: "Employable AI Agents", percent: 55 },
+  { label: "JV With Us", percent: 55 },
   { label: "Auto-Contracts", percent: 50 },
-  { label: "Deal Marketplace", percent: 50 },
-  { label: "JV With Us", percent: 50 },
-  { label: "Funding & Yield Plugins", percent: 40 },
-  { label: "Referral Program", percent: 35 },
-  { label: "AI Chat Assistant", percent: 25 },
+  { label: "AI Chat Assistant", percent: 35 },
+  { label: "Deal Marketplace", percent: 30 },
+  { label: "Funding & Yield Plugins", percent: 30 },
+  { label: "Employable AI Agents", percent: 25  },
   { label: "Tokenlock Deal Flow", percent: 20 },
-  { label: "Portfolio Management", percent: 10 },
-  { label: "User Acreditation", percent: 10 },
-  { label: "White Label Website", percent: 1 },
-  { label: ".", percent: 1 },
+  { label: "Portfolio Management", percent: 5 },
+  { label: "User Acreditation", percent: 5 },
+  { label: "White Label Website", percent: 5 },
+  { label: "How To Videos", percent: 5 },
 ];
 
 export default function AboutPage() {
