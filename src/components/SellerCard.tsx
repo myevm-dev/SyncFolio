@@ -24,8 +24,11 @@ const SellerCard: React.FC<SellerCardProps> = ({
 }) => {
   return (
     <div className="relative bg-[#050505] border border-neutral-700 rounded-lg shadow-md overflow-hidden flex flex-col">
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px] flex items-center justify-center z-10">
-        <span className="text-white text-2xl font-bold">Coming Soon</span>
+      {/* Coming Soon Overlay */}
+      <div className="absolute top-[25%] left-0 right-0 z-10 flex justify-center">
+        <span className="bg-black/30 backdrop-blur-[1px] px-4 py-2 rounded text-black text-2xl font-bold">
+          Coming Soon
+        </span>
       </div>
 
       <img

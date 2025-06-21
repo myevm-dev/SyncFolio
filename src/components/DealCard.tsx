@@ -26,8 +26,11 @@ const DealCard: React.FC<DealCardProps> = ({
 
   return (
     <div className="relative bg-[#050505] border border-neutral-700 rounded-lg shadow-md overflow-hidden flex flex-col">
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px] flex items-center justify-center z-10">
-        <span className="text-white text-2xl font-bold">Coming Soon</span>
+      {/* Coming Soon Overlay */}
+      <div className="absolute top-[25%] left-0 right-0 z-10 flex justify-center">
+        <span className="bg-black/30 backdrop-blur-[1px] px-4 py-2 rounded text-black text-2xl font-bold">
+          Coming Soon
+        </span>
       </div>
 
       <img
@@ -51,14 +54,10 @@ const DealCard: React.FC<DealCardProps> = ({
       </div>
 
       <div className="px-4 pb-4 mt-auto flex justify-between gap-2">
-        <button
-          className="flex-1 border border-[#fd01f5] text-[#fd01f5] hover:bg-[#fd01f5] hover:text-black text-sm py-2 rounded transition"
-        >
+        <button className="flex-1 border border-[#fd01f5] text-[#fd01f5] hover:bg-[#fd01f5] hover:text-black text-sm py-2 rounded transition">
           Bid
         </button>
-        <button
-          className="flex-1 bg-[#01fcfc] text-black text-sm py-2 rounded hover:bg-[#00e0e0] transition"
-        >
+        <button className="flex-1 bg-[#01fcfc] text-black text-sm py-2 rounded hover:bg-[#00e0e0] transition">
           Buy Now for {buyNowPrice}
         </button>
       </div>
