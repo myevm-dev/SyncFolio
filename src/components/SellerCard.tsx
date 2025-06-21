@@ -1,5 +1,5 @@
 import React from "react";
-import placeholder from "../placeholder.jpg";
+import placeholder from "../placeholder.png";
 
 interface SellerCardProps {
   address: string;

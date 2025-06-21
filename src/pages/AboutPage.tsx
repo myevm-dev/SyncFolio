@@ -5,7 +5,6 @@ import HeroHeader from "../components/HeroHeader";
 import ComingSoonSection from "../components/ComingSoonSection";
 import FeaturesSection from "../components/FeaturesSection";
 
-
 const roles = [
   {
     title: "For Deal Finders",
@@ -36,20 +35,18 @@ const comingSoonItems = [
   { label: "Tokenlock Deal Flow", percent: 20 },
   { label: "Portfolio Management", percent: 10 },
   { label: "User Acreditation", percent: 10 },
- // { label: "Field Services Network", percent: 5 },
- // { label: "Property Management", percent: 5 },
- // { label: "Tradable Trust Rights", percent: 5 },
   { label: "White Label Website", percent: 1 },
   { label: ".", percent: 1 },
 ];
+
 export default function AboutPage() {
   return (
-    <div className="min-h-screen w-full bg-[#0B1519] text-white px-6 py-20 flex flex-col">
-      <div className="max-w-6xl mx-auto flex-grow">
+    <div className="min-h-screen w-full bg-[#0B1519] text-white px-6 py-20 flex justify-center">
+      <div className="w-full max-w-6xl flex-grow flex flex-col items-center">
         <HeroHeader />
 
         {/* Role Cards */}
-        <section className="grid gap-8 md:grid-cols-3">
+        <section className="grid gap-8 md:grid-cols-3 w-full mt-12">
           {roles.map((card) => (
             <div
               key={card.title}
@@ -62,15 +59,21 @@ export default function AboutPage() {
             </div>
           ))}
         </section>
-        <FeaturesSection />
 
+        <div className="w-full mt-16">
+          <FeaturesSection />
+        </div>
 
         {/* Coming Soon */}
-        <ComingSoonSection items={comingSoonItems} />
+        <div className="w-full max-w-6xl mx-auto mt-16">
+          <ComingSoonSection items={comingSoonItems} />
+        </div>
 
         {/* FAQ & Disclaimer */}
-        <FAQSection />
-        <DisclaimerSection />
+        <div className="w-full max-w-6xl mx-auto mt-16">
+          <FAQSection />
+          <DisclaimerSection />
+        </div>
       </div>
     </div>
   );
