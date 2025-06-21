@@ -201,8 +201,19 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
             <div key={questionIndex} className="space-y-2 mt-6">
               <div className="flex items-start gap-2">
                 <p className="font-medium text-base text-cyan-400 flex-1">
-                  {customLabels[questionIndex]}
+                  {q.label.includes("what’s got the seller looking") ? (
+                    <>
+                      This looks like it has potential and you have it for{" "}
+                      <span className="text-white font-semibold">
+                        ${formData.listingPrice || "[price]"}
+                      </span>
+                      , what’s got the seller looking to let it go right now?
+                    </>
+                  ) : (
+                    customLabels[questionIndex]
+                  )}
                 </p>
+
                 <div className="flex gap-1">
                   <button
                     onClick={() =>
@@ -490,5 +501,4 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
       </DialogContent>
     </Dialog>
   );
-} // ← closes the ScriptModal function
-
+} 
