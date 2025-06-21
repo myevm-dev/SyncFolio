@@ -342,15 +342,38 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                   </select>
                 ) : q.field === "rehabCost" ? (
                   <>
-                    <label className="block text-sm text-[#6e5690] mb-1">
-                      Select Repairs Needed
+                    <label className="block text-sm mb-1 text-white">
+                      Select Repairs Needed{" "}
+                      <span className="text-yellow-500 text-xs font-semibold">
+                        *highlighted items need attention based on age
+                      </span>
                     </label>
+
+
                     <div className="space-y-1">
                       {rehabCategories.map((cat) => {
-                        const isChecked =
-                          formData.repairKeys?.includes(cat.key) || false;
+                        const isChecked = formData.repairKeys?.includes(cat.key) || false;
+                        const yearBuilt = Number(formData.yearBuilt || 0);
+                        const currentYear = new Date().getFullYear();
+                        const age = currentYear - yearBuilt;
+
+                        const isAttentionItem = (
+                          cat.key === "foundation" ||
+                          (cat.key === "electrical" && age >= 45) ||
+                          (cat.key === "plumbing" && age >= 45) ||
+                          (cat.key === "hvac" && age >= 20) ||
+                          (cat.key === "roof" && age >= 25) ||
+                          (cat.key === "windowsDoors" && age >= 25)
+                        );
+
+
+
                         return (
-                          <div key={cat.key} className="text-sm text-white">
+                          <div
+                            key={cat.key}
+                            className={`text-sm ${isAttentionItem ? "bg-yellow-800 text-yellow-200 rounded-md px-2 py-1" : "text-white"}`}
+                          >
+
                             <label className="flex items-center gap-2">
                               <input
                                 type="checkbox"
