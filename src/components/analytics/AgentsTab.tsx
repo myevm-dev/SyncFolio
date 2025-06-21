@@ -59,15 +59,8 @@ const AgentsTab: React.FC<Props> = ({ agents, loading }) => {
                 <td className="px-4 py-2 text-gray-400 whitespace-nowrap">{ag.phone || "—"}</td>
                 <td className="px-4 py-2 text-gray-400 whitespace-nowrap">{ag.email || "—"}</td>
                 <td className="px-4 py-2 text-gray-400 whitespace-nowrap">{ag.timezone || "—"}</td>
-                <td className="px-4 py-2">
-                  <div className="flex justify-center gap-0.5">
-                    {Array.from({ length: 5 }, (_, j) => {
-                      const fill = Math.min(1, Math.max(0, ag.rating - j));
-                      return <Star key={j} fill={fill} />;
-                    })}
-                  </div>
-                </td>
-                <td className="px-4 py-2 text-center text-gray-400">{ag.rating.toFixed(1)}</td>
+                <td className="px-4 py-2 text-center text-gray-200">{ag.rating.toFixed(1)}</td>
+                <td className="px-4 py-2 text-center text-gray-400">{ag.ratingCount}</td>
               </tr>
             ))}
         </tbody>
