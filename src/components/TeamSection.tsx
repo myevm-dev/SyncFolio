@@ -8,6 +8,7 @@ import {
   getDocs,
   updateDoc,
   arrayRemove,
+  deleteDoc,
 } from "firebase/firestore";
 import { X } from "lucide-react";
 
@@ -36,7 +37,6 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
 
     const invitesSnapshot = await getDocs(collection(db, "users", walletAddress, "sentInvites"));
 
-    // ✅ Only keep sent invites still pending
     const pendingSent = invitesSnapshot.docs
       .filter((d) => d.data().status === "pending")
       .map((d) => d.data().to);
@@ -63,7 +63,6 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
       })
     );
 
-    // ✅ Prevent duplicates if same address ends up in both lists
     const allProfiles = [...acceptedProfiles, ...pendingProfiles].filter(
       (profile, index, self) =>
         index === self.findIndex((p) => p.address === profile.address)
@@ -121,11 +120,20 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
 
     modal.querySelector("#confirmYes")?.addEventListener("click", async () => {
       try {
-        const ref = doc(db, "users", walletAddress);
-        await updateDoc(ref, { team: arrayRemove(memberAddress) });
+        await updateDoc(doc(db, "users", walletAddress), { team: arrayRemove(memberAddress) });
+        await updateDoc(doc(db, "users", memberAddress), { team: arrayRemove(walletAddress) });
 
-        const theirRef = doc(db, "users", memberAddress);
-        await updateDoc(theirRef, { team: arrayRemove(walletAddress) });
+        // Delete your sent invite to them
+        const sentInvitesCol = collection(db, "users", walletAddress, "sentInvites");
+        const sentInvitesSnap = await getDocs(sentInvitesCol);
+        const sentMatch = sentInvitesSnap.docs.find(doc => doc.data().to === memberAddress);
+        if (sentMatch) await deleteDoc(sentMatch.ref);
+
+        // Delete their received invite from you
+        const teamInvitesCol = collection(db, "users", memberAddress, "teamInvites");
+        const teamInvitesSnap = await getDocs(teamInvitesCol);
+        const teamMatch = teamInvitesSnap.docs.find(doc => doc.data().from === walletAddress);
+        if (teamMatch) await deleteDoc(teamMatch.ref);
 
         setTeamProfiles((prev) => prev.filter((m) => m.address !== memberAddress));
       } catch (err) {
