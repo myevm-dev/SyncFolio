@@ -161,12 +161,13 @@ export default function ProfilePage() {
 
     <TeamSection walletAddress={walletAddress} reloadFlag={reloadFlag} />
 
-    <ReferralSection walletAddress={walletAddress} /> {/* ✅ HERE */}
 
     <IncomingInvites
       walletAddress={walletAddress}
       onUpdateTeam={() => setReloadFlag((n) => n + 1)}
     />
+    <ReferralSection walletAddress={walletAddress} /> {/* ✅ HERE */}
+
   </div>
   );
 }
