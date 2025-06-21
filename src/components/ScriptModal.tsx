@@ -160,7 +160,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
           </a>
           <div className="text-sm text-neutral-400 mt-1">Tap to call</div>
           {formData.agentName && (
-            <div className="text-xl text-white mt-1 font-semibold">
+            <div className="text-2xl text-white mt-1 font-semibold">
               {formData.agentName}
             </div>
           )}
