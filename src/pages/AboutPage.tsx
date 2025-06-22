@@ -2,7 +2,7 @@ import React from "react";
 import FAQSection from "../components/FAQSection";
 import DisclaimerSection from "../components/DisclaimerSection";
 import HeroHeader from "../components/HeroHeader";
-import ComingSoonSection from "../components/ComingSoonSection";
+import ComingSoonSection from "../components/RoadmapSection";
 import FeaturesSection from "../components/FeaturesSection";
 
 const roles = [
