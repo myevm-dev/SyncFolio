@@ -404,7 +404,7 @@ const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
                 )}
 
                 {/* Dollar Icon */}
-                <button title="Sell Lead">
+                <button title="Sell Lead Soon">
                   <CurrencyDollarIcon className="w-5 h-5 text-green-500 hover:text-green-700 inline-block" />
                 </button>
 
