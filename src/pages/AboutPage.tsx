@@ -36,7 +36,7 @@ const comingSoonItems = [
   { label: "Sell Leads", percent: 15 },
   { label: "Portfolio Management", percent: 5 },
   { label: "User Acreditation", percent: 5 },
-  { label: "White Label Website", percent: 5 },
+  { label: "Affiliate Page", percent: 5 },
   { label: "How To Videos", percent: 5 },
   //  { label: "AI Deal Analysis", percent: 5 },
   { label: "Field Network", percent: 5 },
