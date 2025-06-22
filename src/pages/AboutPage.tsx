@@ -33,10 +33,17 @@ const comingSoonItems = [
   { label: "Funding & Yield Plugins", percent: 30 },
   { label: "Employable AI Agents", percent: 25  },
   { label: "Tokenlock Deal Flow", percent: 20 },
+  { label: "Sell Leads", percent: 15 },
   { label: "Portfolio Management", percent: 5 },
   { label: "User Acreditation", percent: 5 },
   { label: "White Label Website", percent: 5 },
   { label: "How To Videos", percent: 5 },
+  //  { label: "AI Deal Analysis", percent: 5 },
+  { label: "Field Network", percent: 5 },
+  //  { label: "Live AI Scripting", percent: 5 },
+  //  { label: "AI Virtual Assistant", percent: 5 },
+  //  { label: "Swipe to Shop Deals", percent: 5 },
+  //  { label: "Swipe to Shop", percent: 5 },
 ];
 
 export default function AboutPage() {
