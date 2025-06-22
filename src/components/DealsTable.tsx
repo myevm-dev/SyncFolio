@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Dice5Icon } from "lucide-react";
+import { CurrencyDollarIcon, LinkIcon } from "@heroicons/react/24/solid";
 
 import {
   collection,
@@ -385,16 +386,34 @@ const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
                   )}
                 </td>
                 <td className="border px-3 py-2 text-center space-x-2">
-                  <button onClick={() => handleDelete(deal.id)} title="Delete">
-                    <XCircleIcon className="w-5 h-5 text-red-500 hover:text-red-700 inline-block" />
-                  </button>
-                  <button onClick={() => onLoad(deal)} className="text-xs px-2 py-1 bg-blue-700 text-white rounded hover:bg-blue-800">
-                    Load
-                  </button>
-                  <button onClick={() => { setSelectedDeal(deal); setShowShareModal(true); }} title="Share">
-                    <ShareIcon className="w-5 h-5 text-green-500 hover:text-green-600 inline-block" />
-                  </button>
-                </td>
+                {/* Load Button */}
+                <button onClick={() => onLoad(deal)} className="text-xs px-2 py-1 bg-blue-700 text-white rounded hover:bg-blue-800">
+                  Load
+                </button>
+
+                {/* Delete Button */}
+                <button onClick={() => handleDelete(deal.id)} title="Delete">
+                  <XCircleIcon className="w-5 h-5 text-red-500 hover:text-red-700 inline-block" />
+                </button>
+
+                {/* Link Button */}
+                {deal.zillowUrl && (
+                  <a href={deal.zillowUrl} target="_blank" rel="noopener noreferrer" title="Open Link">
+                    <LinkIcon className="w-5 h-5 text-blue-400 hover:text-blue-600 inline-block" />
+                  </a>
+                )}
+
+                {/* Dollar Icon */}
+                <button title="Finance Info">
+                  <CurrencyDollarIcon className="w-5 h-5 text-green-500 hover:text-green-700 inline-block" />
+                </button>
+
+                {/* Share Button */}
+                <button onClick={() => { setSelectedDeal(deal); setShowShareModal(true); }} title="Share">
+                  <ShareIcon className="w-5 h-5 text-purple-500 hover:text-purple-600 inline-block" />
+                </button>
+              </td>
+
               </tr>
             ))}
           </tbody>
