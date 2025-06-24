@@ -23,10 +23,13 @@ export default function ConversionChart({ walletAddress }: { walletAddress: stri
 
     const fetch = async () => {
       const snap = await getDocs(collection(db, `users/${walletAddress}/deals`));
-      const counts = statuses.map(
-        (status) =>
-          snap.docs.filter((doc) => doc.data().status === status).length
-      );
+      const allDeals = snap.docs.map((doc) => doc.data().status);
+
+      const counts = statuses.map((status, index) => {
+        const includedStatuses = statuses.slice(index);
+        return allDeals.filter((s) => includedStatuses.includes(s)).length;
+      });
+
       setData(counts);
     };
 
