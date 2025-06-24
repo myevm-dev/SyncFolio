@@ -70,7 +70,12 @@ const AgentsTab: React.FC<Props> = ({ agents, loading }) => {
         </thead>
         <tbody>
           {[...agents]
-            .sort((a, b) => b.rating - a.rating)
+            .sort((a, b) => {
+              if (b.rating === a.rating) {
+                return b.ratingCount - a.ratingCount;
+              }
+              return b.rating - a.rating;
+            })
             .map((ag, i) => (
               <tr key={i} className={i % 2 ? "bg-neutral-900" : "bg-neutral-950"}>
                 <td className="px-4 py-2 whitespace-nowrap text-white">
@@ -86,8 +91,12 @@ const AgentsTab: React.FC<Props> = ({ agents, loading }) => {
                 <td className="px-4 py-2 text-gray-400 whitespace-nowrap">
                   {ag.region || "—"}
                 </td>
-                <td className="px-4 py-2 text-center text-gray-200">{ag.rating.toFixed(1)}</td>
-                <td className="px-4 py-2 text-center text-gray-400">{ag.ratingCount}</td>
+                <td className="px-4 py-2 text-center text-gray-200">
+                  {ag.rating.toFixed(1)}
+                </td>
+                <td className="px-4 py-2 text-center text-gray-400">
+                  {ag.ratingCount}
+                </td>
               </tr>
             ))}
         </tbody>
