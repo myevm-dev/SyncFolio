@@ -13,6 +13,7 @@ import {
   getDoc,
   serverTimestamp,
   doc,
+  setDoc,
 } from "firebase/firestore";
 import { db } from "../lib/firebase";
 
@@ -52,7 +53,7 @@ const emptyForm: DealInput = {
   agentTimezone: "",
   occupancyStatus: "",
   highRiskArea: "",
-  agentRating: 0, // new
+  agentRating: 0,
 };
 
 export default function Questionaire({
@@ -82,7 +83,9 @@ export default function Questionaire({
 
   /* ------------------------------- handlers -------------------------------- */
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
 
@@ -99,8 +102,13 @@ export default function Questionaire({
     // recalc insurance when price or risk changes
     if (name === "listingPrice" || name === "highRiskArea") {
       const updated = { ...formData, [name]: value };
-      const price = parseFloat(name === "listingPrice" ? value : formData.listingPrice || "");
-      const risk = name === "highRiskArea" ? value === "yes" : formData.highRiskArea === "yes";
+      const price = parseFloat(
+        name === "listingPrice" ? value : formData.listingPrice || ""
+      );
+      const risk =
+        name === "highRiskArea"
+          ? value === "yes"
+          : formData.highRiskArea === "yes";
       if (!isNaN(price)) {
         const rate = risk ? 0.012 : 0.005;
         updated.insurance = ((price * rate) / 12).toFixed(2);
@@ -157,7 +165,25 @@ export default function Questionaire({
         ...preserved,
       };
 
+      // save deal
       await addDoc(dealsRef, payload);
+
+      // persist agent rating separately
+      const agentId = formData.agentEmail ?? formData.agentName ?? 'unknown-agent';
+      const agentRef = doc(db, `users/${walletAddress}/agents`, agentId);
+      await setDoc(
+        agentRef,
+        {
+          name: formData.agentName,
+          phone: formData.agentPhone,
+          email: formData.agentEmail,
+          timezone: formData.agentTimezone,
+          rating: formData.agentRating ?? 0,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
+
       setSaveSuccess(true);
       onSaveSuccess?.();
       if (!currentDealId) setFormData(emptyForm);
@@ -178,18 +204,22 @@ export default function Questionaire({
       <label className="block text-sm font-medium mb-1">{label}</label>
       <input
         name={name}
-        value={formData[name] as string | number | undefined || ""}
+        value={(formData[name] as string | number) ?? ""}
         onChange={handleChange}
         className="w-full bg-zinc-900 text-white border border-neutral-700 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 autofill:bg-zinc-900"
       />
     </div>
   );
 
-  /* -------------------------------- JSX ------------------------------------ */
+  /* ----------------------------- JSX/render ------------------------------ */
   return (
     <>
       <form onSubmit={handleSubmit} className="p-4 max-w-3xl mx-auto space-y-6">
-        <PropertySection formData={formData} renderField={renderField} handleChange={handleChange} />
+        <PropertySection
+          formData={formData}
+          renderField={renderField}
+          handleChange={handleChange}
+        />
         <ContactInfoSection
           formData={formData}
           handleChange={handleChange}
@@ -201,7 +231,11 @@ export default function Questionaire({
           formData={formData}
           setFormData={setFormData}
         />
-        <MortgageSection formData={formData} renderField={renderField} handleChange={handleChange} />
+        <MortgageSection
+          formData={formData}
+          renderField={renderField}
+          handleChange={handleChange}
+        />
         <FormActions
           handleSubmit={handleSubmit}
           handleSave={handleSave}
@@ -214,21 +248,17 @@ export default function Questionaire({
         />
       </form>
 
-      {/* hidden button triggers script modal from other components */}
+      {/* hidden button triggers script modal */}
       <button
         id="openScriptModalTrigger"
         onClick={() => {
-          if (formData.zillowUrl) {
-            window.open(formData.zillowUrl, "_blank");
-          }
+          if (formData.zillowUrl) window.open(formData.zillowUrl, "_blank");
           setShowScriptModal(true);
         }}
         className="hidden"
         type="button"
       />
 
-
-      {/* Script modal */}
       <ScriptModal
         open={showScriptModal}
         onClose={() => setShowScriptModal(false)}
