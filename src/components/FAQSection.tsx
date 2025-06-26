@@ -22,7 +22,7 @@ const FAQSection: React.FC = () => {
           <li>📞 Call the agent using the provided Call Script to get the needed information.</li>
           <li>🧮 Calculate offers and send to the agent.</li>
           <li>✅ If accepted, press “Finalize” for us to send the contract.</li>
-          <li>📅 Closing will take less than 30 days and the balance will be added to your account.</li>
+          <li>📅 Closing will take less than 30 days and the💲balance will be added to your account.</li>
         </ol>
       ),
     },
