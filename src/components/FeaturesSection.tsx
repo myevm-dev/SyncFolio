@@ -1,19 +1,21 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useLayoutEffect } from "react";
 
 const features = [
-  { title: "Get Started", description: "Just sign in, pick a username, and enter your zip code." },
   { title: "Lead Management CRM", description: "Manage up to 500 leads for free." },
   { title: "Creative Offer Generator", description: "Create offers that are sure to sell to our buyer list." },
   { title: "Customizable Call Scripts", description: "Dynamic call script using the checkmate pitch." },
+  { title: "Top Ranked Real Estate Agents", description: "View America's best and worst agents based on user rankings." },
   { title: "Quick Repair Calculator", description: "Calculate repairs by picture and just a few questions." },
-  { title: "Top Ranked Real Estate Agents", description: "View America's best and worst agents based on user rankings." }
+  { title: "Get Started", description: "Just sign in, pick a username, and enter your zip code." },
+
 ];
 
 export default function FeaturesSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  const fullList = [...features, ...features, ...features]; // Duplicate for loop illusion
+  const fullList = [...features, ...features, ...features];
+  const itemWidth = 300;
   const originalLength = features.length;
+  const centerIndex = originalLength; // Start of the middle copy
 
   let isDown = false;
   let startX = 0;
@@ -47,23 +49,24 @@ export default function FeaturesSection() {
     el.scrollLeft = scrollLeft - walk;
   };
 
-  // Reset scroll position if reaching clone edges
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
 
-    const itemWidth = 300; // width of each card (match Tailwind min-w)
-    const totalWidth = itemWidth * fullList.length;
-    const resetPoint = itemWidth * originalLength;
+    const resetScroll = () => {
+      const scrollTo = centerIndex * itemWidth;
+      el.scrollLeft = scrollTo;
+    };
 
-    // Start at the center
-    el.scrollLeft = resetPoint;
+    resetScroll();
+
+    const totalWidth = itemWidth * fullList.length;
 
     const handleScroll = () => {
-      if (el.scrollLeft <= 0) {
-        el.scrollLeft = resetPoint;
-      } else if (el.scrollLeft >= totalWidth - resetPoint) {
-        el.scrollLeft = resetPoint;
+      if (el.scrollLeft <= itemWidth) {
+        el.scrollLeft = centerIndex * itemWidth;
+      } else if (el.scrollLeft >= totalWidth - itemWidth * originalLength) {
+        el.scrollLeft = centerIndex * itemWidth;
       }
     };
 
