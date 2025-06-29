@@ -262,21 +262,22 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                               return (
                                 <span className="text-red-400 font-medium block mb-2">
-                                  Based on these numbers, I don't think ANY INVESTOR can get a loan on this
-                                  as it would be considered predatory lending. If a retail buyer got a loan
-                                  at today’s rates, they’d end up paying around{" "}
+                                  Based on these numbers, I don't think <span className="uppercase">any investor</span> can get a loan on this
+                                  as it would be considered predatory lending.
+                                  <br /><br />
+                                  If a retail buyer got a loan at today’s rates,
+                                  they’d end up paying around{" "}
                                   <span className="underline">
                                     {overagePercent.toFixed(1)}%
                                   </span>{" "}
-                                  more than the asking price over time.
-                                  <br />
-                                  <br />
-                                  The bank would require them to bring in at least{" "} which slims down the possible buyers.
+                                  more than the asking price over time and the bank would require them to bring in at least{" "}
                                   <span className="font-bold">
                                     ${incomeRequired.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                   </span>{" "}
-                                  per month in income to qualify.
+                                  per month in income to qualify, which slims down the pool of potential buyers.
                                 </span>
+
+
                               );
                             })()
                           ) : (
