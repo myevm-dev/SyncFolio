@@ -311,7 +311,21 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                             })()
                           )}
 
-                          I'm sure you have been getting a lot of lowball offers. Instead of doing that, is the seller open to creative offers if it nets them what they want or even a bit better than expected?
+                          {(() => {
+                            const offerAmount = ((listing * 0.7) - rehab).toFixed(0);
+
+
+                            return (
+                              <>
+                                Would it even be worth presenting an offer around{" "}
+                                <span className="text-yellow-300 font-semibold">
+                                  ${Number(offerAmount).toLocaleString()}
+                                </span>
+                                ? Alternatively, would they be open to creative offers if it nets them what they want or even a bit better than expected?
+
+                              </>
+                            );
+                          })()}
                         </>
 
 
