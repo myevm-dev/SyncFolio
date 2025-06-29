@@ -317,7 +317,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                             return (
                               <>
-                                Would it even be worth presenting an offer around{" "}
+                                There are two ways we can make it work right now being either lower price or low interest rate. Would it even be worth presenting an offer around{" "}
                                 <span className="text-yellow-300 font-semibold">
                                   ${Number(offerAmount).toLocaleString()}
                                 </span>
