@@ -627,7 +627,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
         </div>
 
         <p className="mt-14 text-base text-cyan-400">
-          Awesome, thanks for your time today. We’ll likely reach out with an
+          Great, thanks for your time today. We’ll likely reach out with an
           offer and include proof of funds. As additional credibility, we can include a packet showing a list of
           properties we’ve purchased over the last couple years.
         </p>

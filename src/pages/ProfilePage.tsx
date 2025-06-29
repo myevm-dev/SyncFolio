@@ -165,7 +165,7 @@ export default function ProfilePage() {
             className="text-blue-400 text-sm hover:underline flex items-center"
           >
             <Pencil size={14} className="mr-1" />
-            Edit Zip
+            Edit ZipCode
           </button>
         </div>
 
