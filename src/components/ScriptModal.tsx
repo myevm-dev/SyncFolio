@@ -230,7 +230,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                           and vacancy, and factoring in repair costs, it looks like we would{" "}
                           {profitOrLoss} about{" "}
                           <span className={diff >= 0 ? "text-green-400" : "text-red-400"}>
-                            ${formatted}
+                            ${formatted} per month.
                           </span>
                           <span className="inline-block relative group ml-2 cursor-pointer">
                             <Calculator size={16} className="text-white opacity-70 group-hover:opacity-100" />
@@ -281,13 +281,13 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                                 <p className="font-medium mb-2 text-cyan-300">
                                   {coc < 13 ? (
                                     <>
-                                      Knowing we can passively make 12% in the stock market over a period of
-                                      time, it would be probably better to park the money there.
+                                      That’s a cash-on-cash return of {coc.toFixed(1)}%, which means we’d likely be better off investing passively in the stock market where we can make around 12%.
                                     </>
                                   ) : (
-                                    <>I believe this is fairly priced based on the expected return.</>
-                                  )}{" "}
-                                  <span className="text-white text-xs">(Cash-on-Cash: {coc.toFixed(1)}%)</span>
+                                    <>
+                                      I believe this is fairly priced based on the expected return.
+                                    </>
+                                  )} {" "}
                                   <span className="inline-block relative group ml-2 cursor-pointer">
                                     <Calculator size={14} className="inline text-white opacity-60 group-hover:opacity-100" />
                                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs bg-zinc-800 text-white text-xs rounded-md shadow-lg px-3 py-2 z-50 hidden group-hover:block text-left">
@@ -303,7 +303,6 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                           Is the seller open to creative offers if it nets them what they want or a bit better?
                         </>
-
 
 
                       );
