@@ -285,7 +285,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                                     </>
                                   ) : (
                                     <>
-                                      I believe this is fairly priced based on the expected return.
+                                      I believe this is fairly priced based on the expected return, but like any investor we try to get properties at 70% ARV.
                                     </>
                                   )} {" "}
                                   <span className="inline-block relative group ml-2 cursor-pointer">
@@ -301,7 +301,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                             })()
                           )}
 
-                          Is the seller open to creative offers if it nets them what they want or a bit better?
+                          Instead of lowballing you, is the seller open to creative offers if it nets them what they want or a bit better?
                         </>
 
 
@@ -313,7 +313,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                       <span className="text-white font-semibold">
                         ${formData.listingPrice || "[price]"}
                       </span>
-                      , what’s got the seller looking to let it go right now?
+                      , how long have they owned it and what’s got the seller looking to let it go right now?
                     </>
                   ) : (
                     customLabels[questionIndex]
