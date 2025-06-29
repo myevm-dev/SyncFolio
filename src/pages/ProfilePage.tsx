@@ -22,8 +22,11 @@ export default function ProfilePage() {
   const walletAddress = account?.address || "";
 
   const [displayName, setDisplayName] = useState("");
-  const [editing, setEditing] = useState(false);
+  const [zipcode, setZipcode] = useState("");
+  const [editingName, setEditingName] = useState(false);
+  const [editingZip, setEditingZip] = useState(false);
   const [liveName, setLiveName] = useState("");
+  const [liveZip, setLiveZip] = useState("");
   const [loading, setLoading] = useState(true);
   const [nameTaken, setNameTaken] = useState(false);
   const [reloadFlag, setReloadFlag] = useState(0);
@@ -36,6 +39,7 @@ export default function ProfilePage() {
       if (!snap.exists()) {
         await setDoc(ref, {
           displayName: "Unnamed",
+          zipcode: "",
           team: [],
           createdAt: new Date(),
         });
@@ -52,10 +56,14 @@ export default function ProfilePage() {
       if (snap.exists()) {
         const data = snap.data();
         setDisplayName(data.displayName || "Unnamed");
+        setZipcode(data.zipcode || "");
         setLiveName(data.displayName || "Unnamed");
+        setLiveZip(data.zipcode || "");
       } else {
         setDisplayName("Unnamed");
+        setZipcode("");
         setLiveName("Unnamed");
+        setLiveZip("");
       }
       setLoading(false);
     };
@@ -82,9 +90,11 @@ export default function ProfilePage() {
   const handleSave = async () => {
     if (!walletAddress || !liveName || nameTaken) return;
     const ref = doc(db, "users", walletAddress);
-    await setDoc(ref, { displayName: liveName }, { merge: true });
+    await setDoc(ref, { displayName: liveName, zipcode: liveZip }, { merge: true });
     setDisplayName(liveName);
-    setEditing(false);
+    setZipcode(liveZip);
+    setEditingName(false);
+    setEditingZip(false);
   };
 
   if (!walletAddress) {
@@ -120,38 +130,59 @@ export default function ProfilePage() {
         dangerouslySetInnerHTML={{ __html: svg }}
       />
 
-      {editing ? (
-        <div className="flex flex-col items-center gap-2 mb-2">
-          <input
-            value={liveName}
-            onChange={(e) => setLiveName(e.target.value)}
-            className={`bg-zinc-800 px-3 py-1 rounded text-sm ${
-              nameTaken ? "border border-red-500 text-red-400" : ""
-            }`}
-          />
-          {nameTaken && (
-            <p className="text-red-500 text-xs">Name already taken</p>
+      <div className="mb-4">
+        <div className="flex items-center justify-center gap-2 mb-2">
+          {editingName ? (
+            <input
+              value={liveName}
+              onChange={(e) => setLiveName(e.target.value)}
+              className={`bg-zinc-800 px-3 py-1 rounded text-sm ${nameTaken ? "border border-red-500 text-red-400" : ""}`}
+            />
+          ) : (
+            <span className="font-bold text-lg">{displayName}</span>
           )}
           <button
-            onClick={handleSave}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full text-sm"
-            disabled={nameTaken}
-          >
-            Save Name
-          </button>
-        </div>
-      ) : (
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <span className="font-bold text-lg">{displayName}</span>
-          <button
-            onClick={() => setEditing(true)}
+            onClick={() => setEditingName(!editingName)}
             className="text-blue-400 text-sm hover:underline flex items-center"
           >
             <Pencil size={14} className="mr-1" />
-            Edit
+            Edit Name
           </button>
         </div>
-      )}
+
+        <div className="flex items-center justify-center gap-2">
+          {editingZip ? (
+            <input
+              value={liveZip}
+              onChange={(e) => setLiveZip(e.target.value)}
+              className="bg-zinc-800 px-3 py-1 rounded text-sm"
+            />
+          ) : (
+            <span className="text-sm text-zinc-400">{zipcode}</span>
+          )}
+          <button
+            onClick={() => setEditingZip(!editingZip)}
+            className="text-blue-400 text-sm hover:underline flex items-center"
+          >
+            <Pencil size={14} className="mr-1" />
+            Edit Zip
+          </button>
+        </div>
+
+        {(editingName || editingZip) && (
+          <div className="mt-2">
+            <button
+              onClick={handleSave}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full text-sm"
+              disabled={nameTaken}
+            >
+              Save
+            </button>
+          </div>
+        )}
+      </div>
+
+      {nameTaken && <p className="text-red-500 text-xs mb-2">Name already taken</p>}
 
       <p className="text-gray-400 break-all">Account: {walletAddress}</p>
 
