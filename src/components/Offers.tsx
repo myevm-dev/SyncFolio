@@ -97,7 +97,7 @@ export default function Offers({ results, cashOnCashResults }: Props) {
                   }`}
                   disabled={isComingSoon}
                 >
-                  Details
+                  Offer
                 </button>
                 <button
                   className={`px-4 py-2 rounded-full transition w-full ${
