@@ -226,7 +226,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                       return (
                         <>
-                          At current list & rent using a DSCR loan, then holding back 20% for maintenance, management,
+                          At current list & rent using a DSCR loan, we would hold back 20% for maintenance, management,
                           and vacancy, and factoring in repair costs, it looks like we would{" "}
                           {profitOrLoss} about{" "}
                           <span className={diff >= 0 ? "text-green-400" : "text-red-400"}>
