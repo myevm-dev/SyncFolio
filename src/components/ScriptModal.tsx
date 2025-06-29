@@ -311,7 +311,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                             })()
                           )}
 
-                          Instead of lowballing you, is the seller open to creative offers if it nets them what they want or even a bit better than expected?
+                          I'm sure you have been getting a lot of lowball offers. Instead of doing that, is the seller open to creative offers if it nets them what they want or even a bit better than expected?
                         </>
 
 
