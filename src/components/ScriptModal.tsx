@@ -8,7 +8,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useActiveAccount } from "thirdweb/react";
 
 import { rehabCategories, calculateRehabCost } from "../calculations/repairestimates";
-
+import { calculateMortgage } from "../calculations/mortgageCalculator";
 
 interface Props {
   open: boolean;
@@ -16,7 +16,6 @@ interface Props {
   formData: DealInput;
   setFormData: React.Dispatch<React.SetStateAction<DealInput>>;
 }
-
 
 const defaultQuestions = [
   {
@@ -55,7 +54,7 @@ const defaultQuestions = [
     hint: "List any comparable properties shared by the seller."
   },
   {
-    label: "Depending on how the numbers look, we sometimes come in with creative offers like seller finance or mortgage takeover via trust acquisition. Is the seller open to something like that if it nets them what they want?",
+    label: "At current list and rent, holding back 20% for maintenance, management, and vacancy, it looks like we would profit or lose about [X]. Is the seller open to creative offers like seller finance or mortgage takeover if it nets them what they want?",
     field: "method",
     hint: "Gauge seller openness to creative financing."
   },
@@ -207,7 +206,30 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
             <div key={questionIndex} className="space-y-2 mt-6">
               <div className="flex items-start gap-2">
                 <p className="font-medium text-base text-cyan-400 flex-1">
-                  {q.label.includes("what’s got the seller looking") ? (
+                  {q.field === "method" && formData.rentalValue && formData.listingPrice ? (
+                    (() => {
+                      const rent = parseFloat(formData.rentalValue) || 0;
+                      const netRent = rent * 0.8;
+                      const { monthlyPayment } = calculateMortgage({
+                        listingPrice: parseFloat(formData.listingPrice),
+                      });
+                      const diff = netRent - monthlyPayment;
+                      const profitOrLoss = diff >= 0 ? "profit" : "lose";
+                      const formatted = Math.abs(diff).toFixed(2);
+
+                      return (
+                        <>
+                          At current list and rent, holding back 20% for maintenance,
+                          management, and vacancy, it looks like we would {profitOrLoss} about{" "}
+                          <span className={diff >= 0 ? "text-green-400" : "text-red-400"}>
+                            ${formatted}
+                          </span>
+                          . Is the seller open to creative offers like seller finance or
+                          mortgage takeover if it nets them what they want?
+                        </>
+                      );
+                    })()
+                  ) : q.label.includes("what’s got the seller looking") ? (
                     <>
                       This looks like it has potential and you have it for{" "}
                       <span className="text-white font-semibold">
@@ -219,6 +241,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                     customLabels[questionIndex]
                   )}
                 </p>
+
 
                 <div className="flex gap-1">
                   <button
