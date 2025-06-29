@@ -258,16 +258,24 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                               const totalRepayment = totalCost;
                               const asking = listing + rehab;
                               const overagePercent = ((totalRepayment - asking) / asking) * 100;
+                              const incomeRequired = monthlyPayment * 3.5;
 
                               return (
                                 <span className="text-red-400 font-medium block mb-2">
-                                  Based on these numbers, I don't think any investor can get a loan on this
+                                  Based on these numbers, I don't think ANY INVESTOR can get a loan on this
                                   as it would be considered predatory lending. If a retail buyer got a loan
                                   at today’s rates, they’d end up paying around{" "}
                                   <span className="underline">
                                     {overagePercent.toFixed(1)}%
                                   </span>{" "}
                                   more than the asking price over time.
+                                  <br />
+                                  <br />
+                                  The bank would require them to bring in at least{" "} which slims down the possible buyers.
+                                  <span className="font-bold">
+                                    ${incomeRequired.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                                  </span>{" "}
+                                  per month in income to qualify.
                                 </span>
                               );
                             })()
@@ -287,7 +295,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                                     <>
                                       I believe this is fairly priced based on the expected return, but like any investor we try to get properties at 70% ARV.
                                     </>
-                                  )} {" "}
+                                  )}{" "}
                                   <span className="inline-block relative group ml-2 cursor-pointer">
                                     <Calculator size={14} className="inline text-white opacity-60 group-hover:opacity-100" />
                                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs bg-zinc-800 text-white text-xs rounded-md shadow-lg px-3 py-2 z-50 hidden group-hover:block text-left">
@@ -301,8 +309,9 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                             })()
                           )}
 
-                          Instead of lowballing you, is the seller open to creative offers if it nets them what they want or a bit better?
+                          Instead of lowballing you, is the seller open to creative offers if it nets them what they want or even a bit better than expected?
                         </>
+
 
 
                       );
