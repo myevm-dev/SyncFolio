@@ -41,7 +41,7 @@ const defaultQuestions = [
     hint: "Get them to provide the cost to repair."
   },
   {
-    label: "Do you happen to know what the annual taxes and monthly HOA are?",
+    label: "Do you know the annual taxes and monthly HOA fee? I can check zillow if you think they are accurate.",
     fields: ["taxes", "hoa"],
     hint: "Collect ongoing cost estimates."
   },
