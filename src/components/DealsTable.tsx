@@ -103,7 +103,7 @@ const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
 
       const ADMIN = "0x91706ECbA7af59616D4005F37979528226532E6B".toLowerCase();
       const isAdmin = walletAddress.toLowerCase() === ADMIN;
-      const limitedData = isAdmin ? data : data.slice(0, 100);
+      const limitedData = isAdmin ? data : data.slice(0, 500);
 
       setDeals(limitedData);
     } catch (err) {

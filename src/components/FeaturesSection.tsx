@@ -1,11 +1,12 @@
 import React, { useRef, useEffect } from "react";
 
 const features = [
-  { title: "Lead Management CRM", description: "." },
-  { title: "Creative Offer Generator", description: "." },
-  { title: "Customizable Call Scripts", description: "." },
-  { title: "Quick Repair Calculator", description: "." },
-  { title: "Top Ranked Real Estate Agents", description: "." },
+  { title: "Get Started", description: "Just sign in, pick a username, and enter your zip code." },
+  { title: "Lead Management CRM", description: "Manage up to 500 leads for free." },
+  { title: "Creative Offer Generator", description: "Create offers that are sure to sell to our buyer list." },
+  { title: "Customizable Call Scripts", description: "Dynamic call script using the checkmate pitch." },
+  { title: "Quick Repair Calculator", description: "Calculate repairs by picture and just a few questions." },
+  { title: "Top Ranked Real Estate Agents", description: "View America's best and worst agents based on user rankings." }
 ];
 
 export default function FeaturesSection() {
