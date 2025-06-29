@@ -226,13 +226,13 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                       return (
                         <>
-                          At current list and rent, holding back 20% for maintenance, management,
+                          At current list & rent using a DSCR loan, then holding back 20% for maintenance, management,
                           and vacancy, and factoring in repair costs, it looks like we would{" "}
                           {profitOrLoss} about{" "}
                           <span className={diff >= 0 ? "text-green-400" : "text-red-400"}>
                             ${formatted} per month.
                           </span>
-                          <span className="inline-block relative group ml-2 cursor-pointer">
+                          <span className="inline-block relative group ml-2 cursor-pointer overflow-visible">
                             <Calculator size={16} className="text-white opacity-70 group-hover:opacity-100" />
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs bg-zinc-800 text-white text-xs rounded-md shadow-lg px-3 py-2 z-50 hidden group-hover:block">
                               <div>List Price: ${listing.toLocaleString()}</div>
@@ -297,7 +297,8 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                                       I believe this is fairly priced based on the expected return, but like any investor we try to get properties at 70% ARV.
                                     </>
                                   )}{" "}
-                                  <span className="inline-block relative group ml-2 cursor-pointer">
+                                  <span className="inline-block relative group ml-2 cursor-pointer overflow-visible">
+
                                     <Calculator size={14} className="inline text-white opacity-60 group-hover:opacity-100" />
                                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs bg-zinc-800 text-white text-xs rounded-md shadow-lg px-3 py-2 z-50 hidden group-hover:block text-left">
                                       <div>Annual Cash Flow: ${annualCashFlow.toFixed(2)}</div>
@@ -627,7 +628,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
         <p className="mt-14 text-base text-cyan-400">
           Awesome, thanks for your time today. We’ll likely reach out with an
-          offer and include proof of funds along with a credibility packet showing
+          offer and include proof of funds. As additional credibility, we can include a packet showing a list of
           properties we’ve purchased over the last couple years.
         </p>
 
