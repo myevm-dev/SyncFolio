@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 import { Dialog, DialogContent, DialogTitle } from "./Dialog";
+import { Calculator } from "lucide-react";
+
 import { DealInput } from "../types/DealInput";
 import { Pencil, X, ArrowUp, ArrowDown } from "lucide-react";
 import { db } from "../lib/firebase";
@@ -54,7 +56,7 @@ const defaultQuestions = [
     hint: "List any comparable properties shared by the seller."
   },
   {
-    label: "At current list and rent, holding back 20% for maintenance, management, and vacancy, it looks like we would profit or lose about [X]. Is the seller open to creative offers like seller finance or mortgage takeover if it nets them what they want?",
+    label: "dynamic_method_label",
     field: "method",
     hint: "Gauge seller openness to creative financing."
   },
@@ -69,6 +71,7 @@ const defaultQuestions = [
     hint: "Learn more about financing details."
   }
 ];
+
 
 export default function ScriptModal({ open, onClose, formData, setFormData }: Props) {
   const account = useActiveAccount();
@@ -210,23 +213,99 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                     (() => {
                       const rent = parseFloat(formData.rentalValue) || 0;
                       const netRent = rent * 0.8;
+                      const rehab = parseFloat(formData.rehabCost || "0");
+                      const listing = parseFloat(formData.listingPrice || "0");
+
                       const { monthlyPayment } = calculateMortgage({
-                        listingPrice: parseFloat(formData.listingPrice),
+                        listingPrice: listing + rehab,
                       });
+
                       const diff = netRent - monthlyPayment;
                       const profitOrLoss = diff >= 0 ? "profit" : "lose";
                       const formatted = Math.abs(diff).toFixed(2);
 
                       return (
                         <>
-                          At current list and rent, holding back 20% for maintenance,
-                          management, and vacancy, it looks like we would {profitOrLoss} about{" "}
+                          At current list and rent, holding back 20% for maintenance, management,
+                          and vacancy, and factoring in repair costs, it looks like we would{" "}
+                          {profitOrLoss} about{" "}
                           <span className={diff >= 0 ? "text-green-400" : "text-red-400"}>
                             ${formatted}
                           </span>
-                          . Is the seller open to creative offers like seller finance or
-                          mortgage takeover if it nets them what they want?
+                          <span className="inline-block relative group ml-2 cursor-pointer">
+                            <Calculator size={16} className="text-white opacity-70 group-hover:opacity-100" />
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs bg-zinc-800 text-white text-xs rounded-md shadow-lg px-3 py-2 z-50 hidden group-hover:block">
+                              <div>List Price: ${listing.toLocaleString()}</div>
+                              <div>+ Repairs: ${rehab.toLocaleString()}</div>
+                              <div>Loan: 80% of Total</div>
+                              <div>Monthly Payment: ${monthlyPayment.toFixed(2)}</div>
+                              <div>Operating Income: ${netRent.toFixed(2)}</div>
+                              <div>
+                                Cash Flow:{" "}
+                                <span className={diff >= 0 ? "text-green-400" : "text-red-400"}>
+                                  ${diff.toFixed(2)}
+                                </span>
+                              </div>
+                            </div>
+                          </span>
+                          .
+                          <br />
+                          <br />
+
+                          {diff < 0 ? (
+                            (() => {
+                              const totalCost = monthlyPayment * 12 * 30;
+                              const totalRepayment = totalCost;
+                              const asking = listing + rehab;
+                              const overagePercent = ((totalRepayment - asking) / asking) * 100;
+
+                              return (
+                                <span className="text-red-400 font-medium block mb-2">
+                                  Based on these numbers, I don't think any investor can get a loan on this
+                                  as it would be considered predatory lending. If a retail buyer got a loan
+                                  at today’s rates, they’d end up paying around{" "}
+                                  <span className="underline">
+                                    {overagePercent.toFixed(1)}%
+                                  </span>{" "}
+                                  more than the asking price over time.
+                                </span>
+                              );
+                            })()
+                          ) : (
+                            (() => {
+                              const annualCashFlow = diff * 12;
+                              const entryCost = (listing + rehab) * 0.2 + rehab;
+                              const coc = (annualCashFlow / entryCost) * 100;
+
+                              return (
+                                <p className="font-medium mb-2 text-cyan-300">
+                                  {coc < 13 ? (
+                                    <>
+                                      Knowing we can passively make 12% in the stock market over a period of
+                                      time, it would be probably better to park the money there.
+                                    </>
+                                  ) : (
+                                    <>I believe this is fairly priced based on the expected return.</>
+                                  )}{" "}
+                                  <span className="text-white text-xs">(Cash-on-Cash: {coc.toFixed(1)}%)</span>
+                                  <span className="inline-block relative group ml-2 cursor-pointer">
+                                    <Calculator size={14} className="inline text-white opacity-60 group-hover:opacity-100" />
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs bg-zinc-800 text-white text-xs rounded-md shadow-lg px-3 py-2 z-50 hidden group-hover:block text-left">
+                                      <div>Annual Cash Flow: ${annualCashFlow.toFixed(2)}</div>
+                                      <div>Total Entry (Down + Repairs): ${entryCost.toFixed(2)}</div>
+                                      <div>Cash-on-Cash Return: {coc.toFixed(2)}%</div>
+                                    </div>
+                                  </span>
+                                </p>
+                              );
+                            })()
+                          )}
+
+                          Is the seller open to creative offers if it nets them what they want or a bit better?
                         </>
+
+
+
                       );
                     })()
                   ) : q.label.includes("what’s got the seller looking") ? (
@@ -241,6 +320,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                     customLabels[questionIndex]
                   )}
                 </p>
+
 
 
                 <div className="flex gap-1">
