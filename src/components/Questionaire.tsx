@@ -27,7 +27,6 @@ interface Props {
   setCurrentDealId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-/** default form values */
 const emptyForm: DealInput = {
   address: "",
   zillowUrl: "",
@@ -68,7 +67,6 @@ export default function Questionaire({
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [showScriptModal, setShowScriptModal] = useState(false);
 
-  /* --------------------------- auto-insurance calc -------------------------- */
   useEffect(() => {
     const price = parseFloat(formData.listingPrice || "");
     const isHighRisk = formData.highRiskArea === "yes";
@@ -76,12 +74,11 @@ export default function Questionaire({
       const rate = isHighRisk ? 0.012 : 0.005;
       const monthly = ((price * rate) / 12).toFixed(2);
       if (formData.insurance !== monthly) {
-        setFormData(prev => ({ ...prev, insurance: monthly }));
+        setFormData((prev) => ({ ...prev, insurance: monthly }));
       }
     }
   }, [formData.listingPrice, formData.highRiskArea]);
 
-  /* ------------------------------- handlers -------------------------------- */
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -89,17 +86,15 @@ export default function Questionaire({
   ) => {
     const { name, value } = e.target;
 
-    // auto-parse address from Zillow URL
     if (name === "zillowUrl") {
       const match = value.match(/\/homedetails\/([^/]+)\//);
       if (match?.[1]) {
         const address = decodeURIComponent(match[1].replace(/-/g, " "));
-        setFormData(prev => ({ ...prev, zillowUrl: value, address }));
+        setFormData((prev) => ({ ...prev, zillowUrl: value, address }));
         return;
       }
     }
 
-    // recalc insurance when price or risk changes
     if (name === "listingPrice" || name === "highRiskArea") {
       const updated = { ...formData, [name]: value };
       const price = parseFloat(
@@ -125,7 +120,6 @@ export default function Questionaire({
     onSubmit(formData);
   };
 
-  /* -------------------------------- save ----------------------------------- */
   const handleSave = async () => {
     if (!walletAddress) return;
 
@@ -133,7 +127,6 @@ export default function Questionaire({
       const dealsRef = collection(db, `users/${walletAddress}/deals`);
       let preserved: Partial<DealInput & { createdAt?: any }> = {};
 
-      // if updating, fetch previous doc to retain status/method
       if (currentDealId) {
         const prevRef = doc(dealsRef, currentDealId);
         const snap = await getDoc(prevRef);
@@ -149,7 +142,6 @@ export default function Questionaire({
         setCurrentDealId(null);
       }
 
-      // build nested agent object
       const agent = {
         name: formData.agentName,
         phone: formData.agentPhone,
@@ -158,31 +150,33 @@ export default function Questionaire({
         rating: formData.agentRating ?? 0,
       };
 
+      const { agentRating, ...dealWithoutRating } = formData;
+
       const payload = {
-        ...formData,
+        ...dealWithoutRating,
         agent,
         updatedAt: serverTimestamp(),
         ...preserved,
       };
 
-      // save deal
       await addDoc(dealsRef, payload);
 
-      // persist agent rating separately
-      const agentId = formData.agentEmail ?? formData.agentName ?? 'unknown-agent';
-      const agentRef = doc(db, `users/${walletAddress}/agents`, agentId);
-      await setDoc(
-        agentRef,
-        {
-          name: formData.agentName,
-          phone: formData.agentPhone,
-          email: formData.agentEmail,
-          timezone: formData.agentTimezone,
-          rating: formData.agentRating ?? 0,
-          updatedAt: serverTimestamp(),
-        },
-        { merge: true }
-      );
+      const agentId = (formData.agentEmail || formData.agentPhone || formData.agentName || 'unknown-agent').toLowerCase().trim();
+      if (agentId !== 'unknown-agent') {
+        const agentRef = doc(db, `users/${walletAddress}/agents`, agentId);
+        await setDoc(
+          agentRef,
+          {
+            name: formData.agentName,
+            phone: formData.agentPhone,
+            email: formData.agentEmail,
+            timezone: formData.agentTimezone,
+            rating: formData.agentRating ?? 0,
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true }
+        );
+      }
 
       setSaveSuccess(true);
       onSaveSuccess?.();
@@ -198,7 +192,6 @@ export default function Questionaire({
     setSaveSuccess(false);
   };
 
-  /* field renderer reused by sub-components */
   const renderField = (name: keyof DealInput, label: string, span = 1) => (
     <div className={span === 2 ? "md:col-span-2" : ""}>
       <label className="block text-sm font-medium mb-1">{label}</label>
@@ -211,7 +204,6 @@ export default function Questionaire({
     </div>
   );
 
-  /* ----------------------------- JSX/render ------------------------------ */
   return (
     <>
       <form onSubmit={handleSubmit} className="p-4 max-w-3xl mx-auto space-y-6">
@@ -248,7 +240,6 @@ export default function Questionaire({
         />
       </form>
 
-      {/* hidden button triggers script modal */}
       <button
         id="openScriptModalTrigger"
         onClick={() => {
