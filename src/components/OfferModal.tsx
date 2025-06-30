@@ -77,11 +77,11 @@ export default function OfferModal({ type, onClose, onSave }: OfferModalProps) {
 
           <SupportingLogicList
             bullets={[
-              "Property requires updates such as roof, HVAC, or siding",
-              "We are prepared to cover all rehab costs",
-              "Seller finance allows for greater net over time",
-              "Terms are structured to protect both sides",
-              "Proof of funds and transaction history available upon request",
+              "Point One",
+              "Point Two",
+              "Point Three",
+              "Point Four",
+              "Point Five",
             ]}
           />
 
