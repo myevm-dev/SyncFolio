@@ -31,7 +31,7 @@ const defaultQuestions = [
     hint: "Understand the seller's motivation."
   },
   {
-    label: "Any idea what it could bring in rent if we had it looking nice?",
+    label: "Any idea what it could bring in rent when it's time?",
     field: "rentalValue",
     hint: "Get an estimate for potential rental income."
   },
