@@ -112,7 +112,7 @@ export default function OfferModal({ type, onClose, onSave }: OfferModalProps) {
               }}
               className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
             >
-              Copy
+              Copy Text
             </button>
 
             <button
@@ -146,7 +146,7 @@ export default function OfferModal({ type, onClose, onSave }: OfferModalProps) {
               }}
               className="px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition"
             >
-              Share
+              Create Link
             </button>
           </div>
         </div>
