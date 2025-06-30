@@ -262,20 +262,19 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                               return (
                                 <span className="text-red-400 font-medium block mb-2">
-                                  Based on these numbers, I don't think <span className="uppercase">any investor</span> can get a loan on this
-                                  as it would be considered predatory lending.
+                                  Based on this, I don’t believe <span className="uppercase">any investor</span> could finance this deal, it would border on predatory lending.
                                   <br /><br />
-                                  If a retail buyer got a loan at today’s rates,
-                                  they’d end up paying around{" "}
+                                  At today’s rates, a retail buyer would pay roughly{" "}
                                   <span className="underline">
-                                    {overagePercent.toFixed(1)}%
+                                    {overagePercent.toFixed(0)}%
                                   </span>{" "}
-                                  more than the asking price over time and the bank would require them to bring in at least{" "}
+                                  more than the asking price over time, and would need to show at least{" "}
                                   <span className="font-bold">
                                     ${incomeRequired.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                   </span>{" "}
-                                  per month in income to qualify, which slims down the pool of potential buyers.
+                                  per month in income just to qualify, which will shrink the buyer pool.
                                 </span>
+
 
 
                               );
@@ -317,7 +316,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                             return (
                               <>
-                                There are two ways we can make it work right now being either lower price or low interest rate. Would it even be worth presenting an offer around{" "}
+                                I think there are two ways we can get this deal done, being either lower price or low interest rate. Would it even be worth presenting an offer around{" "}
                                 <span className="text-yellow-300 font-semibold">
                                   ${Number(offerAmount).toLocaleString()}
                                 </span>
