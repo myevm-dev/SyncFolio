@@ -133,7 +133,7 @@ export default function OfferModal({ type, onClose, onSave }: OfferModalProps) {
               }}
               className="px-6 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition"
             >
-              PDF
+              Download All
             </button>
 
             <button
