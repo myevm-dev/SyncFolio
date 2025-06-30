@@ -226,12 +226,12 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                       return (
                         <>
-                          At current list & rent using a DSCR loan, we would hold back 20% for maintenance, management,
-                          and vacancy, and factoring in repair costs, it looks like we would{" "}
-                          {profitOrLoss} about{" "}
+                          Based on the current list price and rent, using a DSCR loan and holding 20% for maintenance, management, and vacancy—after factoring in repair costs—we’d {profitOrLoss} approximately{" "}
                           <span className={diff >= 0 ? "text-green-400" : "text-red-400"}>
                             ${formatted} per month.
                           </span>
+                          
+
                           <span className="inline-block relative group ml-2 cursor-pointer overflow-visible">
                             <Calculator size={16} className="text-white opacity-70 group-hover:opacity-100" />
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-xs bg-zinc-800 text-white text-xs rounded-md shadow-lg px-3 py-2 z-50 hidden group-hover:block">
@@ -334,12 +334,14 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                     })()
                   ) : q.label.includes("what’s got the seller looking") ? (
                     <>
-                      This looks like it has potential and you have it for{" "}
+                      I believe it might be worth{" "}
                       <span className="text-white font-semibold">
                         ${formData.listingPrice || "[price]"}
                       </span>
-                      , how long have they owned it and what’s got the seller looking to let it go right now?
+                      , how long have they owned it, and what’s got the seller looking to let it go right now?
                     </>
+
+
                   ) : (
                     customLabels[questionIndex]
                   )}
