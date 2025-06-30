@@ -98,7 +98,7 @@ export default function OfferModal({ type, onClose, onSave }: OfferModalProps) {
         <div className="pt-6 flex flex-col items-center gap-3">
           <button
             onClick={handleSave}
-            className="px-6 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-800 transition"
+            className="px-14 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-800 transition"
           >
             Save
           </button>
