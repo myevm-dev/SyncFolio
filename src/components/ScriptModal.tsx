@@ -316,11 +316,11 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                             return (
                               <>
-                                I think there are two ways we can get this deal done, being either lower price or low interest rate. Would it even be worth presenting an offer around{" "}
+                                I think there are two ways we can get this deal done, being either lower price or low interest rate. I mean...would it even be worth presenting an offer around{" "}
                                 <span className="text-yellow-300 font-semibold">
                                   ${Number(offerAmount).toLocaleString()}
                                 </span>
-                                ? Or would they be open to creative offers if it nets them what they want or even a bit better than expected?
+                                ? Or maybe they would be open to creative offers if it nets them what they want or even a bit better than expected?
 
                               </>
                             );
