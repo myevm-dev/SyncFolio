@@ -264,7 +264,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                                 <span className="text-red-400 font-medium block mb-2">
                                   Based on this, I don’t believe <span className="uppercase">any investor</span> could finance this deal, it would border on predatory lending.
                                   <br /><br />
-                                  At today’s rates, a retail buyer would pay roughly{" "}
+                                  I can see how this one might be harder to sell. At today’s rates, a retail buyer would pay roughly{" "}
                                   <span className="underline">
                                     {overagePercent.toFixed(0)}%
                                   </span>{" "}
