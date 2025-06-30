@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { OfferResults } from "../types/OfferResults";
 import { CashOnCashResult } from "../types/CashOnCashResult";
 import OfferModal from "./OfferModal";
@@ -10,6 +10,17 @@ interface Props {
 
 export default function Offers({ results, cashOnCashResults }: Props) {
   const [activeOfferType, setActiveOfferType] = useState<keyof OfferResults | null>(null);
+  const [folioValueUSD, setFolioValueUSD] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("https://api.coingecko.com/api/v3/simple/price?ids=optimism&vs_currencies=usd")
+      .then((res) => res.json())
+      .then((data) => {
+        const opPrice = data?.optimism?.usd;
+        if (opPrice) setFolioValueUSD(opPrice * 1000);
+      })
+      .catch((err) => console.error("Error fetching OP price:", err));
+  }, []);
 
   const labels = {
     cash: "Cash Offer via DSCR",
@@ -29,7 +40,7 @@ export default function Offers({ results, cashOnCashResults }: Props) {
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 max-w-6xl mx-auto">
         {Object.entries(results).map(([key, value]) => {
-  const typedKey = key as keyof OfferResults;
+          const typedKey = key as keyof OfferResults;
           const isComingSoon = value.toLowerCase().includes("coming soon");
           const coc = cashOnCashResults.find((r) => r.type === typeMap[key]);
           const borderColor = isComingSoon
@@ -79,8 +90,14 @@ export default function Offers({ results, cashOnCashResults }: Props) {
                 {coc?.pass && (
                   <div className="text-center mt-2">
                     <p className="text-md text-gray-400">You Earn Minimum</p>
-                    <p className="text-3xl mb-2 text-green-500 font-bold">$2325</p>
-                    <p className="text-[13px] text-gray-500 max-w-[200px] leading-tight">.</p>
+                    <p className="text-3xl mb-2 text-green-500 font-bold">$2250</p>
+                    <p className="text-[15px] max-w-[200px] leading-tight">
+                      <span className="text-cyan-400">+ 50k Folio Token</span>
+                      {folioValueUSD !== null && (
+                        <span className="text-green-400 ml-1">(~${folioValueUSD.toFixed(2)})</span>
+                      )}
+                    </p>
+
                   </div>
                 )}
                 <div className="flex w-full gap-2 mt-2">
@@ -107,7 +124,6 @@ export default function Offers({ results, cashOnCashResults }: Props) {
           type={activeOfferType}
           onClose={() => setActiveOfferType(null)}
         />
-
       )}
     </>
   );

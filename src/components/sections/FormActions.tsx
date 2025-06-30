@@ -36,7 +36,7 @@ export default function FormActions({
           onClick={handleSubmit}
           className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
         >
-          Calculate
+          See Offers
         </button>
         <button
           type="button"
