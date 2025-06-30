@@ -16,7 +16,7 @@ export default function OfferFooter({ contact, attachments }: OfferFooterProps) 
       <p className="mb-1">Best regards,</p>
       <p className="font-semibold">{contact.name}</p>
       <p>{contact.phone}</p>
-      <p className="mb-2">Joint Venture: {contact.jv}</p>
+      <p>Aquisition Manager</p>
       <p><strong>Attachments:</strong> {attachments.join(", ")}</p>
     </div>
   );
