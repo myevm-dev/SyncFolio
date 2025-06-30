@@ -47,7 +47,7 @@ export default function OfferModal({ type, onClose, onSave }: OfferModalProps) {
               terms={[
                 "Terms: Cash, as-is",
                 "Close: Subject to a 7 business day inspection period",
-                "EMD: $X,XXX non-refundable, submitted after inspection period",
+                "EMD: $1,500 non-refundable, submitted after inspection period",
               ]}
             />
           )}
@@ -64,7 +64,7 @@ export default function OfferModal({ type, onClose, onSave }: OfferModalProps) {
                   "Balloon: $X,XXX due in final month",
                   "Commission: Seller’s agent fee paid from down payment",
                   "Close: Subject to a 7 business day inspection period",
-                  "EMD: $X,XXX non-refundable, submitted after inspection period",
+                  "EMD: $1,500 non-refundable, submitted after inspection period",
                 ]}
               />
               <div className="bg-black text-white border border-white p-4 rounded mb-4 text-sm">
@@ -104,12 +104,6 @@ export default function OfferModal({ type, onClose, onSave }: OfferModalProps) {
           </button>
 
           <div className="flex flex-wrap justify-center gap-3">
-            <button
-              onClick={onClose}
-              className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition"
-            >
-              Done
-            </button>
 
             <button
               onClick={() => {
