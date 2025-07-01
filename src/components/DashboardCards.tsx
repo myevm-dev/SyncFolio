@@ -22,9 +22,9 @@ const DashboardCards = () => {
   }, [walletAddress]);
 
   const cards = [
-    { label: "Buying", value: `${offerCount} Properties`, icon: "🏠" },
-    { label: "Earnings", value: "$0.00", icon: "💰" },
-    { label: "Selling", value: "0 Properties", icon: "📄" },
+    { label: "Buying", value: `${offerCount} Properties`, icon: "\uD83C\uDFE0" },
+    { label: "Earnings", value: "$0.00", icon: "\uD83D\uDCB0" },
+    { label: "Selling", value: "0 Properties", icon: "\uD83D\uDCC4" },
   ];
 
   const handleCardClick = (label: string) => {
