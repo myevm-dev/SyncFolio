@@ -5,6 +5,8 @@ import OfferOptionCard from "./OfferOptionCard";
 import SellerProtectionClause from "./SellerProtectionClause";
 import SupportingLogicList from "./SupportingLogicList";
 import { Pencil } from "lucide-react";
+import { db } from "../lib/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 interface OfferModalProps {
   type: "cash" | "sellerFinance" | "takeover" | "hybrid";
@@ -13,6 +15,7 @@ interface OfferModalProps {
   results: any;
   coc?: any;
   propertyAddress: string;
+  walletAddress: string;
 }
 
 export default function OfferModal({
@@ -22,6 +25,7 @@ export default function OfferModal({
   results,
   coc,
   propertyAddress,
+  walletAddress,
 }: OfferModalProps) {
   const address = propertyAddress || "[Property Address Here]";
   const [name, setName] = useState("[Your Name]");
@@ -32,6 +36,7 @@ export default function OfferModal({
   const offerText = results[type];
   const match = offerText?.match(/\$([0-9,.]+)/);
   const [offerPrice, setOfferPrice] = useState<string>(match?.[1] || "0");
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const sellerText = results["sellerFinance"] || "";
   const totalOffer = sellerText.match(/Total Offer: \$(.*)/)?.[1] || "$0";
@@ -41,9 +46,21 @@ export default function OfferModal({
   const [term, setTerm] = useState(monthlyMatch?.[2] || "0");
   const [balloon, setBalloon] = useState(sellerText.match(/Balloon: \$(.*)/)?.[1] || "$0");
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const content = document.getElementById("offer-preview")?.textContent || "";
+    if (!walletAddress) return;
+    const ref = collection(db, `users/${walletAddress}/offers`);
+    await addDoc(ref, {
+      content,
+      name,
+      phone,
+      title,
+      propertyAddress: address,
+      createdAt: serverTimestamp(),
+    });
     if (onSave) onSave(content);
+    setSaveSuccess(true);
+    setTimeout(() => setSaveSuccess(false), 3000);
   };
 
   const makeEditableValue = (value: string, onEdit: () => void) => (
@@ -172,6 +189,12 @@ export default function OfferModal({
           >
             Save
           </button>
+
+          {saveSuccess && (
+            <div className="bg-green-700 text-white px-4 py-2 rounded-full text-sm font-medium">
+              Saved to Firebase ✔
+            </div>
+          )}
 
           <div className="flex flex-wrap justify-center gap-3">
             <button
