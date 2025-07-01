@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { useActiveAccount } from "thirdweb/react";
-import { db } from "../lib/firebase";
 import { doc, getDoc, setDoc, collection, getDocs } from "firebase/firestore";
+import { db } from "../lib/firebase";
 import { Pencil } from "lucide-react";
-import TeamSection from "../components/TeamSection";
-import IncomingInvites from "../components/IncomingInvites";
 import Lottie from "lottie-react";
 import animationData from "../lottie/Animation - 1749869487293.json";
-import ReferralSection from "../components/ReferralSection";
 import DashboardCards from "../components/DashboardCards";
-
+import TeamSection from "../components/TeamSection";
+import ReferralSection from "../components/ReferralSection";
+import IncomingInvites from "../components/IncomingInvites";
+import HeatMap from "../components/HeatMap"; // ✅ import heatmap component
 
 declare global {
   interface Window {
@@ -187,6 +187,10 @@ export default function ProfilePage() {
       <p className="text-gray-400 break-all">Account: {walletAddress}</p>
 
       <DashboardCards />
+
+      <div className="mt-10">
+        <HeatMap walletAddress={walletAddress} />
+      </div>
 
       <div className="flex flex-col lg:flex-row justify-center items-start gap-8 max-w-6xl mx-auto mt-10">
         <div className="flex-1 border border-zinc-700 rounded-xl p-6">
