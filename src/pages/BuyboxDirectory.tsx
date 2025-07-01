@@ -62,7 +62,8 @@ const TAGS = [
   "🆕 New Buybox",
   "⚡ Fast Response",
   "📈 Active Buyer",
-  "🔥 High Demand"
+  "🔥 High Demand",
+    "🎁 Bonus Folio" 
 ];
 
 const getRandomTags = () => {

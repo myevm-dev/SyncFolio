@@ -49,19 +49,27 @@ const SellerCard: React.FC<SellerCardProps> = ({
         </p>
       </div>
 
-      <div className="px-4 pb-4 mt-auto flex justify-between gap-2">
+      <div className="px-4 pb-4 mt-auto flex flex-col gap-2">
         <button
           disabled
-          className="flex-1 bg-cyan-400 text-black text-sm py-2 rounded font-semibold cursor-not-allowed"
+          className="w-full bg-[#fd01f5] text-black text-sm py-2 rounded font-semibold cursor-not-allowed"
         >
-          Send to
+          Incentivize with Ꞙolio
         </button>
-        <button
-          disabled
-          className="flex-1 bg-green-600 text-white text-sm py-2 rounded font-semibold cursor-not-allowed"
-        >
-          Delist
-        </button>
+        <div className="flex gap-2">
+          <button
+            disabled
+            className="flex-1 bg-cyan-400 text-black text-sm py-2 rounded font-semibold cursor-not-allowed"
+          >
+            Send to
+          </button>
+          <button
+            disabled
+            className="flex-1 bg-green-600 text-white text-sm py-2 rounded font-semibold cursor-not-allowed"
+          >
+            Delist
+          </button>
+        </div>
       </div>
     </div>
   );

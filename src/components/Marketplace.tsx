@@ -15,6 +15,7 @@ const mockDeals = [
     imageUrl: "https://via.placeholder.com/400x200",
     buyNowPrice: "$11,500",
     currentBid: "$4,000",
+    bonus: "100k Ꞙolio Tokens",
   },
   {
     address: "456 Oak Ave, Phoenix, AZ",
@@ -26,6 +27,7 @@ const mockDeals = [
     imageUrl: "https://via.placeholder.com/400x200",
     buyNowPrice: "$7,000",
     currentBid: "$3,500",
+    bonus: "100k Ꞙolio Tokens",
   },
   {
     address: "789 Pine Dr, Atlanta, GA",
@@ -37,6 +39,7 @@ const mockDeals = [
     imageUrl: "https://via.placeholder.com/400x200",
     buyNowPrice: "$9,500",
     currentBid: "$5,000",
+    bonus: "100k Ꞙolio Tokens",
   },
   {
     address: "101 River Rd, Orlando, FL",
@@ -48,6 +51,7 @@ const mockDeals = [
     imageUrl: "https://via.placeholder.com/400x200",
     buyNowPrice: "$10,500",
     currentBid: "$7,000",
+    bonus: "100k Ꞙolio Tokens",
   },
   {
     address: "202 Market St, Austin, TX",
@@ -59,6 +63,7 @@ const mockDeals = [
     imageUrl: "https://via.placeholder.com/400x200",
     buyNowPrice: "$12,000",
     currentBid: "$3,000",
+    bonus: "100k Ꞙolio Tokens",
   },
   {
     address: "303 Ocean Blvd, San Diego, CA",
@@ -70,6 +75,7 @@ const mockDeals = [
     imageUrl: "https://via.placeholder.com/400x200",
     buyNowPrice: "$13,000",
     currentBid: "$9,000",
+    bonus: "100k Ꞙolio Tokens",
   },
 ];
 

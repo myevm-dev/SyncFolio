@@ -10,6 +10,7 @@ interface DealCardProps {
   monthlyCashflow: string;
   buyNowPrice: string;
   currentBid: string;
+  bonus?: string; // Optional bonus field
 }
 
 const DealCard: React.FC<DealCardProps> = ({
@@ -21,11 +22,19 @@ const DealCard: React.FC<DealCardProps> = ({
   monthlyCashflow,
   buyNowPrice,
   currentBid,
+  bonus,
 }) => {
   const isCash = method.toLowerCase() === "cash";
 
   return (
     <div className="relative bg-[#050505] border border-neutral-700 rounded-lg shadow-md overflow-hidden flex flex-col">
+      {/* Bonus Badge */}
+      {bonus && (
+        <div className="absolute top-2 right-2 bg-[#fd01f5] text-black text-xs font-semibold px-3 py-1 rounded-full z-20 shadow-md">
+          Bonus: {bonus}
+        </div>
+      )}
+
       {/* Coming Soon Overlay */}
       <div className="absolute top-[17%] left-0 right-0 z-10 flex justify-center">
         <span className="bg-black/30 backdrop-blur-[1px] px-4 py-2 rounded text-black text-4xl font-bold">
