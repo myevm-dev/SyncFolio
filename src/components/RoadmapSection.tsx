@@ -9,7 +9,7 @@ interface Props {
   items: ComingSoonItem[];
 }
 
-export default function ComingSoonSection({ items }: Props) {
+export default function RoadmapSection({ items }: Props) {
   return (
     <section className="mt-16 bg-[#050505] border border-neutral-700 rounded-lg p-8 text-center shadow-md hover:shadow-lg transition">
       <h2 className="text-2xl font-semibold mb-4 text-teal-400">

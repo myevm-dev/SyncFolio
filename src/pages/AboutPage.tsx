@@ -2,7 +2,7 @@ import React from "react";
 import FAQSection from "../components/FAQSection";
 import DisclaimerSection from "../components/DisclaimerSection";
 import HeroHeader from "../components/HeroHeader";
-import ComingSoonSection from "../components/RoadmapSection";
+import RoadmapSection from "../components/RoadmapSection";
 import FeaturesSection from "../components/FeaturesSection";
 
 const roles = [
@@ -22,9 +22,9 @@ const roles = [
 
 const comingSoonItems = [
   { label: "Referral Program", percent: 85 },
+  { label: "Auto-Offers", percent: 80 },
   { label: "Team Collaboration", percent: 70 },
   { label: "Earn Platform Credits", percent: 65 },
-  { label: "Auto-Offers", percent: 60 },
   { label: "Lead Gamification", percent: 60 },
   { label: "JV With Us", percent: 55 },
   { label: "Auto-Contracts", percent: 50 },
@@ -73,7 +73,7 @@ export default function AboutPage() {
 
         {/* Coming Soon */}
         <div className="w-full max-w-6xl mx-auto mt-16">
-          <ComingSoonSection items={comingSoonItems} />
+          <RoadmapSection items={comingSoonItems} />
         </div>
 
         {/* FAQ & Disclaimer */}

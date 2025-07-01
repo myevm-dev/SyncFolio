@@ -1,19 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "./Dialog";
 import OfferHeader from "./OfferHeader";
 import OfferOptionCard from "./OfferOptionCard";
 import SellerProtectionClause from "./SellerProtectionClause";
 import SupportingLogicList from "./SupportingLogicList";
-import OfferFooter from "./OfferFooter";
-import { OfferResults } from "../types/OfferResults";
-import { CashOnCashResult } from "../types/CashOnCashResult";
+import { Pencil } from "lucide-react";
 
 interface OfferModalProps {
   type: "cash" | "sellerFinance" | "takeover" | "hybrid";
   onClose: () => void;
   onSave?: (value: string) => void;
-  results: OfferResults;
-  coc?: CashOnCashResult;
+  results: any;
+  coc?: any;
   propertyAddress: string;
 }
 
@@ -26,15 +24,38 @@ export default function OfferModal({
   propertyAddress,
 }: OfferModalProps) {
   const address = propertyAddress || "[Property Address Here]";
-  const defaultJVPartners = "[Your Company] + [Partner Entity]";
-  const defaultName = "[Your Name]";
-  const defaultPhone = "[Your Phone Number]";
+  const [name, setName] = useState("[Your Name]");
+  const [phone, setPhone] = useState("[Your Phone Number]");
+  const [title, setTitle] = useState("Aquisition Manager");
+  const [inspectionDays, setInspectionDays] = useState<number>(7);
+  const [jvPartners, setJvPartners] = useState("[Your Company] + [Partner Entity]");
   const offerText = results[type];
+  const match = offerText?.match(/\$([0-9,.]+)/);
+  const [offerPrice, setOfferPrice] = useState<string>(match?.[1] || "0");
+
+  const sellerText = results["sellerFinance"] || "";
+  const totalOffer = sellerText.match(/Total Offer: \$(.*)/)?.[1] || "$0";
+  const [down, setDown] = useState(sellerText.match(/Down: \$(.*)/)?.[1] || "$0");
+  const monthlyMatch = sellerText.match(/Monthly: \$(.*) x (\d+) months/);
+  const [monthly, setMonthly] = useState(monthlyMatch?.[1] || "$0");
+  const [term, setTerm] = useState(monthlyMatch?.[2] || "0");
+  const [balloon, setBalloon] = useState(sellerText.match(/Balloon: \$(.*)/)?.[1] || "$0");
 
   const handleSave = () => {
     const content = document.getElementById("offer-preview")?.textContent || "";
     if (onSave) onSave(content);
   };
+
+  const makeEditableValue = (value: string, onEdit: () => void) => (
+    <span>
+      {value}
+      <Pencil
+        size={16}
+        className="inline ml-2 cursor-pointer text-blue-400"
+        onClick={onEdit}
+      />
+    </span>
+  );
 
   return (
     <Dialog open onOpenChange={onClose}>
@@ -51,69 +72,71 @@ export default function OfferModal({
           id="offer-preview"
           className="space-y-6 bg-black text-white p-10 rounded-xl font-serif leading-relaxed"
         >
-          <OfferHeader
-            propertyAddress={address}
-            jvPartners={defaultJVPartners}
-          />
+          <OfferHeader propertyAddress={address} jvPartners={jvPartners} />
 
-          {type === "cash" && (() => {
-            const text = results[type] || "";
-            const totalOffer =
-              text.match(/Offer:\s*\$(\d+(?:\.\d+)?)/)?.[1] ||
-              (coc?.entry ? coc.entry.toFixed(2) : "$0");
-            const closeTime = text.match(/Close: (.*)/)?.[1] || "7 business days";
-            const emd = text.match(/EMD: \$(.*)/)?.[1] || "1500";
+          {type === "cash" && (
+            <OfferOptionCard
+              label="Cash Offer"
+              price={Number(offerPrice.replace(/,/g, "")) || 0}
+              terms={[
+                "Terms: Cash, as-is",
+                makeEditableValue(`${inspectionDays} business days`, () => {
+                  const input = prompt("Edit number of business days (min 7)", inspectionDays.toString());
+                  const num = parseInt(input || "");
+                  if (!isNaN(num) && num >= 7) setInspectionDays(num);
+                }),
+                makeEditableValue(`$${offerPrice}`, () => {
+                  const input = prompt("Edit offer price", offerPrice);
+                  if (input) setOfferPrice(input);
+                }),
+                "EMD: $1500 non-refundable, submitted after inspection period",
+              ] as unknown as string[]}
+            />
+          )}
 
-            return (
+          {type === "sellerFinance" && (
+            <>
               <OfferOptionCard
-                label="Cash Offer"
+                label="Seller Finance"
                 price={Number(totalOffer.replace(/,/g, "")) || 0}
                 terms={[
-                  "Terms: Cash, as-is",
-                  `Close: ${closeTime}`,
-                  `EMD: $${emd} non-refundable, submitted after inspection period`,
-                ]}
+                  makeEditableValue(`$${down}`, () => {
+                    const input = prompt("Edit Down Payment", down);
+                    if (input) setDown(input);
+                  }),
+                  makeEditableValue(`$${monthly}`, () => {
+                    const input = prompt("Edit Monthly Payment", monthly);
+                    if (input) setMonthly(input);
+                  }),
+                  makeEditableValue(`${term} months`, () => {
+                    const input = prompt("Edit Term in months", term);
+                    if (input) setTerm(input);
+                  }),
+                  makeEditableValue(`$${balloon} due in final month`, () => {
+                    const input = prompt("Edit Balloon Payment", balloon);
+                    if (input) setBalloon(input);
+                  }),
+                  "Commission: Seller’s agent fee paid from down payment",
+                  makeEditableValue(`Subject to a ${inspectionDays} business day inspection period`, () => {
+                    const input = prompt("Edit number of business days (min 7)", inspectionDays.toString());
+                    const num = parseInt(input || "");
+                    if (!isNaN(num) && num >= 7) setInspectionDays(num);
+                  }),
+                  "EMD: $1,500 non-refundable, submitted after inspection period",
+                ] as unknown as string[]}
               />
-            );
-          })()}
-
-          {type === "sellerFinance" && (() => {
-            const text = results[type] || "";
-            const totalOffer = text.match(/Total Offer: \$(.*)/)?.[1] || "$0";
-            const down = text.match(/Down: \$(.*)/)?.[1] || "$0";
-            const monthlyMatch = text.match(/Monthly: \$(.*) x (\d+) months/);
-            const monthly = monthlyMatch?.[1] || "$0";
-            const term = monthlyMatch?.[2] || "0";
-            const balloon = text.match(/Balloon: \$(.*)/)?.[1] || "$0";
-
-            return (
-              <>
-                <OfferOptionCard
-                  label="Seller Finance"
-                  price={Number(totalOffer.replace(/,/g, "")) || 0}
-                  terms={[
-                    `Down Payment: $${down}`,
-                    `Monthly Payment: $${monthly}`,
-                    `Term: ${term} months`,
-                    `Balloon: $${balloon} due in final month`,
-                    "Commission: Seller’s agent fee paid from down payment",
-                    "Close: Subject to a 7 business day inspection period",
-                    "EMD: $1,500 non-refundable, submitted after inspection period",
-                  ]}
-                />
-                <div className="bg-black text-white border border-white p-4 rounded mb-4 text-sm">
-                  <p>
-                    The seller is protected through a <strong>Deed of Trust</strong> and{" "}
-                    <strong>Promissory Note</strong>, which include a clause that in the
-                    event of two consecutive missed payments, ownership of the property
-                    automatically reverts to the seller without the need for judicial
-                    foreclosure. All prior payments, improvements, and the down payment
-                    would be forfeited to the seller.
-                  </p>
-                </div>
-              </>
-            );
-          })()}
+              <div className="bg-black text-white border border-white p-4 rounded mb-4 text-sm">
+                <p>
+                  The seller is protected through a <strong>Deed of Trust</strong> and {" "}
+                  <strong>Promissory Note</strong>, which include a clause that in the
+                  event of two consecutive missed payments, ownership of the property
+                  automatically reverts to the seller without the need for judicial
+                  foreclosure. All prior payments, improvements, and the down payment
+                  would be forfeited to the seller.
+                </p>
+              </div>
+            </>
+          )}
 
           <SupportingLogicList
             bullets={[
@@ -125,14 +148,21 @@ export default function OfferModal({
             ]}
           />
 
-          <OfferFooter
-            contact={{
-              name: defaultName,
-              phone: defaultPhone,
-              jv: defaultJVPartners,
-            }}
-            attachments={["Proof of Funds", "Credibility Packet"]}
-          />
+          <div className="mt-6 text-white text-sm">
+            {makeEditableValue(name, () => {
+              const input = prompt("Edit Name", name);
+              if (input) setName(input);
+            })}<br/>
+            {makeEditableValue(phone, () => {
+              const input = prompt("Edit Phone", phone);
+              if (input) setPhone(input);
+            })}<br/>
+            {makeEditableValue(title, () => {
+              const input = prompt("Edit Title", title);
+              if (input) setTitle(input);
+            })}<br/>
+            <p><strong>Attachments:</strong> Proof of Funds, Credibility Packet</p>
+          </div>
         </div>
 
         <div className="pt-6 flex flex-col items-center gap-3">
