@@ -32,7 +32,7 @@ export default function HeatMap({ walletAddress }: HeatMapProps) {
   const start = subDays(end, 180);
   const allDays = eachDayOfInterval({ start, end });
 
-  // Function to map 0–20 activity to a purple HSL scale: darkest = high activity
+  // Map 0–20 activity to a purple HSL scale
   const getColor = useMemo(() => {
     const minLight = 95;
     const maxLight = 30;
@@ -42,7 +42,7 @@ export default function HeatMap({ walletAddress }: HeatMapProps) {
     };
   }, []);
 
-  // Build weekly columns
+  // Build weeks as columns of 7 days
   const columns: string[][] = [];
   let currentColumn: string[] = Array(7).fill("");
   allDays.forEach((d) => {
@@ -83,14 +83,18 @@ export default function HeatMap({ walletAddress }: HeatMapProps) {
             <div className="flex gap-[6px]">
               {columns.map((week, colIndex) => (
                 <div key={colIndex} className="flex flex-col gap-[6px]">
-                  {week.map((key, i) => (
-                    <div
-                      key={i}
-                      className="w-8 h-8 rounded-sm"
-                      style={{ backgroundColor: getColor(data[key] ?? 0) }}
-                      title={`${key} - ${data[key] ?? 0} activity`}
-                    />
-                  ))}
+                  {week.map((key, i) => {
+                    const level = data[key] ?? 0;
+                    const bgColor = level === 0 ? "#E5E7EB" : getColor(level);
+                    return (
+                      <div
+                        key={i}
+                        className="w-8 h-8 rounded-sm"
+                        style={{ backgroundColor: bgColor }}
+                        title={`${key} - ${level} activity`}
+                      />
+                    );
+                  })}
                 </div>
               ))}
             </div>
