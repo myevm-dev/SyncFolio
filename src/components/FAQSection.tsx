@@ -77,6 +77,11 @@ const FAQSection: React.FC = () => {
       answer:
         "You may save and manage up to 500 leads for no cost. In the future, we may offer a way to purchase additional lead management credits.",
     },
+        {
+      question: "Do you have a pitch deck?",
+      answer:
+        "Yes, we have a pitch deck available for interested parties. Please contact us for more information at Yo@MyEVM.ORG.",
+    },
   ];
 
   const handleToggle = (index: number) => {
