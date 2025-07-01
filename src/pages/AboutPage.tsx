@@ -34,17 +34,18 @@ const comingSoonItems = [
   { label: "Employable AI Agents", percent: 25  },
   { label: "Tokenlock Deal Flow", percent: 20 },
   { label: "Sell Leads", percent: 15 },
+  { label: "Twilio Integration", percent: 15 },
   { label: "Activity Heatmap", percent: 10 },
   { label: "Portfolio Management", percent: 10 },
- // { label: "User Acreditation", percent: 5 },
   { label: "Affiliate Page", percent: 5 },
   { label: "How To Videos", percent: 5 },
- // { label: "AI Deal Analysis", percent: 5 },
+  { label: "AI Deal Analysis", percent: 5 },
   { label: "Field Network", percent: 5 },
  //  { label: "Live AI Scripting", percent: 5 },
   //  { label: "AI Virtual Assistant", percent: 5 },
   //  { label: "Swipe to Shop Deals", percent: 5 },
-  //  { label: "Swipe to Shop", percent: 5 },
+
+   // { label: "User Acreditation", percent: 5 },
 ];
 
 export default function AboutPage() {
