@@ -8,7 +8,7 @@ export default function Footer() {
       style={{ backgroundColor: "#0B1519" }}
     >
       <p className="text-gray-400">
-        Version 0.7 —{" "}
+        Version 0.7.2 —{" "}
         <a
           href="https://myevm.org"
           target="_blank"
