@@ -67,6 +67,11 @@ const FAQSection: React.FC = () => {
       answer:
         "The platform charges fees on a transactional basis when a deal is complete. In the future, you will also have the option to purchase credits if you want to use AI-powered assistance.",
     },
+        {
+      question: "What is Ꞙolio Token?",
+      answer:
+        "Ꞙolio Token is a digital asset used within the SyncFolio platform to incentivize and reward users for their participation and contributions.",
+    },
     {
       question: "How many leads can I manage?",
       answer:
