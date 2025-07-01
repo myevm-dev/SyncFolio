@@ -21,7 +21,7 @@ function generateFakeData(): Record<string, number> {
   const data: Record<string, number> = {};
   daysArr.forEach((date) => {
     const key = format(date, "yyyy-MM-dd");
-    data[key] = Math.floor(Math.random() * 5);
+    data[key] = Math.floor(Math.random() * 21); // 0–20
   });
   return data;
 }
@@ -32,17 +32,15 @@ export default function HeatMap({ walletAddress }: HeatMapProps) {
   const start = subDays(end, 180);
   const allDays = eachDayOfInterval({ start, end });
 
-  // Custom purple palette from darkest (high activity) to lightest (low activity)
-  const levels = useMemo(
-    () => [
-      "#e2dde9", // 0 activity (lightest)
-      "#c5bbd3", // 1
-      "#a89abc", // 2
-      "#8b78a6", // 3
-      "#6e5690"  // 4 activity (darkest)
-    ],
-    []
-  );
+  // Function to map 0–20 activity to a purple HSL scale: darkest = high activity
+  const getColor = useMemo(() => {
+    const minLight = 95;
+    const maxLight = 30;
+    return (level: number) => {
+      const lightness = minLight - (level / 20) * (minLight - maxLight);
+      return `hsl(270,50%,${lightness}%)`;
+    };
+  }, []);
 
   // Build weekly columns
   const columns: string[][] = [];
@@ -89,7 +87,7 @@ export default function HeatMap({ walletAddress }: HeatMapProps) {
                     <div
                       key={i}
                       className="w-8 h-8 rounded-sm"
-                      style={{ backgroundColor: levels[data[key] ?? 0] }}
+                      style={{ backgroundColor: getColor(data[key] ?? 0) }}
                       title={`${key} - ${data[key] ?? 0} activity`}
                     />
                   ))}
