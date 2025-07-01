@@ -1,10 +1,10 @@
+// src/components/DashboardCards.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { useActiveAccount } from "thirdweb/react";
 
-// src/components/DashboardCards.tsx
 const DashboardCards = () => {
   const navigate = useNavigate();
   const account = useActiveAccount();
@@ -22,9 +22,24 @@ const DashboardCards = () => {
   }, [walletAddress]);
 
   const cards = [
-    { label: "Buying", value: `${offerCount} Properties`, icon: "\uD83C\uDFE0" },
-    { label: "Earnings", value: "$0.00", icon: "\uD83D\uDCB0" },
-    { label: "Selling", value: "0 Properties", icon: "\uD83D\uDCC4" },
+    {
+      label: "Buying",
+      value: `${offerCount} Properties`,
+      icon: "🏠",
+      extra: null,
+    },
+    {
+      label: "Earnings",
+      value: "$0.00",
+      icon: "💰",
+      extra: "+ 0 Ꞙolio (Vesting)",
+    },
+    {
+      label: "Selling",
+      value: "0 Properties",
+      icon: "📄",
+      extra: null,
+    },
   ];
 
   const handleCardClick = (label: string) => {
@@ -42,8 +57,13 @@ const DashboardCards = () => {
           onClick={() => handleCardClick(card.label)}
         >
           <p className="text-sm text-accent font-semibold mb-4">{card.label}</p>
-          <div className="w-full flex items-center justify-between px-2">
-            <p className="text-2xl font-bold text-white">{card.value}</p>
+          <div className="w-full flex items-start justify-between px-2">
+            <div className="flex flex-col items-start">
+              <p className="text-2xl font-bold text-white">{card.value}</p>
+              {card.extra && (
+                <p className="text-md text-neutral-400">{card.extra}</p>
+              )}
+            </div>
             <div className="text-3xl">{card.icon}</div>
           </div>
         </div>

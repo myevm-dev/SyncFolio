@@ -96,7 +96,7 @@ export default function Offers({ results, cashOnCashResults, propertyAddress, wa
                     <p className="text-md text-gray-400">You Earn Minimum</p>
                     <p className="text-3xl mb-2 text-green-500 font-bold">$2250</p>
                     <p className="text-[15px] max-w-[200px] leading-tight">
-                      <span className="text-cyan-400">+ 50k Folio Token</span>
+                      <span className="text-cyan-400">+ 50k Ꞙolio Tokens</span>
                       {folioValueUSD !== null && (
                         <span className="text-green-400 ml-1">(~${folioValueUSD.toFixed(2)})</span>
                       )}
