@@ -40,12 +40,14 @@ const DashboardCards = () => {
       label: "Buying",
       value: `${offerCount} Properties`,
       icon: "🏠",
+      route: "/buying-center",
       extra: null,
     },
     {
       label: "Earnings",
       value: "$0.00",
       icon: "💰",
+      route: null,
       extra: (
         <div className="text-[15px] mt-1 flex flex-wrap items-center gap-1">
           <span className="text-[#fd01f5] font-semibold">+ 15k Ꞙolio</span>
@@ -62,14 +64,13 @@ const DashboardCards = () => {
       label: "Selling",
       value: "0 Properties",
       icon: "📄",
+      route: "/selling-center",
       extra: null,
     },
   ];
 
-  const handleCardClick = (label: string) => {
-    if (label === "Buying") {
-      navigate("/buying-center");
-    }
+  const handleCardClick = (route: string | null) => {
+    if (route) navigate(route);
   };
 
   return (
@@ -78,7 +79,7 @@ const DashboardCards = () => {
         <div
           key={card.label}
           className="bg-black rounded-xl p-6 shadow-md border border-neutral-700 flex flex-col items-center text-center cursor-pointer hover:border-blue-500"
-          onClick={() => handleCardClick(card.label)}
+          onClick={() => handleCardClick(card.route)}
         >
           <p className="text-sm text-accent font-semibold mb-4">{card.label}</p>
           <div className="w-full flex items-start justify-between px-2">

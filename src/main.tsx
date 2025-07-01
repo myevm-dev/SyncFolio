@@ -13,7 +13,8 @@ import AboutPage from "./pages/AboutPage";
 import Layout from "./components/Layout";
 import BuyboxDirectoryPage from "./pages/BuyboxDirectory";
 import AnalyticsPage from "./pages/AnalyticsPage";
-import BuyingCenterPage from "./pages/BuyingCenterPage"; // ✅ NEW IMPORT
+import BuyingCenterPage from "./pages/BuyingCenterPage";
+import SellingCenterPage from "./pages/SellingCenterPage"; // ✅ ADDED IMPORT
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -28,7 +29,8 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/about" element={<AboutPage />} />
             <Route path="/buybox-directory" element={<BuyboxDirectoryPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="/buying-center" element={<BuyingCenterPage />} /> {/* ✅ NEW ROUTE */}
+            <Route path="/buying-center" element={<BuyingCenterPage />} />
+            <Route path="/selling-center" element={<SellingCenterPage />} /> {/* ✅ NEW ROUTE */}
           </Route>
         </Routes>
       </BrowserRouter>
