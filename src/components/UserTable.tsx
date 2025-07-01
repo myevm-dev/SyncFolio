@@ -1,4 +1,3 @@
-// components/UserTable.tsx
 import React from "react";
 
 interface User {
@@ -18,6 +17,9 @@ export default function UserTable({ users }: { users: User[] }) {
             <th className="px-4 py-3">Name</th>
             <th className="px-4 py-3">Wallet</th>
             <th className="px-4 py-3">Signup Date</th>
+            <th className="px-4 py-3">Ꞙ Balance</th>
+            <th className="px-4 py-3">Earnings</th>
+            <th className="px-4 py-3">Volume</th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +36,9 @@ export default function UserTable({ users }: { users: User[] }) {
               <td className="px-4 py-2">
                 {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Unknown"}
               </td>
+              <td className="px-4 py-2 text-[#fd01f5] font-semibold">15,000 Ꞙolio</td>
+              <td className="px-4 py-2 text-green-400 font-medium">$0.00</td>
+              <td className="px-4 py-2 text-blue-400 font-medium">$0.00</td>
             </tr>
           ))}
         </tbody>
