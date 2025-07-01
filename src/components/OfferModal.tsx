@@ -5,18 +5,31 @@ import OfferOptionCard from "./OfferOptionCard";
 import SellerProtectionClause from "./SellerProtectionClause";
 import SupportingLogicList from "./SupportingLogicList";
 import OfferFooter from "./OfferFooter";
+import { OfferResults } from "../types/OfferResults";
+import { CashOnCashResult } from "../types/CashOnCashResult";
 
 interface OfferModalProps {
   type: "cash" | "sellerFinance" | "takeover" | "hybrid";
   onClose: () => void;
   onSave?: (value: string) => void;
+  results: OfferResults;
+  coc?: CashOnCashResult;
+  propertyAddress: string;
 }
 
-export default function OfferModal({ type, onClose, onSave }: OfferModalProps) {
-  const defaultAddress = "[Property Address Here]";
+export default function OfferModal({
+  type,
+  onClose,
+  onSave,
+  results,
+  coc,
+  propertyAddress, // ✅ FIXED: properly destructured
+}: OfferModalProps) {
+  const address = propertyAddress || "[Property Address Here]";
   const defaultJVPartners = "[Your Company] + [Partner Entity]";
   const defaultName = "[Your Name]";
   const defaultPhone = "[Your Phone Number]";
+  const offerText = results[type];
 
   const handleSave = () => {
     const content = document.getElementById("offer-preview")?.textContent || "";
@@ -34,46 +47,73 @@ export default function OfferModal({ type, onClose, onSave }: OfferModalProps) {
             : "Offer Preview"}
         </DialogTitle>
 
-        <div id="offer-preview" className="space-y-6 bg-black text-white p-10 rounded-xl font-serif leading-relaxed">
+        <div
+          id="offer-preview"
+          className="space-y-6 bg-black text-white p-10 rounded-xl font-serif leading-relaxed"
+        >
           <OfferHeader
-            propertyAddress={defaultAddress}
+            propertyAddress={address} // ✅ FIXED: use correct var
             jvPartners={defaultJVPartners}
           />
 
-          {type === "cash" && (
-            <OfferOptionCard
-              label="Cash Offer"
-              price={0}
-              terms={[
-                "Terms: Cash, as-is",
-                "Close: Subject to a 7 business day inspection period",
-                "EMD: $1,500 non-refundable, submitted after inspection period",
-              ]}
-            />
-          )}
+          {type === "cash" && (() => {
+            const text = results[type] || "";
+            const totalOffer =
+              text.match(/Total Offer: \$(.*)/)?.[1] ||
+              (coc?.entry ? coc.entry.toFixed(2) : "$0");
+            const closeTime = text.match(/Close: (.*)/)?.[1] || "7 business days";
+            const emd = text.match(/EMD: \$(.*)/)?.[1] || "1500";
 
-          {type === "sellerFinance" && (
-            <>
+            return (
               <OfferOptionCard
-                label="Seller Finance"
-                price={0}
+                label="Cash Offer"
+                price={Number(totalOffer.replace(/,/g, "")) || 0}
                 terms={[
-                  "Down Payment: $X,XXX",
-                  "Monthly Payment: $XXX",
-                  "Term: XX months",
-                  "Balloon: $X,XXX due in final month",
-                  "Commission: Seller’s agent fee paid from down payment",
-                  "Close: Subject to a 7 business day inspection period",
-                  "EMD: $1,500 non-refundable, submitted after inspection period",
+                  "Terms: Cash, as-is",
+                  `Close: ${closeTime}`,
+                  `EMD: $${emd} non-refundable, submitted after inspection period`,
                 ]}
               />
-              <div className="bg-black text-white border border-white p-4 rounded mb-4 text-sm">
-                <p>
-                  The seller is protected through a <strong>Deed of Trust</strong> and <strong>Promissory Note</strong>, which include a clause that in the event of two consecutive missed payments, ownership of the property automatically reverts to the seller without the need for judicial foreclosure. All prior payments, improvements, and the down payment would be forfeited to the seller.
-                </p>
-              </div>
-            </>
-          )}
+            );
+          })()}
+
+          {type === "sellerFinance" && (() => {
+            const text = results[type] || "";
+            const totalOffer = text.match(/Total Offer: \$(.*)/)?.[1] || "$0";
+            const down = text.match(/Down: \$(.*)/)?.[1] || "$0";
+            const monthlyMatch = text.match(/Monthly: \$(.*) x (\d+) months/);
+            const monthly = monthlyMatch?.[1] || "$0";
+            const term = monthlyMatch?.[2] || "0";
+            const balloon = text.match(/Balloon: \$(.*)/)?.[1] || "$0";
+
+            return (
+              <>
+                <OfferOptionCard
+                  label="Seller Finance"
+                  price={Number(totalOffer.replace(/,/g, "")) || 0}
+                  terms={[
+                    `Down Payment: $${down}`,
+                    `Monthly Payment: $${monthly}`,
+                    `Term: ${term} months`,
+                    `Balloon: $${balloon} due in final month`,
+                    "Commission: Seller’s agent fee paid from down payment",
+                    "Close: Subject to a 7 business day inspection period",
+                    "EMD: $1,500 non-refundable, submitted after inspection period",
+                  ]}
+                />
+                <div className="bg-black text-white border border-white p-4 rounded mb-4 text-sm">
+                  <p>
+                    The seller is protected through a <strong>Deed of Trust</strong> and{" "}
+                    <strong>Promissory Note</strong>, which include a clause that in the
+                    event of two consecutive missed payments, ownership of the property
+                    automatically reverts to the seller without the need for judicial
+                    foreclosure. All prior payments, improvements, and the down payment
+                    would be forfeited to the seller.
+                  </p>
+                </div>
+              </>
+            );
+          })()}
 
           <SupportingLogicList
             bullets={[
@@ -104,10 +144,10 @@ export default function OfferModal({ type, onClose, onSave }: OfferModalProps) {
           </button>
 
           <div className="flex flex-wrap justify-center gap-3">
-
             <button
               onClick={() => {
-                const textToCopy = document.querySelector("#offer-preview")?.textContent || "";
+                const textToCopy =
+                  document.querySelector("#offer-preview")?.textContent || "";
                 navigator.clipboard.writeText(textToCopy);
               }}
               className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
@@ -119,15 +159,18 @@ export default function OfferModal({ type, onClose, onSave }: OfferModalProps) {
               onClick={async () => {
                 const element = document.getElementById("offer-preview");
                 if (!element) return;
-
                 const jsPDF = (await import("jspdf")).jsPDF;
                 const textToCopy = element.innerText;
-                const pdf = new jsPDF({ orientation: "portrait", unit: "px", format: "a4" });
+                const pdf = new jsPDF({
+                  orientation: "portrait",
+                  unit: "px",
+                  format: "a4",
+                });
                 pdf.setFont("Times", "Normal");
                 pdf.setFontSize(12);
                 pdf.text(textToCopy, 40, 60, {
                   maxWidth: pdf.internal.pageSize.getWidth() - 80,
-                  align: "left"
+                  align: "left",
                 });
                 pdf.save("offer.pdf");
               }}

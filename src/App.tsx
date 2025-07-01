@@ -108,8 +108,13 @@ export default function App() {
 
 
         {results && (
-          <Offers results={results} cashOnCashResults={cocResults} />
+          <Offers
+            results={results}
+            cashOnCashResults={cocResults}
+            propertyAddress={formData.address || ""}  
+          />
         )}
+
         {showChart && <ConversionChart walletAddress={walletAddress} />}
         <DealsTable
           refreshKey={refreshKey}

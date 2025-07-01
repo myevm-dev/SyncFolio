@@ -6,9 +6,10 @@ import OfferModal from "./OfferModal";
 interface Props {
   results: OfferResults;
   cashOnCashResults: CashOnCashResult[];
+  propertyAddress: string; // <-- added
 }
 
-export default function Offers({ results, cashOnCashResults }: Props) {
+export default function Offers({ results, cashOnCashResults, propertyAddress }: Props) {
   const [activeOfferType, setActiveOfferType] = useState<keyof OfferResults | null>(null);
   const [folioValueUSD, setFolioValueUSD] = useState<number | null>(null);
 
@@ -56,7 +57,7 @@ export default function Offers({ results, cashOnCashResults }: Props) {
             >
               <div className="mb-4 min-h-[120px] flex flex-col justify-start">
                 <div className="text-lg font-semibold mb-2">
-                  {labels[key as keyof OfferResults]}
+                  {labels[typedKey]}
                 </div>
                 <pre className="text-sm whitespace-pre-wrap">{value}</pre>
               </div>
@@ -97,7 +98,6 @@ export default function Offers({ results, cashOnCashResults }: Props) {
                         <span className="text-green-400 ml-1">(~${folioValueUSD.toFixed(2)})</span>
                       )}
                     </p>
-
                   </div>
                 )}
                 <div className="flex w-full gap-2 mt-2">
@@ -108,7 +108,7 @@ export default function Offers({ results, cashOnCashResults }: Props) {
                         : "bg-blue-600 text-white hover:bg-blue-700"
                     }`}
                     disabled={isComingSoon}
-                    onClick={() => setActiveOfferType(key as keyof OfferResults)}
+                    onClick={() => setActiveOfferType(typedKey)}
                   >
                     Edit
                   </button>
@@ -123,6 +123,13 @@ export default function Offers({ results, cashOnCashResults }: Props) {
         <OfferModal
           type={activeOfferType}
           onClose={() => setActiveOfferType(null)}
+          results={results}
+          coc={
+            activeOfferType
+              ? cashOnCashResults.find((r) => r.type === typeMap[activeOfferType])
+              : undefined
+          }
+          propertyAddress={propertyAddress} // <-- added
         />
       )}
     </>
