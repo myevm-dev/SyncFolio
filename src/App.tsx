@@ -112,6 +112,7 @@ export default function App() {
             results={results}
             cashOnCashResults={cocResults}
             propertyAddress={formData.address || ""}  
+            walletAddress={walletAddress}
           />
         )}
 

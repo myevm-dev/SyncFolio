@@ -6,10 +6,13 @@ import OfferModal from "./OfferModal";
 interface Props {
   results: OfferResults;
   cashOnCashResults: CashOnCashResult[];
-  propertyAddress: string; // <-- added
+  propertyAddress: string;
+  walletAddress: string; // <-- add this
 }
 
-export default function Offers({ results, cashOnCashResults, propertyAddress }: Props) {
+
+export default function Offers({ results, cashOnCashResults, propertyAddress, walletAddress }: Props) {
+
   const [activeOfferType, setActiveOfferType] = useState<keyof OfferResults | null>(null);
   const [folioValueUSD, setFolioValueUSD] = useState<number | null>(null);
 
@@ -130,6 +133,7 @@ export default function Offers({ results, cashOnCashResults, propertyAddress }: 
               : undefined
           }
           propertyAddress={propertyAddress} // <-- added
+          walletAddress={walletAddress} 
         />
       )}
     </>
