@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   eachDayOfInterval,
   endOfToday,
@@ -13,20 +13,13 @@ interface HeatMapProps {
 }
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const levels = [
-  "bg-zinc-800", // 0
-  "bg-green-900", // 1
-  "bg-green-800", // 2
-  "bg-green-600", // 3
-  "bg-green-400"  // 4
-];
 
 function generateFakeData(): Record<string, number> {
   const end = endOfToday();
   const start = subDays(end, 180);
-  const days = eachDayOfInterval({ start, end });
+  const daysArr = eachDayOfInterval({ start, end });
   const data: Record<string, number> = {};
-  days.forEach((date) => {
+  daysArr.forEach((date) => {
     const key = format(date, "yyyy-MM-dd");
     data[key] = Math.floor(Math.random() * 5);
   });
@@ -39,14 +32,27 @@ export default function HeatMap({ walletAddress }: HeatMapProps) {
   const start = subDays(end, 180);
   const allDays = eachDayOfInterval({ start, end });
 
+  // Custom purple palette from darkest (0) to lightest (4)
+  const levels = useMemo(
+    () => [
+      "#6e5690", // 0 activity (darkest)
+      "#8b78a6", // 1
+      "#a89abc", // 2
+      "#c5bbd3", // 3
+      "#e2dde9"  // 4 (lightest)
+    ],
+    []
+  );
+
+  // Build weekly columns
   const columns: string[][] = [];
   let currentColumn: string[] = Array(7).fill("");
   allDays.forEach((d) => {
     const key = format(d, "yyyy-MM-dd");
-    const dayOfWeek = d.getDay();
-    const index = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-    currentColumn[index] = key;
-    if (index === 6) {
+    const dow = d.getDay();
+    const idx = dow === 0 ? 6 : dow - 1;
+    currentColumn[idx] = key;
+    if (idx === 6) {
       columns.push(currentColumn);
       currentColumn = Array(7).fill("");
     }
@@ -82,7 +88,8 @@ export default function HeatMap({ walletAddress }: HeatMapProps) {
                   {week.map((key, i) => (
                     <div
                       key={i}
-                      className={`w-8 h-8 rounded-sm ${levels[data[key] ?? 0]}`}
+                      className="w-8 h-8 rounded-sm"
+                      style={{ backgroundColor: levels[data[key] ?? 0] }}
                       title={`${key} - ${data[key] ?? 0} activity`}
                     ></div>
                   ))}
