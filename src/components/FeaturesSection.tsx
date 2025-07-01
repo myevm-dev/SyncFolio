@@ -6,7 +6,7 @@ const features = [
   { title: "Customizable Call Scripts", description: "Dynamic call script using the checkmate pitch." },
   { title: "Top Ranked Real Estate Agents", description: "View America's best and worst agents based on user rankings." },
   { title: "Quick Repair Calculator", description: "Calculate repairs by picture and just a few questions." },
-  { title: "Get Started", description: "Just sign in, pick a username, and enter your zip code." },
+  { title: "Get Started", description: "Click sign in, pick a username, and enter your zip code." },
 
 ];
 

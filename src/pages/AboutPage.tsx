@@ -34,7 +34,7 @@ const comingSoonItems = [
   { label: "Employable AI Agents", percent: 25  },
   { label: "Tokenlock Deal Flow", percent: 20 },
   { label: "Sell Leads", percent: 15 },
-  { label: "Portfolio Management", percent: 5 },
+  { label: "Portfolio Management", percent: 10 },
   { label: "User Acreditation", percent: 5 },
   { label: "Affiliate Page", percent: 5 },
   { label: "How To Videos", percent: 5 },
