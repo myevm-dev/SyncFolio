@@ -1,14 +1,15 @@
 import React, { useRef, useLayoutEffect } from "react";
 
 const features = [
-  { title: "Lead Management CRM", description: "Manage up to 500 leads for free." },
-  { title: "Creative Offer Generator", description: "Create offers that are sure to sell to our buyer list." },
-  { title: "Customizable Call Scripts", description: "Dynamic call script using the checkmate pitch." },
-  { title: "Top Ranked Real Estate Agents", description: "View America's best and worst agents based on user rankings." },
-  { title: "Quick Repair Calculator", description: "Calculate repairs by picture and just a few questions." },
-  { title: "Get Started", description: "Click sign in, pick a username, and enter your zip code." },
-
+  { title: "🎁 Sign Up Rewards", description: "Get 15k Folio Token for signing up *subject to vesting." },
+  { title: "🗂 Lead Management CRM", description: "Manage up to 500 leads for free." },
+  { title: "✨ Creative Offer Generator", description: "Create offers that are sure to sell to our buyer list." },
+  { title: "📜 Customizable Call Scripts", description: "Dynamic call script using the checkmate pitch." },
+  { title: "🏆 Top Ranked Real Estate Agents", description: "View America's best and worst agents based on user rankings." },
+  { title: "🛠️ Quick Repair Calculator", description: "Calculate repairs by picture and just a few questions." },
+  { title: "🚀 Get Started", description: "Click sign in, pick a username, and enter your zip code." },
 ];
+
 
 export default function FeaturesSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -102,7 +103,16 @@ export default function FeaturesSection() {
             <h3 className="text-lg font-semibold mb-2 text-[#068989]">
               {feature.title}
             </h3>
-            <p className="text-sm text-gray-300">{feature.description}</p>
+            <p className="text-sm text-gray-300">
+              {feature.description.includes("*subject to vesting") ? (
+                <>
+                  {feature.description.replace(" *subject to vesting.", "")}
+                  <span className="text-xs italic text-gray-400"> *subject to vesting</span>
+                </>
+              ) : (
+                feature.description
+              )}
+            </p>
           </div>
         ))}
       </div>
