@@ -1,4 +1,3 @@
-// src/components/HeatMap.tsx
 import React from "react";
 import {
   eachDayOfInterval,
@@ -9,8 +8,18 @@ import {
   addDays
 } from "date-fns";
 
+interface HeatMapProps {
+  walletAddress: string;
+}
+
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const levels = ["bg-zinc-800", "bg-green-900", "bg-green-800", "bg-green-600", "bg-green-400"];
+const levels = [
+  "bg-zinc-800", // 0
+  "bg-green-900", // 1
+  "bg-green-800", // 2
+  "bg-green-600", // 3
+  "bg-green-400"  // 4
+];
 
 function generateFakeData(): Record<string, number> {
   const end = endOfToday();
@@ -24,7 +33,7 @@ function generateFakeData(): Record<string, number> {
   return data;
 }
 
-export default function HeatMap() {
+export default function HeatMap({ walletAddress }: HeatMapProps) {
   const data = generateFakeData();
   const end = endOfToday();
   const start = subDays(end, 180);
@@ -44,7 +53,7 @@ export default function HeatMap() {
   });
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto mt-12">
+    <div className="w-full max-w-[1920px] mx-auto mt-12">
       <h2 className="text-center text-lg font-bold mb-4">Activity</h2>
       <div className="overflow-x-auto">
         <div className="flex flex-col items-center w-full">
