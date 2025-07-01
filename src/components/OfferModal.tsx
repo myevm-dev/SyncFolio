@@ -23,7 +23,7 @@ export default function OfferModal({
   onSave,
   results,
   coc,
-  propertyAddress, // ✅ FIXED: properly destructured
+  propertyAddress,
 }: OfferModalProps) {
   const address = propertyAddress || "[Property Address Here]";
   const defaultJVPartners = "[Your Company] + [Partner Entity]";
@@ -52,14 +52,14 @@ export default function OfferModal({
           className="space-y-6 bg-black text-white p-10 rounded-xl font-serif leading-relaxed"
         >
           <OfferHeader
-            propertyAddress={address} // ✅ FIXED: use correct var
+            propertyAddress={address}
             jvPartners={defaultJVPartners}
           />
 
           {type === "cash" && (() => {
             const text = results[type] || "";
             const totalOffer =
-              text.match(/Total Offer: \$(.*)/)?.[1] ||
+              text.match(/Offer:\s*\$(\d+(?:\.\d+)?)/)?.[1] ||
               (coc?.entry ? coc.entry.toFixed(2) : "$0");
             const closeTime = text.match(/Close: (.*)/)?.[1] || "7 business days";
             const emd = text.match(/EMD: \$(.*)/)?.[1] || "1500";
