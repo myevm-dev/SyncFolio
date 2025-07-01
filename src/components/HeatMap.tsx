@@ -32,14 +32,14 @@ export default function HeatMap({ walletAddress }: HeatMapProps) {
   const start = subDays(end, 180);
   const allDays = eachDayOfInterval({ start, end });
 
-  // Custom purple palette from darkest (0) to lightest (4)
+  // Custom purple palette from darkest (high activity) to lightest (low activity)
   const levels = useMemo(
     () => [
-      "#6e5690", // 0 activity (darkest)
-      "#8b78a6", // 1
+      "#e2dde9", // 0 activity (lightest)
+      "#c5bbd3", // 1
       "#a89abc", // 2
-      "#c5bbd3", // 3
-      "#e2dde9"  // 4 (lightest)
+      "#8b78a6", // 3
+      "#6e5690"  // 4 activity (darkest)
     ],
     []
   );
@@ -91,7 +91,7 @@ export default function HeatMap({ walletAddress }: HeatMapProps) {
                       className="w-8 h-8 rounded-sm"
                       style={{ backgroundColor: levels[data[key] ?? 0] }}
                       title={`${key} - ${data[key] ?? 0} activity`}
-                    ></div>
+                    />
                   ))}
                 </div>
               ))}
