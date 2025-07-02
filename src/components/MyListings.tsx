@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import SellerCard from "./SellerCard";
 import { Users } from "lucide-react";
 import CreateListingModal from "./CreateListingModal";
+import AnimatedButton from "./AnimatedButton"; // ✅ Import animated button
 
 const mockListings = [
   {
@@ -46,17 +47,28 @@ const MyListings: React.FC = () => {
   return (
     <div className="w-full">
       <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-2 mb-4 px-4">
-        <Link
-          to="/buybox-directory"
-          className="flex flex-col items-center justify-center text-cyan-300 border border-cyan-400 hover:bg-cyan-400 hover:text-black font-semibold px-3 py-2 rounded transition w-full sm:w-auto"
-        >
-          <div className="flex items-center gap-1 text-xs sm:text-sm">
-            <Users size={16} />
-            <span>Active Buyers</span>
-          </div>
-          <div className="text-white text-base font-bold leading-none">2112</div>
-        </Link>
+        {/* Left: Buyers + Instant Offer */}
+        <div className="flex gap-2 w-full sm:w-auto justify-center sm:justify-start items-center">
+          <Link
+            to="/buybox-directory"
+            className="flex flex-col items-center justify-center text-cyan-300 border border-cyan-400 hover:bg-cyan-400 hover:text-black font-semibold px-4 py-2 rounded transition w-full sm:w-auto min-h-[44px]"
+          >
+            <div className="flex items-center gap-1 text-xs sm:text-sm">
+              <Users size={16} />
+              <span>Active Buyers</span>
+            </div>
+            <div className="text-white text-base font-bold leading-none">2112</div>
+          </Link>
 
+          <AnimatedButton
+            onClick={() => alert("Instant Offer triggered")}
+            className="w-full sm:w-auto min-h-[44px] px-4 py-2 flex items-center justify-center"
+          >
+            ⚡ Get Instant Offer
+          </AnimatedButton>
+        </div>
+
+        {/* Right: My Listings / Create Listing */}
         <div className="flex gap-2 w-full sm:w-auto justify-center sm:justify-end">
           <button className="bg-zinc-800 text-white font-medium px-4 py-2 rounded w-full sm:w-auto hover:bg-[#6e5690] hover:text-black transition">
             My Listings
@@ -70,12 +82,14 @@ const MyListings: React.FC = () => {
         </div>
       </div>
 
+      {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
         {mockListings.map((listing, idx) => (
           <SellerCard key={idx} {...listing} />
         ))}
       </div>
 
+      {/* Modal */}
       {showModal && (
         <CreateListingModal
           onClose={() => setShowModal(false)}

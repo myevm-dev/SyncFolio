@@ -9,7 +9,7 @@ import DashboardCards from "../components/DashboardCards";
 import TeamSection from "../components/TeamSection";
 import ReferralSection from "../components/ReferralSection";
 import IncomingInvites from "../components/IncomingInvites";
-import HeatMap from "../components/HeatMap"; // ✅ import heatmap component
+//import HeatMap from "../components/HeatMap"; // ✅ import heatmap component
 
 declare global {
   interface Window {
@@ -189,8 +189,9 @@ export default function ProfilePage() {
       <DashboardCards />
 
       <div className="mt-10">
-        <HeatMap walletAddress={walletAddress} />
+        {/* <HeatMap walletAddress={walletAddress} /> */}
       </div>
+
 
       <div className="flex flex-col lg:flex-row justify-center items-start gap-8 max-w-6xl mx-auto mt-10">
         <div className="flex-1 border border-zinc-700 rounded-xl p-6">
