@@ -83,6 +83,8 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
   const [editingQuestion, setEditingQuestion] = useState<number | null>(null);
   const [customLabels, setCustomLabels] = useState<string[]>(defaultQuestions.map((q) => q.label));
   const [questionOrder, setQuestionOrder] = useState<number[]>(defaultQuestions.map((_, idx) => idx));
+  const [hasMortgage, setHasMortgage] = useState<"yes" | "no" | "">("");
+
 
   const getTimeInAgentTimezone = (timezoneLabel: string): string => {
     const timezoneMap: { [key: string]: string } = {
@@ -198,12 +200,35 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
           const q = defaultQuestions[questionIndex];
 
             // Skip mortgage-related questions unless seller is open to creative financing
-            if (
-              (q.field === "mortgageBalance" || q.fields?.includes("loanAmount")) &&
-              formData.method !== "yes"
-            ) {
-              return null;
-            }
+              if (
+                (q.field === "mortgageBalance" || q.fields?.includes("loanAmount")) &&
+                !(formData.method === "yes" && hasMortgage === "yes")
+              ) {
+                if (formData.method === "yes" && hasMortgage === "no" && q.field === "mortgageBalance") {
+                  const list = parseFloat(formData.listingPrice || "0");
+                  const offerPrice = list * 1.075;
+                  const downPayment = offerPrice * 0.075;
+
+                  return (
+                    <div key={questionIndex} className="text-yellow-400 italic mt-5">
+                      Maybe we could offer them{" "}
+                      <span className="text-white font-semibold">
+                        ${offerPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      </span>{" "}
+                      for the property, and{" "}
+                      <span className="text-white font-semibold">
+                        ${downPayment.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      </span>{" "}
+                      as the down payment and make payments over{" "}
+                      <span className="text-white font-semibold">72 months</span> that would still allow us to cash flow then{" "}
+                      <span className="text-white font-semibold">balloon</span> them out for the rest.
+                    </div>
+
+                  );
+                }
+                return null;
+              }
+
 
           return (
             <div key={questionIndex} className="space-y-2 mt-6">
@@ -267,10 +292,11 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                               const incomeRequired = monthlyPayment * 3.5;
 
                               return (
-                                <span className="text-red-400 font-medium block mb-2">
-                                  Based on this, I don’t believe <span className="uppercase">any investor</span> could finance this deal, it would border on predatory lending.
+                                <span className="text-red-400 font-medium block mb-4">
+                                  I can see how this one might be harder to sell. <br/> <br/>
+                                  Based on this, I don’t think <span className="uppercase">any investor</span> could finance this deal, as it would border on predatory lending.
                                   <br /><br />
-                                  I can see how this one might be harder to sell. At today’s rates, a retail buyer would pay roughly{" "}
+                                    At today’s rates, a retail buyer would pay roughly{" "}
                                   <span className="underline">
                                     {overagePercent.toFixed(0)}%
                                   </span>{" "}
@@ -278,7 +304,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                                   <span className="font-bold">
                                     ${incomeRequired.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                   </span>{" "}
-                                  per month in income just to qualify, which could shrink the buyer pool.
+                                  per month in income just to qualify.
                                 </span>
 
 
@@ -322,16 +348,19 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                             return (
                               <>
-                                Probably two ways we can get this deal done, a lower price or low low interest rate. I mean...would it even be worth presenting an offer around{" "}
+                                Probably two ways we can get this deal done, a lower price or low low interest rate.{" "}
                                 <span className="text-yellow-300 font-semibold">
-                                  ${Number(offerAmount).toLocaleString()}
+                                  I mean...would it even be worth presenting an offer around{" "}
+                                  <span className="text-white font-semibold">
+                                    ${Number(offerAmount).toLocaleString()}
+                                  </span>
+                                  ?
                                 </span>
-                                ?
-                                <br/>
-                                <br/>
-                                Or maybe they would be open to creative offers if it nets them what they want or even a bit better than expected?
-
+                                <br />
+                                <br />
+                                Hmm... Or maybe they would be open to creative offers if it nets them what they want or even a bit better than expected?
                               </>
+
                             );
                           })()}
                         </>
@@ -470,15 +499,46 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                     <option value="owner occupied">Owner Occupied</option>
                   </select>
                 ) : q.field === "method" ? (
-                  <select
-                    value={formData.method || ""}
-                    onChange={(e) => handleChange(e, "method")}
-                    className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
-                  >
-                    <option value="">Select</option>
-                    <option value="yes">Yes — open to creative financing</option>
-                    <option value="no">No — not open to creative financing</option>
-                  </select>
+                  <> 
+                    <select
+                      value={formData.method || ""}
+                      onChange={(e) => handleChange(e, "method")}
+                      className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
+                    >
+                      <option value="">Select</option>
+                      <option value="yes" style={{ color: "#22c55e" }}>
+                        ✅ Yes or Maybe — open to creative financing
+                      </option>
+                      <option value="subto" style={{ color: "#facc15" }}>
+                        🤔 Like Sub-to?
+                      </option>
+                      <option value="sellerFinance" style={{ color: "#facc15" }}>
+                        💭 Like Seller Finance?
+                      </option>
+                      <option value="no" style={{ color: "#f87171" }}>
+                        ❌ No — not open to creative financing
+                      </option>
+                    </select>
+
+                    {formData.method === "yes" && (
+                      <div className="mt-3">
+                        <label className="block text-sm text-cyan-400 mb-1">
+                          <br/>
+                          Do they have a mortgage on the property?
+                        </label>
+                        <select
+                          value={hasMortgage}
+                          onChange={(e) => setHasMortgage(e.target.value as "yes" | "no")}
+                          className="w-full bg-zinc-800 border border-neutral-700 text-white rounded px-3 py-2"
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </select>
+                      </div>
+                    )}
+                  </>
+
                 ) : q.field === "rehabCost" ? (
                   <>
                     <label className="block text-sm mb-1 text-white">
