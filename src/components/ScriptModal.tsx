@@ -509,16 +509,17 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                       <option value="yes" style={{ color: "#22c55e" }}>
                         ✅ Yes or Maybe — open to creative financing
                       </option>
-                      <option value="subto" style={{ color: "#facc15" }}>
-                        🤔 Like Sub-to?
+                      <option value="subto" disabled style={{ color: "#9ca3af" }}>
+                        🤔 Like Sub-to? (coming soon)
                       </option>
-                      <option value="sellerFinance" style={{ color: "#facc15" }}>
-                        💭 Like Seller Finance?
+                      <option value="sellerFinance" disabled style={{ color: "#9ca3af" }}>
+                        💭 Like Seller Finance? (coming soon)
                       </option>
                       <option value="no" style={{ color: "#f87171" }}>
                         ❌ No — not open to creative financing
                       </option>
                     </select>
+
 
                     {formData.method === "yes" && (
                       <div className="mt-3">
