@@ -186,7 +186,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
         <div className="bg-zinc-800 p-4 rounded-md border border-neutral-700 mb-4">
           <p className="text-base text-cyan-400">
-            Hi my name is _____, we are buying investment properties and wanted to reach out. How are you today?  Do you have a moment to tell me about {" "}
+            Hi my name is _____, we are buying investment properties and wanted to reach out. How are you today? <br/>  Do you have a moment to tell me about {" "}
             <span className="font-semibold text-white">
               {formData.address || "[Property]"}
             </span>{" "}
