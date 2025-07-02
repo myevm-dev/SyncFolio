@@ -58,7 +58,7 @@ const defaultQuestions = [
   {
     label: "dynamic_method_label",
     field: "method",
-    hint: "Gauge seller openness to creative financing."
+    hint: "ADD RENT AND REPAIRS TO GET FINANCIALS."
   },
   {
     label: "Do you know what’s owed or the current mortgage balance?",
@@ -209,7 +209,13 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
             <div key={questionIndex} className="space-y-2 mt-6">
               <div className="flex items-start gap-2">
                 <p className="font-medium text-base text-cyan-400 flex-1">
-                  {q.field === "method" && formData.rentalValue && formData.listingPrice ? (
+                  {q.field === "method" ? (
+                    !formData.rentalValue || !formData.rehabCost ? (
+                      <span className="text-yellow-400 italic">
+                        ADD RENT AND REPAIRS TO GET FINANCIALS
+                      </span>
+                    ) : (
+                  
                     (() => {
                       const rent = parseFloat(formData.rentalValue) || 0;
                       const netRent = rent * 0.8;
@@ -226,7 +232,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                       return (
                         <>
-                          Based on the current list price and rent, using a DSCR loan and holding 20% for maintenance, management, and vacancy after factoring in repair costs, we’d {profitOrLoss} approximately{" "}
+                          If we got a loan in this plus repairs and held back 20% for expenses, we’d {profitOrLoss} approximately{" "}
                           <span className={diff >= 0 ? "text-green-400" : "text-red-400"}>
                             ${formatted} per month.
                           </span>
@@ -268,11 +274,11 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                                   <span className="underline">
                                     {overagePercent.toFixed(0)}%
                                   </span>{" "}
-                                  more than the asking price over time, and would need to show at least{" "}
+                                  for the property, and would need to show at least{" "}
                                   <span className="font-bold">
                                     ${incomeRequired.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                   </span>{" "}
-                                  per month in income just to qualify, which will shrink the buyer pool.
+                                  per month in income just to qualify, which could shrink the buyer pool.
                                 </span>
 
 
@@ -320,7 +326,10 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                                 <span className="text-yellow-300 font-semibold">
                                   ${Number(offerAmount).toLocaleString()}
                                 </span>
-                                ? Or maybe they would be open to creative offers if it nets them what they want or even a bit better than expected?
+                                ?
+                                <br/>
+                                <br/>
+                                Or maybe they would be open to creative offers if it nets them what they want or even a bit better than expected?
 
                               </>
                             );
@@ -331,7 +340,9 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                       );
                     })()
-                  ) : q.label.includes("what’s got the seller looking") ? (
+                      
+                      )
+                    ) : q.label.includes("what’s got the seller looking") ? (
                     <>
                       I believe it might be worth{" "}
                       <span className="text-white font-semibold">
