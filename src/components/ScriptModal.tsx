@@ -215,7 +215,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                       <span className="text-white font-semibold">
                         ${offerPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                       </span>{" "}
-                      for the property, and{" "}
+                      for the property as a seller finance defaultQuestions, and{" "}
                       <span className="text-white font-semibold">
                         ${downPayment.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                       </span>{" "}
