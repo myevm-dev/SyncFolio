@@ -237,7 +237,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                   {q.field === "method" ? (
                     !formData.rentalValue || !formData.rehabCost ? (
                       <span className="text-yellow-400 italic">
-                        ADD RENT AND REPAIRS TO GET FINANCIALS
+                        ADD RENT AND REPAIRS (if any) TO GET FINANCIALS
                       </span>
                     ) : (
                   
@@ -358,7 +358,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                                 </span>
                                 <br />
                                 <br />
-                                Hmm... Or maybe they would be open to creative offers if it nets them what they want or even a bit better than expected?
+                                Or maybe they would be open to creative offers if it nets them what they want or even a bit better than expected?
                               </>
 
                             );
