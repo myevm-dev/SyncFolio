@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import TGEProgressBar from "./TGEProgressBar";
+
 
 interface FAQItem {
   question: string;
@@ -43,6 +45,16 @@ const FAQSection: React.FC = () => {
       ),
     },
     {
+      question: "What are Credits in the App?",
+      answer: (
+        <p>
+          Credits are in-platform usage tokens that allow you to unlock premium features,
+          including access to AI tools, advanced analytics, and automation. You can earn
+          them through activity or purchase them to enhance your workflow.
+        </p>
+      ),
+    },
+    {
       question: "It says ETH on my profile, is blockchain or cryptocurrency used?",
       answer:
         "No, SyncFolio does not use cryptocurrency or blockchain for real estate deals or involving the homes themselves. The app uses the same cryptographic system as Ethereum (Keccak256 hashing and ECDSA signatures) to generate and verify accounts. This enables secure, private deal submission so your data is encrypted and even the site admin cannot view anything unless you choose to share it. While we may collect platform fees in ETH or USD for features or services, and likely offer onchain products, homes or deals are peer to peer in a traditional sense.",
@@ -70,8 +82,19 @@ const FAQSection: React.FC = () => {
         {
       question: "What is Ꞙolio Token?",
       answer:
-        "Ꞙolio Token is a digital asset used within the SyncFolio platform to incentivize and reward users for their participation and contributions.",
+        "Ꞙolio Token is a digital asset used within the SyncFolio platform to incentivize and reward users for their participation and contributions. Buyers may lock up Folio Tokens for a period of time to amplify and get priority Deal Flow.",
     },
+    {
+      question: "When is Ꞙolio Token Generation Event (TGE)?",
+      answer: (
+        <div>
+          The Ꞙolio Token Generation Event (TGE) will occur once the platform reaches{" "}
+          <span className="text-pink-500 font-semibold">$50 million</span> in total real estate volume.
+          <TGEProgressBar currentVolume={1} />
+        </div>
+      ),
+    },
+
     {
       question: "How many leads can I manage?",
       answer:
