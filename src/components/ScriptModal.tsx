@@ -226,7 +226,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                       return (
                         <>
-                          Based on the current list price and rent, using a DSCR loan and holding 20% for maintenance, management, and vacancy—after factoring in repair costs, we’d {profitOrLoss} approximately{" "}
+                          Based on the current list price and rent, using a DSCR loan and holding 20% for maintenance, management, and vacancy after factoring in repair costs, we’d {profitOrLoss} approximately{" "}
                           <span className={diff >= 0 ? "text-green-400" : "text-red-400"}>
                             ${formatted} per month.
                           </span>
