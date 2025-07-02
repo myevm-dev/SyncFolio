@@ -186,7 +186,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
         <div className="bg-zinc-800 p-4 rounded-md border border-neutral-700 mb-4">
           <p className="text-base text-cyan-400">
-            Hi my name is _____, we are buying investment properties and wanted to reach out. Do you have a moment to tell me about {" "}
+            Hi my name is _____, we are buying investment properties and wanted to reach out. How are you today?  Do you have a moment to tell me about {" "}
             <span className="font-semibold text-white">
               {formData.address || "[Property]"}
             </span>{" "}
@@ -226,7 +226,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                       return (
                         <>
-                          Based on the current list price and rent, using a DSCR loan and holding 20% for maintenance, management, and vacancy—after factoring in repair costs—we’d {profitOrLoss} approximately{" "}
+                          Based on the current list price and rent, using a DSCR loan and holding 20% for maintenance, management, and vacancy—after factoring in repair costs, we’d {profitOrLoss} approximately{" "}
                           <span className={diff >= 0 ? "text-green-400" : "text-red-400"}>
                             ${formatted} per month.
                           </span>
@@ -316,7 +316,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                             return (
                               <>
-                                I think there are two ways we can get this deal done, being either lower price or low interest rate. I mean...would it even be worth presenting an offer around{" "}
+                                Probably two ways we can get this deal done, a lower price or low low interest rate. I mean...would it even be worth presenting an offer around{" "}
                                 <span className="text-yellow-300 font-semibold">
                                   ${Number(offerAmount).toLocaleString()}
                                 </span>
