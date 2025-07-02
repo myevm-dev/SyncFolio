@@ -545,7 +545,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                     <label className="block text-sm mb-1 text-white">
                       Select Repairs Needed{" "}
                       <span className="text-yellow-500 text-xs font-semibold">
-                        *highlighted items need attention based on age
+                        *highlighted items need attention based on age and check pics too
                       </span>
                     </label>
 

@@ -56,7 +56,7 @@ export default function ContactInfoSection({ formData, handleChange, setFormData
 
   return (
     <>
-      <h2 className="text-center text-xl font-semibold text-[#6e5690] mt-8">Contact Info</h2>
+      <h2 className="text-center text-xl font-semibold text-[#6e5690] mt-8">2. Contact Info</h2>
 
       {/* contact fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

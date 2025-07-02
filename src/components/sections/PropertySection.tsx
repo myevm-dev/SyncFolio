@@ -10,7 +10,7 @@ interface Props {
 export default function PropertySection({ formData, renderField, handleChange }: Props) {
   return (
     <>
-      <h2 className="text-center text-xl font-semibold text-[#6e5690] mt-4">Property Details</h2>
+      <h2 className="text-center text-xl font-semibold text-[#6e5690] mt-4">1. Property Details</h2>
 
       <div className="grid grid-cols-1 gap-4">{renderField("zillowUrl", "Zillow URL", 2)}</div>
 

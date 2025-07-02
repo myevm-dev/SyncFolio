@@ -16,7 +16,7 @@ export default function DiscoveryCallSection({
 }: Props) {
   return (
     <>
-      <h2 className="text-center text-xl font-semibold text-[#6e5690] mt-8">Discovery Call</h2>
+      <h2 className="text-center text-xl font-semibold text-[#6e5690] mt-8">3. Discovery Call</h2>
 
       <div className="flex justify-center mt-2 mb-4">
         <button
