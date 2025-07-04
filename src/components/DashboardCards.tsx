@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { db } from "../lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { useActiveAccount } from "thirdweb/react";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
 const DashboardCards = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const DashboardCards = () => {
   const [offerCount, setOfferCount] = useState(0);
   const [opPrice, setOpPrice] = useState<number | null>(null);
 
-  const vestingFolio = 15000;
+  const vestingFolio = 150000;
   const folioToOP = 0.02; // 1 Folio = 0.02 OP
 
   useEffect(() => {
@@ -50,13 +51,21 @@ const DashboardCards = () => {
       route: null,
       extra: (
         <div className="text-[15px] mt-1 flex flex-wrap items-center gap-1">
-          <span className="text-[#fd01f5] font-semibold">+ 15k Ꞙolio</span>
+          <span className="text-[#fd01f5] font-semibold">+ 150k Ꞙolio</span>
           {opPrice !== null && (
             <span className="text-green-400 text-sm font-normal">
               (~${(vestingFolio * folioToOP * opPrice).toFixed(2)})
             </span>
           )}
-          <span className="text-gray-400 italic text-sm">(Vesting)</span>
+          <span className="text-gray-400 italic text-sm flex items-center gap-1">
+            (Vesting)
+            <span className="relative group">
+              <InformationCircleIcon className="w-4 h-4 text-blue-400 cursor-pointer" />
+              <div className="absolute z-50 hidden group-hover:block w-[min(90vw,18rem)] p-3 bg-zinc-900 text-sm text-white border border-neutral-700 rounded-lg shadow-lg mt-2 left-1/2 -translate-x-1/2">
+                150k <span className="text-[#fd01f5] font-semibold">Ꞙolio</span> unlockable over your first 5 deals. Tokens to be delivered at TGE or on completion if after the event. This does not replace any rewards earned elsewhere in the app.
+              </div>
+            </span>
+          </span>
         </div>
       ),
     },
