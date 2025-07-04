@@ -56,6 +56,8 @@ export default function OfferModal({
       phone,
       title,
       propertyAddress: address,
+      method: type,
+      offerAmount: type === "cash" ? offerPrice : totalOffer,
       createdAt: serverTimestamp(),
     });
     if (onSave) onSave(content);
@@ -192,7 +194,7 @@ export default function OfferModal({
 
           {saveSuccess && (
             <div className="bg-green-700 text-white px-4 py-2 rounded-full text-sm font-medium">
-              Saved to Firebase ✔
+              Saved to Offers
             </div>
           )}
 

@@ -41,11 +41,11 @@ export default function Navbar() {
   const walletAddress = account?.address || "";
 
   const pageLabels: Record<string, string> = {
-    "/analytics": "STATS",
     "/": "EARN",
     "/buy": "BUY",
     "/sell": "SELL",
     "/profile": "DASHBOARD",
+    "/analytics": "STATS",
     "/about": "ABOUT",
   };
 
