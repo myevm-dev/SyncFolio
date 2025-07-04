@@ -7,7 +7,7 @@ export default function DisclaimerSection() {
         Disclaimer
       </h2>
       <p>
-        SyncFolio.Space is a peer-to-peer marketplace. All deals listed or facilitated through the platform are direct contracts between users, investors, or licensed agents. SyncFolio does not participate in the transaction and assumes no responsibility for deal outcomes. Our mission is to simplify and standardize the process of real estate deal sourcing and submission for all parties involved.
+        SyncFolio.Space is a peer-to-peer marketplace for real estate opportunities. All deals listed or routed through the platform are submitted by users and matched to other users based on their submitted buyboxes. SyncFolio does not broker, represent, or assign contracts. Instead, it facilitates introductions between principals or licensed parties. This routing approach helps ensure compliance with local laws while providing a standardized and transparent system for deal sourcing and review.
       </p>
     </section>
   );
