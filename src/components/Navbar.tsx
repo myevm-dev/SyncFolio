@@ -80,7 +80,7 @@ export default function Navbar() {
         </div>
 
         {/* Desktop Navigation Links */}
-        <div className="hidden md:flex items-center text-white font-medium ml-11 gap-4">
+        <div className="hidden md:flex items-center text-white font-medium ml-12 gap-4">
           {Object.entries(pageLabels).map(([path, label]) => (
             <button
               key={path}

@@ -48,7 +48,7 @@ const DashboardCards = () => {
       label: "Earnings",
       value: "$0.00",
       icon: "💰",
-      route: null,
+      route: "/yield",
       extra: (
         <div className="text-[15px] mt-1 flex flex-wrap items-center gap-1">
           <span className="text-[#fd01f5] font-semibold">+ 150k Ꞙolio</span>
