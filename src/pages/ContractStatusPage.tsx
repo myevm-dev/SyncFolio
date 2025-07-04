@@ -6,15 +6,15 @@ import { useActiveAccount } from "thirdweb/react";
 
 const steps = [
   "Submitted to Syncfolio",
-  "Dispo Terms Accepted by Syncfolio",
+  "Accepted and Signed by Syncfolio",
   "Contract Signed by Seller",
-  "Sent for Dispo (Buyer Search Ongoing)",
+  "Searching for Buyer (Inspection Period)",
   "Buyer Identified and Committed",
   "Closed, Payment Credited to Account"
 ];
 
 const ContractStatusPage = () => {
-  const { contractId } = useParams();
+  const { id: contractId } = useParams();
   const account = useActiveAccount();
   const walletAddress = account?.address || "";
   const [contract, setContract] = useState<any | null>(null);
