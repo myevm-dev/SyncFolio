@@ -9,7 +9,7 @@ export default function YieldPage() {
         Coming soon.
       </p>
       <div className="bg-zinc-800 border border-zinc-700 p-8 rounded-lg text-center text-neutral-400">
-        📊 This page will allow you to view and manage yield strategies.
+        📊
       </div>
     </div>
   );
