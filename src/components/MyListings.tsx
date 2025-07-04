@@ -64,7 +64,7 @@ const MyListings: React.FC = () => {
             onClick={() => alert("Instant Offer triggered")}
             className="w-full sm:w-auto min-h-[44px] px-4 py-2 flex items-center justify-center"
           >
-            ⚡ Get Instant Offer
+            InstantOffer
           </AnimatedButton>
         </div>
 
