@@ -28,6 +28,7 @@ const comingSoonItems = [
   { label: "Lead Gamification", percent: 60 },
   { label: "JV With Us", percent: 55 },
   { label: "Auto-Contracts", percent: 50 },
+  { label: "AI Deal Analysis", percent: 40 },
   { label: "AI Chat Assistant", percent: 35 },
   { label: "Deal Marketplace", percent: 30 },
   { label: "Funding & Yield Plugins", percent: 30 },
@@ -39,7 +40,7 @@ const comingSoonItems = [
   { label: "Portfolio Management", percent: 10 },
   { label: "Affiliate Page", percent: 5 },
   { label: "How To Videos", percent: 5 },
-  { label: "AI Deal Analysis", percent: 5 },
+
   { label: "Field Network", percent: 5 },
  //  { label: "Live AI Scripting", percent: 5 },
   //  { label: "AI Virtual Assistant", percent: 5 },
