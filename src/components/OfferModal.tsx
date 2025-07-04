@@ -7,6 +7,7 @@ import SupportingLogicList from "./SupportingLogicList";
 import { Pencil } from "lucide-react";
 import { db } from "../lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 interface OfferModalProps {
   type: "cash" | "sellerFinance" | "takeover" | "hybrid";
@@ -37,6 +38,7 @@ export default function OfferModal({
   const match = offerText?.match(/\$([0-9,.]+)/);
   const [offerPrice, setOfferPrice] = useState<string>(match?.[1] || "0");
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const sellerText = results["sellerFinance"] || "";
   const totalOffer = sellerText.match(/Total Offer: \$(.*)/)?.[1] || "$0";
@@ -184,30 +186,22 @@ export default function OfferModal({
           </div>
         </div>
 
-        <div className="pt-6 flex flex-col items-center gap-3">
-          <button
-            onClick={handleSave}
-            className="px-14 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-800 transition"
-          >
-            Save
-          </button>
-
+        <div className="pt-6 text-center">
           {saveSuccess && (
-            <div className="bg-green-700 text-white px-4 py-2 rounded-full text-sm font-medium">
-              Saved to Offers
+            <div
+              className="bg-green-700 text-white px-4 py-2 rounded-full text-sm font-medium mb-4 cursor-pointer hover:bg-green-800"
+              onClick={() => navigate("/buying-center")}
+            >
+              Saved to Offers — View All
             </div>
           )}
 
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex justify-center gap-4 flex-wrap">
             <button
-              onClick={() => {
-                const textToCopy =
-                  document.querySelector("#offer-preview")?.textContent || "";
-                navigator.clipboard.writeText(textToCopy);
-              }}
-              className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
+              onClick={handleSave}
+              className="px-6 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-800 transition"
             >
-              Copy Text
+              Save
             </button>
 
             <button
@@ -236,15 +230,13 @@ export default function OfferModal({
 
             <button
               onClick={() => {
-                const content = encodeURIComponent(
-                  document.getElementById("offer-preview")?.textContent || ""
-                );
-                const shareUrl = `mailto:?subject=Offer Preview&body=${content}`;
-                window.open(shareUrl, "_blank");
+                const textToCopy =
+                  document.querySelector("#offer-preview")?.textContent || "";
+                navigator.clipboard.writeText(textToCopy);
               }}
-              className="px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition"
+              className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
             >
-              Create Link
+              Copy Text
             </button>
           </div>
         </div>
