@@ -49,8 +49,13 @@ export default function Navbar() {
     "/about": "ABOUT",
   };
 
+  const fallbackLabels: Record<string, string> = {
+    "/buying-center": "BUYING CENTER",
+    "/selling-center": "SELLING CENTER",
+  };
+
   const currentPath = location.pathname;
-  const currentLabel = pageLabels[currentPath] || "Page";
+  const currentLabel = pageLabels[currentPath] || fallbackLabels[currentPath] || "Page";
 
   const handleNavigate = (path: string) => {
     setMenuOpen(false);
@@ -93,8 +98,8 @@ export default function Navbar() {
           <ConnectButton
             client={client}
             wallets={wallets}
-            chains={[base]} // limits app support to base
-            chain={base}    // ✅ force default chain
+            chains={[base]}
+            chain={base}
             connectModal={{
               size: "compact",
               showThirdwebBranding: false,

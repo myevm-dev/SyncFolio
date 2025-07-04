@@ -15,7 +15,7 @@ import BuyboxDirectoryPage from "./pages/BuyboxDirectory";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import BuyingCenterPage from "./pages/BuyingCenterPage";
 import SellingCenterPage from "./pages/SellingCenterPage";
-import ContractStatusPage from "./pages/ContractStatusPage"; // ✅ Contract status page
+import ContractStatusPage from "./pages/ContractStatusPage"; 
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -32,7 +32,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/buying-center" element={<BuyingCenterPage />} />
             <Route path="/selling-center" element={<SellingCenterPage />} />
-            <Route path="/contracts/:id" element={<ContractStatusPage />} /> {/* ✅ Fix param name */}
+            <Route path="/contracts/:id" element={<ContractStatusPage />} /> 
           </Route>
         </Routes>
       </BrowserRouter>
