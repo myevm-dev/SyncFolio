@@ -35,7 +35,7 @@ const MyContractsTable: React.FC = () => {
 
   return (
     <div className="w-full overflow-x-auto">
-      <table className="w-full text-left text-white border-collapse border border-neutral-700">
+      <table className="min-w-full text-left text-white border-collapse border border-neutral-700">
         <thead className="bg-neutral-900">
           <tr>
             <th className="px-4 py-2 border-b border-neutral-700">Address</th>
@@ -51,16 +51,16 @@ const MyContractsTable: React.FC = () => {
               <td className="px-4 py-2 border-b border-neutral-700">{contract.closeDate}</td>
               <td className="px-4 py-2 border-b border-neutral-700">{contract.status}</td>
               <td className="px-4 py-2 border-b border-neutral-700">
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   <button
                     onClick={() => navigate(`/contracts/${contract.id}`)}
-                    className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700"
+                    className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 whitespace-nowrap"
                     aria-label={`View status of contract at ${contract.address}`}
                   >
                     See Status
                   </button>
                   <button
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 whitespace-nowrap"
                     aria-label={`Cancel contract at ${contract.address}`}
                   >
                     Cancel
