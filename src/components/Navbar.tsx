@@ -45,6 +45,7 @@ export default function Navbar() {
     "/buy": "BUY",
     "/sell": "SELL",
     "/profile": "DASHBOARD",
+    "/yield": "YIELD", 
     "/analytics": "STATS",
     "/about": "ABOUT",
   };
