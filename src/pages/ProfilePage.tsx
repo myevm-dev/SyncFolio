@@ -36,13 +36,21 @@ export default function ProfilePage() {
       if (!walletAddress) return;
       const ref = doc(db, "users", walletAddress);
       const snap = await getDoc(ref);
+      const localReferrer = localStorage.getItem("referrer");
+
       if (!snap.exists()) {
         await setDoc(ref, {
           displayName: "Unnamed",
           zipcode: "",
           team: [],
           createdAt: new Date(),
+          referredBy: localReferrer || null,
         });
+      } else {
+        const data = snap.data();
+        if (!data.referredBy && localReferrer) {
+          await setDoc(ref, { referredBy: localReferrer }, { merge: true });
+        }
       }
     };
     ensureUserRecord();
