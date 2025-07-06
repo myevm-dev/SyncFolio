@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
 
 import ConversionChart from "./components/ConversionChart";
@@ -6,6 +6,7 @@ import LinkBar from "./components/LinkBar";
 import Questionaire from "./components/Questionaire";
 import Offers from "./components/Offers";
 import DealsTable from "./components/DealsTable";
+import WelcomeReferralPage from "./pages/WelcomeReferralPage";
 
 import { DealInput } from "./types/DealInput";
 import { OfferResults } from "./types/OfferResults";
@@ -49,12 +50,25 @@ const initialDeal: DealInput = {
 export default function App() {
   const account = useActiveAccount();
   const walletAddress = account?.address || "";
+
   const [showChart, setShowChart] = useState(false);
   const [results, setResults] = useState<OfferResults | null>(null);
   const [cocResults, setCocResults] = useState<CashOnCashResult[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const [currentDealId, setCurrentDealId] = useState<string | null>(null);
   const [formData, setFormData] = useState<DealInput>(initialDeal);
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  // ✅ Always show welcome screen if a ref param is present
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
+
+    if (ref) {
+      localStorage.setItem("referrer", ref);
+      setShowWelcome(true);
+    }
+  }, []);
 
   const handleSubmit = (data: DealInput) => {
     setResults({
@@ -87,6 +101,16 @@ export default function App() {
     handleSubmit(deal);
   };
 
+  if (showWelcome) {
+    return (
+      <WelcomeReferralPage
+        onContinue={() => {
+          setShowWelcome(false);
+        }}
+      />
+    );
+  }
+
   return (
     <div className="w-full min-h-screen flex flex-col overflow-hidden">
       <LinkBar walletAddress={walletAddress} />
@@ -106,17 +130,17 @@ export default function App() {
           setCurrentDealId={setCurrentDealId}
         />
 
-
         {results && (
           <Offers
             results={results}
             cashOnCashResults={cocResults}
-            propertyAddress={formData.address || ""}  
+            propertyAddress={formData.address || ""}
             walletAddress={walletAddress}
           />
         )}
 
         {showChart && <ConversionChart walletAddress={walletAddress} />}
+
         <DealsTable
           refreshKey={refreshKey}
           onLoad={handleLoadDeal}
@@ -125,9 +149,7 @@ export default function App() {
           setShowChart={setShowChart}
         />
 
-
-        <div className="h-[100px]" /> {/* Adjust height to match or slightly exceed mobile footer/menu height */}
-
+        <div className="h-[100px]" />
       </div>
     </div>
   );

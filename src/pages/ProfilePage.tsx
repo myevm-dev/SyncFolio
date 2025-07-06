@@ -9,7 +9,7 @@ import DashboardCards from "../components/DashboardCards";
 import TeamSection from "../components/TeamSection";
 import ReferralSection from "../components/ReferralSection";
 import IncomingInvites from "../components/IncomingInvites";
-//import HeatMap from "../components/HeatMap"; // ✅ import heatmap component
+// import HeatMap from "../components/HeatMap";
 
 declare global {
   interface Window {
@@ -125,10 +125,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
-      <div
-        className="w-28 h-28 mx-auto mb-4"
-        dangerouslySetInnerHTML={{ __html: svg }}
-      />
+      <div className="w-28 h-28 mx-auto mb-4" dangerouslySetInnerHTML={{ __html: svg }} />
 
       <div className="mb-4">
         <div className="flex items-center justify-center gap-2 mb-2">
@@ -136,7 +133,9 @@ export default function ProfilePage() {
             <input
               value={liveName}
               onChange={(e) => setLiveName(e.target.value)}
-              className={`bg-zinc-800 px-3 py-1 rounded text-sm ${nameTaken ? "border border-red-500 text-red-400" : ""}`}
+              className={`bg-zinc-800 px-3 py-1 rounded text-sm ${
+                nameTaken ? "border border-red-500 text-red-400" : ""
+              }`}
             />
           ) : (
             <span className="font-bold text-lg">{displayName}</span>
@@ -188,30 +187,34 @@ export default function ProfilePage() {
 
       <DashboardCards />
 
-      <div className="mt-10">
-        {/* <HeatMap walletAddress={walletAddress} /> */}
-      </div>
-
+      <div className="mt-10">{/* <HeatMap walletAddress={walletAddress} /> */}</div>
 
       <div className="flex flex-col lg:flex-row justify-center items-start gap-8 max-w-6xl mx-auto mt-10">
         <div className="flex-1 border border-zinc-700 rounded-xl p-6">
           <p className="text-left text-gray-300 text-sm mb-3">
-            You can send team requests and <span className="text-green-400 font-semibold">JV with other users</span> to collaborate on deals.
+            You can send team requests and{" "}
+            <span className="text-green-400 font-semibold">JV with other users</span> to collaborate on deals.
           </p>
           <TeamSection walletAddress={walletAddress} reloadFlag={reloadFlag} />
         </div>
         <div className="flex-1 border border-zinc-700 rounded-xl p-6">
-          <p className="text-left text-gray-300 text-sm mb-3">
-            You’ll earn <span className="text-green-400 font-semibold">$300 for every closed deal </span>  made by someone you invite.
-          </p>
+          <div className="flex items-center justify-between text-sm mb-3">
+            <p className="text-left text-gray-300">
+              You’ll earn <span className="text-green-400 font-semibold">$300 for every closed deal</span> made by
+              someone you invite.
+            </p>
+            <button
+              onClick={() => window.print()}
+              className="text-blue-400 hover:text-blue-300 underline whitespace-nowrap ml-4"
+            >
+              BizCards
+            </button>
+          </div>
           <ReferralSection walletAddress={walletAddress} />
         </div>
       </div>
 
-      <IncomingInvites
-        walletAddress={walletAddress}
-        onUpdateTeam={() => setReloadFlag((n) => n + 1)}
-      />
+      <IncomingInvites walletAddress={walletAddress} onUpdateTeam={() => setReloadFlag((n) => n + 1)} />
     </div>
   );
 }

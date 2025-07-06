@@ -13,33 +13,45 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ walletAddress }) => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const referrer = params.get("ref");
-    if (referrer) {
+
+    if (referrer && /^0x[a-fA-F0-9]{40}$/.test(referrer)) {
       localStorage.setItem("referrer", referrer);
     }
 
     if (!walletAddress) return;
 
-    const refCode = walletAddress.slice(2, 10);
-    setReferralLink(`${window.location.origin}/?ref=${refCode}`);
+    // ✅ Build referral link
+    setReferralLink(`${window.location.origin}/?ref=${walletAddress}`);
 
+    // ✅ Create user record if not exists, track referral
     const ensureReferralTracked = async () => {
       const userRef = doc(db, "users", walletAddress);
       const snap = await getDoc(userRef);
+
       if (!snap.exists()) {
+        const localReferrer = localStorage.getItem("referrer");
+        const isEthAddress = /^0x[a-fA-F0-9]{40}$/.test(localReferrer || "");
+
         await setDoc(userRef, {
           displayName: "Unnamed",
+          zipcode: "",
           team: [],
+          referredBy: isEthAddress ? localReferrer : null,
           createdAt: new Date(),
-          referredBy: localStorage.getItem("referrer") || null,
         });
       }
     };
 
+    // ✅ Find all users referred by me
     const fetchReferrals = async () => {
       const snapshot = await getDocs(collection(db, "users"));
       const filtered = snapshot.docs
-        .filter((docSnap) => docSnap.data().referredBy === walletAddress.slice(2, 10))
-        .map((docSnap) => ({ ...docSnap.data(), id: docSnap.id }));
+        .filter((docSnap) => docSnap.data().referredBy === walletAddress)
+        .map((docSnap) => ({
+          id: docSnap.id,
+          displayName: docSnap.data().displayName || "Unnamed",
+        }));
+
       setReferrals(filtered);
     };
 
@@ -61,6 +73,7 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ walletAddress }) => {
       <div className="mt-4">
         <h2 className="text-xl mt-4 font-bold text-white mb-2">Referral</h2>
       </div>
+
       <div className="flex items-center gap-2 mb-4">
         <input
           type="text"
@@ -76,6 +89,7 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ walletAddress }) => {
         </button>
       </div>
 
+      {/* ✅ Show referred users' avatars */}
       {referrals.length > 0 && (
         <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {referrals.map((ref) => {
