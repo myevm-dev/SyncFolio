@@ -21,26 +21,30 @@ const roles = [
 ];
 
 const comingSoonItems = [
-  { label: "Printable Referral Cards", percent: 80 },
-  { label: "Auto-Offers", percent: 80 },
+  { label: "Auto-Offers", percent: 85 },
+  { label: "Decay and Expiring Offers", percent: 85 },
+  { label: "Offer Links", percent: 80 },
+  { label: "Printable Referral Cards", percent: 75 },
   { label: "Team Collaboration", percent: 70 },
+  { label: "Affiliate Page", percent: 65 },
+
   { label: "Earn Platform Credits", percent: 65 },
-  { label: "Lead Gamification", percent: 60 },
   { label: "JV With Us", percent: 55 },
   { label: "Auto-Contracts", percent: 50 },
+  { label: "Lead Gamification", percent: 45 },
+
   { label: "AI Deal Analysis", percent: 40 },
   { label: "AI Chat Assistant", percent: 35 },
   { label: "Deal Marketplace", percent: 30 },
   { label: "Funding & Yield Plugins", percent: 30 },
   { label: "Employable AI Agents", percent: 25  },
   { label: "Tokenlock Deal Flow", percent: 20 },
-  { label: "Sell Leads", percent: 15 },
   { label: "Twilio Integration", percent: 15 },
-  { label: "Activity Heatmap", percent: 10 },
-  { label: "Portfolio Management", percent: 10 },
-  { label: "Affiliate Page", percent: 5 },
-  { label: "How To Videos", percent: 5 },
 
+  { label: "Buy and Sell Leads", percent: 15 },
+  { label: "Activity Heatmap", percent: 10 },
+  { label: "REI Portfolio Management", percent: 10 },
+  { label: "How To Videos", percent: 5 },
   { label: "Field Network", percent: 5 },
  //  { label: "Live AI Scripting", percent: 5 },
   //  { label: "AI Virtual Assistant", percent: 5 },
