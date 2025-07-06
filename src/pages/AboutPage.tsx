@@ -27,12 +27,10 @@ const comingSoonItems = [
   { label: "Printable Referral Cards", percent: 75 },
   { label: "Team Collaboration", percent: 70 },
   { label: "Affiliate Page", percent: 65 },
-
   { label: "Earn Platform Credits", percent: 65 },
   { label: "JV With Us", percent: 55 },
   { label: "Auto-Contracts", percent: 50 },
   { label: "Lead Gamification", percent: 45 },
-
   { label: "AI Deal Analysis", percent: 40 },
   { label: "AI Chat Assistant", percent: 35 },
   { label: "Deal Marketplace", percent: 30 },
