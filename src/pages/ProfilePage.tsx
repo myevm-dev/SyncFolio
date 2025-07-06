@@ -36,7 +36,19 @@ export default function ProfilePage() {
       if (!walletAddress) return;
       const ref = doc(db, "users", walletAddress);
       const snap = await getDoc(ref);
-      const localReferrer = localStorage.getItem("referrer");
+
+      const localReferrerName = localStorage.getItem("referrer");
+
+      // resolve referrerName to ensure it’s a valid existing user
+      let resolvedReferrerName: string | null = null;
+      if (localReferrerName) {
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        const referrerDoc = usersSnapshot.docs.find(
+          (docSnap) =>
+            docSnap.data().displayName?.toLowerCase() === localReferrerName.toLowerCase()
+        );
+        resolvedReferrerName = referrerDoc?.data()?.displayName || null;
+      }
 
       if (!snap.exists()) {
         await setDoc(ref, {
@@ -44,15 +56,16 @@ export default function ProfilePage() {
           zipcode: "",
           team: [],
           createdAt: new Date(),
-          referredBy: localReferrer || null,
+          referredBy: resolvedReferrerName,
         });
       } else {
         const data = snap.data();
-        if (!data.referredBy && localReferrer) {
-          await setDoc(ref, { referredBy: localReferrer }, { merge: true });
+        if (!data.referredBy && resolvedReferrerName) {
+          await setDoc(ref, { referredBy: resolvedReferrerName }, { merge: true });
         }
       }
     };
+
     ensureUserRecord();
   }, [walletAddress]);
 

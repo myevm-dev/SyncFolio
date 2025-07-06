@@ -9,59 +9,30 @@ interface ReferralSectionProps {
 const ReferralSection: React.FC<ReferralSectionProps> = ({ walletAddress }) => {
   const [referralLink, setReferralLink] = useState("");
   const [referrals, setReferrals] = useState<any[]>([]);
-  const [displayName, setDisplayName] = useState("Unnamed");
+  const [displayName, setDisplayName] = useState("");
 
   useEffect(() => {
     const fetchDisplayName = async () => {
       if (!walletAddress) return;
       const userRef = doc(db, "users", walletAddress);
       const snap = await getDoc(userRef);
-      if (snap.exists()) {
-        const data = snap.data();
-        setDisplayName(data.displayName || "Unnamed");
-        setReferralLink(`${window.location.origin}/?ref=${data.displayName || "Unnamed"}`);
-      }
-    };
-
-    fetchDisplayName();
-  }, [walletAddress]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const referrerName = params.get("ref");
-
-    if (referrerName) {
-      localStorage.setItem("referrer", referrerName);
-    }
-
-    const ensureReferralTracked = async () => {
-      if (!walletAddress) return;
-      const userRef = doc(db, "users", walletAddress);
-      const snap = await getDoc(userRef);
-
-      if (!snap.exists()) {
-        await setDoc(userRef, {
-          displayName: "Unnamed",
-          team: [],
-          createdAt: new Date(),
-          referredBy: referrerName || null,
-        });
-      }
+      const name = snap.exists() ? snap.data().displayName : "";
+      setDisplayName(name);
+      setReferralLink(`${window.location.origin}/?ref=${name}`);
     };
 
     const fetchReferrals = async () => {
       if (!displayName) return;
-
       const snapshot = await getDocs(collection(db, "users"));
       const filtered = snapshot.docs
         .filter((docSnap) => docSnap.data().referredBy === displayName)
         .map((docSnap) => ({ ...docSnap.data(), id: docSnap.id }));
-
       setReferrals(filtered);
     };
 
-    ensureReferralTracked();
-    fetchReferrals();
+    fetchDisplayName();
+    // Delay fetchReferrals until name is known
+    setTimeout(fetchReferrals, 300);
   }, [walletAddress, displayName]);
 
   const copyToClipboard = async () => {
