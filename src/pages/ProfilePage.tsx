@@ -39,7 +39,6 @@ export default function ProfilePage() {
 
       const localReferrerName = localStorage.getItem("referrer");
 
-      // resolve referrerName to ensure it’s a valid existing user
       let resolvedReferrerName: string | null = null;
       if (localReferrerName) {
         const usersSnapshot = await getDocs(collection(db, "users"));
@@ -210,15 +209,16 @@ export default function ProfilePage() {
 
       <div className="mt-10">{/* <HeatMap walletAddress={walletAddress} /> */}</div>
 
-      <div className="flex flex-col lg:flex-row justify-center items-start gap-8 max-w-6xl mx-auto mt-10">
-        <div className="flex-1 border border-zinc-700 rounded-xl p-6">
+      <div className="max-w-6xl mx-auto mt-10 space-y-6">
+        <div className="border border-zinc-700 rounded-xl p-6">
           <p className="text-left text-gray-300 text-sm mb-3">
             You can send team requests and{" "}
             <span className="text-green-400 font-semibold">JV with other users</span> to collaborate on deals.
           </p>
           <TeamSection walletAddress={walletAddress} reloadFlag={reloadFlag} />
         </div>
-        <div className="flex-1 border border-zinc-700 rounded-xl p-6">
+
+        <div className="border border-zinc-700 rounded-xl p-6">
           <div className="flex items-center justify-between text-sm mb-3">
             <p className="text-left text-gray-300">
               You’ll earn <span className="text-green-400 font-semibold">$300 for every closed deal</span> made by
@@ -232,7 +232,6 @@ export default function ProfilePage() {
               BizCards
             </button>
             */}
-
           </div>
           <ReferralSection walletAddress={walletAddress} />
         </div>
