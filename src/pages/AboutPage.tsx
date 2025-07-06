@@ -21,7 +21,7 @@ const roles = [
 ];
 
 const comingSoonItems = [
-  { label: "Referral Program", percent: 85 },
+  { label: "Referral Program", percent: 95 },
   { label: "Auto-Offers", percent: 80 },
   { label: "Team Collaboration", percent: 70 },
   { label: "Earn Platform Credits", percent: 65 },
