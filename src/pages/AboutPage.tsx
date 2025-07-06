@@ -39,12 +39,13 @@ const comingSoonItems = [
   { label: "Funding & Yield Plugins", percent: 30 },
   { label: "Employable AI Agents", percent: 25  },
   { label: "Tokenlock Deal Flow", percent: 20 },
+  { label: "How To Videos", percent: 20 },
+
   { label: "Twilio Integration", percent: 15 },
 
   { label: "Buy and Sell Leads", percent: 15 },
   { label: "Activity Heatmap", percent: 10 },
-  { label: "REI Portfolio Management", percent: 10 },
-  { label: "How To Videos", percent: 5 },
+  { label: "REI Portfolio Management", percent: 5 },
   { label: "Field Network", percent: 5 },
  //  { label: "Live AI Scripting", percent: 5 },
   //  { label: "AI Virtual Assistant", percent: 5 },
