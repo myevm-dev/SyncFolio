@@ -100,7 +100,7 @@ const Marketplace: React.FC = () => {
           </Link>
 
           <AnimatedButton
-            onClick={() => alert("Deploy triggered")}
+            onClick={() => alert("Coming Soon")}
             className="w-full sm:w-auto min-h-[44px] px-4 py-2 flex items-center justify-center"
           >
             DeployAnalyzer
