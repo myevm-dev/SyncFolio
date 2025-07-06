@@ -36,7 +36,7 @@ export default function UserTable({ users }: { users: User[] }) {
               <td className="px-4 py-2">
                 {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Unknown"}
               </td>
-              <td className="px-4 py-2 text-[#fd01f5] font-semibold">15,000 Ꞙolio</td>
+              <td className="px-4 py-2 text-[#fd01f5] font-semibold">150,000 Ꞙolio</td>
               <td className="px-4 py-2 text-green-400 font-medium">$0.00</td>
               <td className="px-4 py-2 text-blue-400 font-medium">$0.00</td>
             </tr>
