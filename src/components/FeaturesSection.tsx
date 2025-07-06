@@ -5,6 +5,7 @@ const features = [
   { title: "🗂 Lead Management CRM", description: "Manage up to 500 leads for free." },
   { title: "✨ Creative Offer Generator", description: "Create offers that are sure to sell to our buyer list." },
   { title: "📜 Customizable Call Scripts", description: "Dynamic call script using the checkmate pitch." },
+  { title: "💸 Referral Program", description: "Earn $300 every time a person you invite closes a deal." },
   { title: "🏆 Top Ranked Real Estate Agents", description: "View America's best and worst agents based on user rankings." },
   { title: "🛠️ Quick Repair Calculator", description: "Calculate repairs by picture and just a few questions." },
   { title: "🚀 Get Started", description: "Click sign in, pick a username, and enter your zip code." },

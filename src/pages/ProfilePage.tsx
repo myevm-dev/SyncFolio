@@ -224,12 +224,15 @@ export default function ProfilePage() {
               You’ll earn <span className="text-green-400 font-semibold">$300 for every closed deal</span> made by
               someone you invite.
             </p>
+            {/*
             <button
               onClick={() => window.print()}
               className="text-blue-400 hover:text-blue-300 underline whitespace-nowrap ml-4"
             >
               BizCards
             </button>
+            */}
+
           </div>
           <ReferralSection walletAddress={walletAddress} />
         </div>
