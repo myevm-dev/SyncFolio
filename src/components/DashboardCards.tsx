@@ -1,20 +1,22 @@
+// DashboardCards.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { useActiveAccount } from "thirdweb/react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
-const DashboardCards = () => {
-  const navigate = useNavigate();
-  const account = useActiveAccount();
-  const walletAddress = account?.address || "";
+interface Props {
+  walletAddress: string;
+  readOnly?: boolean;
+}
 
+const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) => {
+  const navigate = useNavigate();
   const [offerCount, setOfferCount] = useState(0);
   const [opPrice, setOpPrice] = useState<number | null>(null);
 
   const vestingFolio = 150000;
-  const folioToOP = 0.02; // 1 Folio = 0.02 OP
+  const folioToOP = 0.02;
 
   useEffect(() => {
     const fetchOffers = async () => {
@@ -78,17 +80,13 @@ const DashboardCards = () => {
     },
   ];
 
-  const handleCardClick = (route: string | null) => {
-    if (route) navigate(route);
-  };
-
   return (
     <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
       {cards.map((card) => (
         <div
           key={card.label}
-          className="bg-black rounded-xl p-6 shadow-md border border-neutral-700 flex flex-col items-center text-center cursor-pointer hover:border-blue-500"
-          onClick={() => handleCardClick(card.route)}
+          className={`bg-black rounded-xl p-6 shadow-md border border-neutral-700 flex flex-col items-center text-center ${!readOnly ? 'cursor-pointer hover:border-blue-500' : 'opacity-70'}`}
+          {...(!readOnly ? { onClick: () => navigate(card.route) } : {})}
         >
           <p className="text-sm text-accent font-semibold mb-4">{card.label}</p>
           <div className="w-full flex items-start justify-between px-2">

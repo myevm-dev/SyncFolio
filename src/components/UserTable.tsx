@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 interface User {
   id: string;
@@ -26,12 +27,18 @@ export default function UserTable({ users }: { users: User[] }) {
           {users.map((user) => (
             <tr key={user.id} className="border-b border-zinc-700">
               <td className="px-4 py-2">
-                <div
-                  className="w-8 h-8 rounded-full overflow-hidden"
-                  dangerouslySetInnerHTML={{ __html: user.avatar }}
-                />
+                <Link to={`/profile/${user.id}`}>
+                  <div
+                    className="w-8 h-8 rounded-full overflow-hidden hover:scale-110 transition-transform"
+                    dangerouslySetInnerHTML={{ __html: user.avatar }}
+                  />
+                </Link>
               </td>
-              <td className="px-4 py-2">{user.displayName}</td>
+              <td className="px-4 py-2">
+                <Link to={`/profile/${user.id}`} className="hover:underline text-accent">
+                  {user.displayName}
+                </Link>
+              </td>
               <td className="px-4 py-2 break-all text-accent">{user.id}</td>
               <td className="px-4 py-2">
                 {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Unknown"}

@@ -8,6 +8,7 @@ import { client } from "./client";
 
 import App from "./App";
 import ProfilePage from "./pages/ProfilePage";
+import UserProfilePage from "./pages/UserProfilePage";
 import BuyPage from "./pages/BuyPage";
 import SellPage from "./pages/SellPage";
 import AboutPage from "./pages/AboutPage";
@@ -36,6 +37,8 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/selling-center" element={<SellingCenterPage />} />
             <Route path="/contracts/:id" element={<ContractStatusPage />} />
             <Route path="/yield" element={<YieldPage />} /> {/* ✅ added route */}
+            <Route path="/profile/:id" element={<UserProfilePage />} />
+
           </Route>
         </Routes>
       </BrowserRouter>
