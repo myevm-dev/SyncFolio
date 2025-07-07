@@ -9,7 +9,30 @@ import DashboardCards from "../components/DashboardCards";
 import TeamSection from "../components/TeamSection";
 import ReferralSection from "../components/ReferralSection";
 import IncomingInvites from "../components/IncomingInvites";
-// import HeatMap from "../components/HeatMap";
+
+const roleOptions = [
+  "Investor",
+  "Wholesaler",
+  "Real Estate Agent",
+  "Homeowner",
+  "Dispo Partner",
+  "Deal Finder",
+  "Contractor",
+  "Lender",
+  "Appraiser",
+];
+
+const roleGradients: Record<string, string> = {
+  Investor: "bg-gradient-to-r from-green-400 to-blue-500",
+  Wholesaler: "bg-gradient-to-r from-pink-500 to-yellow-500",
+  "Real Estate Agent": "bg-gradient-to-r from-indigo-400 to-purple-500",
+  Homeowner: "bg-gradient-to-r from-rose-400 to-red-500",
+  "Dispo Partner": "bg-gradient-to-r from-cyan-400 to-blue-500",
+  "Deal Finder": "bg-gradient-to-r from-amber-400 to-orange-500",
+  Contractor: "bg-gradient-to-r from-lime-400 to-green-500",
+  Lender: "bg-gradient-to-r from-fuchsia-400 to-pink-500",
+  Appraiser: "bg-gradient-to-r from-sky-400 to-teal-500",
+};
 
 declare global {
   interface Window {
@@ -30,6 +53,11 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [nameTaken, setNameTaken] = useState(false);
   const [reloadFlag, setReloadFlag] = useState(0);
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [balances, setBalances] = useState({
+    platform: { USD: 0, FOLIO: 0, CREDITS: 0 },
+    wallet: { USDC: 0, FOLIO: 0, ETH: 0 },
+  });
 
   useEffect(() => {
     const ensureUserRecord = async () => {
@@ -115,6 +143,12 @@ export default function ProfilePage() {
     setZipcode(liveZip);
     setEditingName(false);
     setEditingZip(false);
+  };
+
+  const toggleRole = (role: string) => {
+    setSelectedRoles((prev) =>
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
+    );
   };
 
   if (!walletAddress) {
@@ -205,15 +239,45 @@ export default function ProfilePage() {
 
       <p className="text-gray-400 break-all">Account: {walletAddress}</p>
 
-      <DashboardCards />
+      <div className="mt-4 space-y-2 text-center">
+        {Array.from({ length: Math.ceil(roleOptions.length / 5) }).map((_, rowIndex) => (
+          <div key={rowIndex} className="flex justify-center flex-wrap gap-2">
+            {roleOptions.slice(rowIndex * 5, rowIndex * 5 + 5).map((role) => (
+              <button
+                key={role}
+                onClick={() => toggleRole(role)}
+                className={`w-44 px-3 py-1 rounded-full text-sm text-white transition border-none text-center ${
+                  selectedRoles.includes(role) ? "ring ring-offset-1 ring-white" : ""
+                } ${roleGradients[role]}`}
+              >
+                {role}
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
 
-      <div className="mt-10">{/* <HeatMap walletAddress={walletAddress} /> */}</div>
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-xl mx-auto">
+        <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-cyan-400 mb-2">Platform Balances</h3>
+          <p className="text-sm text-white">USD: ${balances.platform.USD}</p>
+          <p className="text-sm text-white">FOLIO: {balances.platform.FOLIO}</p>
+          <p className="text-sm text-white">CREDITS: {balances.platform.CREDITS}</p>
+        </div>
+        <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-purple-400 mb-2">Wallet Balances</h3>
+          <p className="text-sm text-white">USDC: ${balances.wallet.USDC}</p>
+          <p className="text-sm text-white">FOLIO: {balances.wallet.FOLIO}</p>
+          <p className="text-sm text-white">ETH: {balances.wallet.ETH}</p>
+        </div>
+      </div>
+
+      <DashboardCards />
 
       <div className="max-w-6xl mx-auto mt-10 space-y-6">
         <div className="border border-zinc-700 rounded-xl p-6">
           <p className="text-left text-gray-300 text-sm mb-3">
-            You can send team requests and{" "}
-            <span className="text-green-400 font-semibold">JV with other users</span> to collaborate on deals.
+            You can send team requests and <span className="text-green-400 font-semibold">JV with other users</span> to collaborate on deals.
           </p>
           <TeamSection walletAddress={walletAddress} reloadFlag={reloadFlag} />
         </div>
@@ -221,17 +285,8 @@ export default function ProfilePage() {
         <div className="border border-zinc-700 rounded-xl p-6">
           <div className="flex items-center justify-between text-sm mb-3">
             <p className="text-left text-gray-300">
-              You’ll earn <span className="text-green-400 font-semibold">$300 for every closed deal</span> made by
-              someone you invite.
+              You’ll earn <span className="text-green-400 font-semibold">$300 for every closed deal</span> made by someone you invite.
             </p>
-            {/*
-            <button
-              onClick={() => window.print()}
-              className="text-blue-400 hover:text-blue-300 underline whitespace-nowrap ml-4"
-            >
-              BizCards
-            </button>
-            */}
           </div>
           <ReferralSection walletAddress={walletAddress} />
         </div>
