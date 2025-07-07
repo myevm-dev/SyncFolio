@@ -235,9 +235,9 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
               <div className="flex items-start gap-2">
                 <p className="font-medium text-base text-cyan-400 flex-1">
                   {q.field === "method" ? (
-                    !formData.rentalValue || !formData.rehabCost ? (
+                    !formData.rentalValue ? (
                       <span className="text-yellow-400 italic">
-                        ADD RENT AND REPAIRS (if any) TO GET FINANCIALS
+                        ADD RENT (and any repairs) TO GET FINANCIALS
                       </span>
                     ) : (
                   
@@ -348,13 +348,7 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                             return (
                               <>
-                                <p className="text-red text-md mb-3 ">
-                                  At today’s rates, a retail buyer would pay roughly{" "}
-                                  <span className="underline font-bold">92%</span> for the property, and
-                                  would need to show at least{" "}
-                                  <span className="font-bold text-white">$1,006</span> per month in income
-                                  just to qualify.
-                                </p>
+
                                 Probably two ways we can get this deal done, a lower price or low low interest rate.{" "}
                                 <span className="text-yellow-300 font-semibold">
                                   I mean...would it even be worth presenting an offer around{" "}
