@@ -34,9 +34,9 @@ export default function YieldPage() {
 
       <p className="text-center text-cyan-400 text-sm mb-6">
         {mode === "basic"
-          ? "Basic Staking Strategies (coming soon)"
+          ? "Basic Yield Strategies (coming soon)"
           : mode === "advanced"
-          ? "Advanced Yield Strategies (coming soon)"
+          ? "Advanced Hedging Strategies (coming soon)"
           : "Token Swap (coming soon)"}
       </p>
 
