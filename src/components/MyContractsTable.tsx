@@ -1,5 +1,6 @@
+// src/components/MyContractsTable.tsx
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore"; // ✅ import deleteDoc, doc
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useActiveAccount } from "thirdweb/react";
 import { useNavigate } from "react-router-dom";
@@ -32,7 +33,6 @@ const MyContractsTable: React.FC = () => {
     fetchContracts();
   }, [walletAddress]);
 
-  // ✅ delete contract handler
   const handleCancel = async (contractId: string) => {
     const confirmDelete = window.confirm("Are you sure you want to cancel this contract?");
     if (!confirmDelete) return;
@@ -48,38 +48,38 @@ const MyContractsTable: React.FC = () => {
 
   return (
     <div className="w-full overflow-x-auto">
-      <table className="min-w-full text-left text-white border-collapse border border-neutral-700">
+      <table className="w-full text-left text-white border-collapse border border-neutral-700">
         <thead className="bg-neutral-900">
           <tr>
-            <th className="px-4 py-2 border-b border-neutral-700">Address</th>
-            <th className="px-4 py-2 border-b border-neutral-700">Close Date</th>
-            <th className="px-4 py-2 border-b border-neutral-700">Status</th>
-            <th className="px-4 py-2 border-b border-neutral-700">Action</th>
+            <th className="px-4 py-3 border-b border-neutral-700">Address</th>
+            <th className="px-4 py-3 border-b border-neutral-700">Close Date</th>
+            <th className="px-4 py-3 border-b border-neutral-700">Status</th>
+            <th className="px-4 py-3 border-b border-neutral-700">Action</th>
           </tr>
         </thead>
         <tbody>
           {contracts.map((contract) => (
             <tr key={contract.id} className="hover:bg-neutral-800">
-              <td className="px-4 py-2 border-b border-neutral-700">{contract.address}</td>
-              <td className="px-4 py-2 border-b border-neutral-700">{contract.closeDate}</td>
-              <td className="px-4 py-2 border-b border-neutral-700">{contract.status}</td>
-              <td className="px-4 py-2 border-b border-neutral-700">
-                <div className="flex gap-2 flex-wrap">
-                  <button
-                    onClick={() => navigate(`/contracts/${contract.id}`)}
-                    className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 whitespace-nowrap"
-                    aria-label={`View status of contract at ${contract.address}`}
-                  >
-                    See Status
-                  </button>
-                  <button
-                    onClick={() => handleCancel(contract.id)} // ✅ hook up the delete
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 whitespace-nowrap"
-                    aria-label={`Cancel contract at ${contract.address}`}
-                  >
-                    Cancel
-                  </button>
-                </div>
+              <td className="px-4 py-3 border-b border-neutral-700">{contract.address}</td>
+              <td className="px-4 py-3 border-b border-neutral-700">{contract.closeDate}</td>
+              <td className="px-4 py-3 border-b border-neutral-700">
+                <span className="px-4 py-1 inline-block rounded-full bg-gradient-to-r from-green-400 to-teal-400 text-black font-semibold text-sm">
+                  {contract.status}
+                </span>
+              </td>
+              <td className="px-4 py-3 border-b border-neutral-700 space-x-2">
+                <button
+                  onClick={() => navigate(`/contracts/${contract.id}`)}
+                  className="px-4 py-1 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 text-black font-semibold text-sm hover:brightness-110"
+                >
+                  See Status
+                </button>
+                <button
+                  onClick={() => handleCancel(contract.id)}
+                  className="px-4 py-1 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold text-sm hover:brightness-110"
+                >
+                  Cancel
+                </button>
               </td>
             </tr>
           ))}
