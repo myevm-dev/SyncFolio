@@ -101,7 +101,7 @@ export default function AnalyticsPage() {
     <div className="min-h-screen w-full bg-[#0B1519] text-white px-6 py-20">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-10 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-          SyncFolio Analytics
+          Analytics
         </h1>
 
         <div className="flex justify-center gap-6 mb-10">
