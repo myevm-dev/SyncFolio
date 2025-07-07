@@ -1,6 +1,14 @@
 // src/components/MyOffersTable.tsx
 import React, { useEffect, useState } from "react";
-import { collection, getDocs, updateDoc, doc, deleteDoc, addDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  updateDoc,
+  doc,
+  deleteDoc,
+  addDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useActiveAccount } from "thirdweb/react";
 
@@ -47,9 +55,7 @@ const MyOffersTable = () => {
     });
 
     setOffers((prev) =>
-      prev.map((o) =>
-        o.id === offerId ? { ...o, accepted: true } : o
-      )
+      prev.map((o) => (o.id === offerId ? { ...o, accepted: true } : o))
     );
   };
 
@@ -69,42 +75,44 @@ const MyOffersTable = () => {
       <table className="w-full text-left text-white border-collapse border border-neutral-700">
         <thead className="bg-neutral-900">
           <tr>
-            <th className="px-4 py-2 border-b border-neutral-700">Address</th>
-            <th className="px-4 py-2 border-b border-neutral-700">Method</th>
-            <th className="px-4 py-2 border-b border-neutral-700">Offer Amount</th>
-            <th className="px-4 py-2 border-b border-neutral-700">Date</th>
-            <th className="px-4 py-2 border-b border-neutral-700">Action</th>
+            <th className="px-4 py-3 border-b border-neutral-700">Address</th>
+            <th className="px-4 py-3 border-b border-neutral-700">Method</th>
+            <th className="px-4 py-3 border-b border-neutral-700">Offer Amount</th>
+            <th className="px-4 py-3 border-b border-neutral-700">Date</th>
+            <th className="px-4 py-3 border-b border-neutral-700">Action</th>
           </tr>
         </thead>
         <tbody>
           {offers.map((offer) => (
             <tr key={offer.id} className="hover:bg-neutral-800">
-              <td className="px-4 py-2 border-b border-neutral-700">{offer.propertyAddress}</td>
-              <td className="px-4 py-2 border-b border-neutral-700 capitalize">{offer.method}</td>
-              <td className="px-4 py-2 border-b border-neutral-700">${offer.offerAmount}</td>
-              <td className="px-4 py-2 border-b border-neutral-700">
+              <td className="px-4 py-3 border-b border-neutral-700">{offer.propertyAddress}</td>
+              <td className="px-4 py-3 border-b border-neutral-700 capitalize">{offer.method}</td>
+              <td className="px-4 py-3 border-b border-neutral-700">${offer.offerAmount}</td>
+              <td className="px-4 py-3 border-b border-neutral-700">
                 {offer.createdAt?.toDate?.().toLocaleDateString() || "—"}
               </td>
-              <td className="px-4 py-2 border-b border-neutral-700 space-x-2">
+              <td className="px-4 py-3 border-b border-neutral-700 space-x-2">
                 {offer.accepted ? (
-                  <span className="text-green-400">Accepted</span>
+                  <span className="px-4 py-1 inline-block rounded-full bg-gradient-to-r from-green-400 to-teal-400 text-black font-semibold text-sm">
+                    Accepted
+                  </span>
                 ) : (
                   <button
                     onClick={() => markAsAccepted(offer.id, offer)}
-                    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    className="px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 text-black font-semibold text-sm hover:brightness-110"
                   >
-                    Accepted
+                    Accept
                   </button>
                 )}
                 <button
                   onClick={() => handleEdit(offer.id)}
-                  className="px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700"
+                  className="px-4 py-1 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 text-black font-semibold text-sm hover:brightness-110"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => deleteOffer(offer.id)}
-                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                  className="px-4 py-1 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold text-sm hover:brightness-110"
                 >
                   Delete
                 </button>
