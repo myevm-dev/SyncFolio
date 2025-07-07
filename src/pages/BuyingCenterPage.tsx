@@ -21,7 +21,7 @@ export default function BuyingPage() {
           }`}
           onClick={() => setActiveTab("offers")}
         >
-          Offers Made
+          Offers Step
         </button>
         <button
           className={`px-4 py-2 rounded-full border ${
@@ -29,7 +29,7 @@ export default function BuyingPage() {
           }`}
           onClick={() => setActiveTab("contracts")}
         >
-          Contracts Sent
+          Contracts Step
         </button>
         <button
           className={`px-4 py-2 rounded-full border ${
