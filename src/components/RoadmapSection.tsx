@@ -16,19 +16,19 @@ export default function RoadmapSection({ items }: Props) {
         Roadmap
       </h2>
 
-
       <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed mb-6">
         Unlock the next generation of real estate intelligence. AI-driven tools will soon help
         you analyze, score, and optimize deals. Collaborate with partners or deploy smart agents
         to work deals on your behalf.
       </p>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {items.map((item) => (
           <div key={item.label} className="text-left space-y-1">
             <div className="text-sm text-white font-medium">{item.label}</div>
             <div className="w-full bg-zinc-800 rounded-full h-3">
               <div
-                className="bg-[#6e5690] h-3 rounded-full transition-all"
+                className="bg-gradient-to-r from-purple-400 to-cyan-400 h-3 rounded-full transition-all duration-700 ease-out"
                 style={{ width: `${item.percent}%` }}
               />
             </div>
