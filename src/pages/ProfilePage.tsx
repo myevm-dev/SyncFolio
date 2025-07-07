@@ -23,22 +23,19 @@ const roleOptions = [
 ];
 
 const roleGradients: Record<string, string> = {
-  Investor: "bg-gradient-to-r from-green-400 to-blue-500",
-  Wholesaler: "bg-gradient-to-r from-pink-500 to-yellow-500",
-  "Real Estate Agent": "bg-gradient-to-r from-indigo-400 to-purple-500",
-  Homeowner: "bg-gradient-to-r from-rose-400 to-red-500",
-  "Dispo Partner": "bg-gradient-to-r from-cyan-400 to-blue-500",
-  "Deal Finder": "bg-gradient-to-r from-amber-400 to-orange-500",
-  Contractor: "bg-gradient-to-r from-lime-400 to-green-500",
-  Lender: "bg-gradient-to-r from-fuchsia-400 to-pink-500",
-  Appraiser: "bg-gradient-to-r from-sky-400 to-teal-500",
+  Investor: "bg-gradient-to-r from-green-400 to-blue-600",
+  Wholesaler: "bg-gradient-to-r from-lime-400 to-emerald-500",
+  "Real Estate Agent": "bg-gradient-to-r from-indigo-500 to-purple-400",
+  Homeowner: "bg-gradient-to-r from-pink-400 to-rose-500",
+  "Dispo Partner": "bg-gradient-to-r from-blue-400 to-cyan-500",
+  "Deal Finder": "bg-gradient-to-r from-yellow-400 to-orange-500",
+  Contractor: "bg-gradient-to-r from-teal-400 to-emerald-300",
+  Lender: "bg-gradient-to-r from-fuchsia-500 to-pink-400",
+  Appraiser: "bg-gradient-to-r from-violet-400 to-sky-400",
+  Admin: "bg-gradient-to-r from-amber-400 via-red-500 to-pink-500",
 };
 
-declare global {
-  interface Window {
-    multiavatar: (id: string) => string;
-  }
-}
+const adminWallets = ["0x91706ECbA7af59616D4005F37979528226532E6B"];
 
 export default function ProfilePage() {
   const account = useActiveAccount();
@@ -54,47 +51,11 @@ export default function ProfilePage() {
   const [nameTaken, setNameTaken] = useState(false);
   const [reloadFlag, setReloadFlag] = useState(0);
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [editingRoles, setEditingRoles] = useState(false);
   const [balances, setBalances] = useState({
     platform: { USD: 0, FOLIO: 0, CREDITS: 0 },
     wallet: { USDC: 0, FOLIO: 0, ETH: 0 },
   });
-
-  useEffect(() => {
-    const ensureUserRecord = async () => {
-      if (!walletAddress) return;
-      const ref = doc(db, "users", walletAddress);
-      const snap = await getDoc(ref);
-
-      const localReferrerName = localStorage.getItem("referrer");
-
-      let resolvedReferrerName: string | null = null;
-      if (localReferrerName) {
-        const usersSnapshot = await getDocs(collection(db, "users"));
-        const referrerDoc = usersSnapshot.docs.find(
-          (docSnap) =>
-            docSnap.data().displayName?.toLowerCase() === localReferrerName.toLowerCase()
-        );
-        resolvedReferrerName = referrerDoc?.data()?.displayName || null;
-      }
-
-      if (!snap.exists()) {
-        await setDoc(ref, {
-          displayName: "Unnamed",
-          zipcode: "",
-          team: [],
-          createdAt: new Date(),
-          referredBy: resolvedReferrerName,
-        });
-      } else {
-        const data = snap.data();
-        if (!data.referredBy && resolvedReferrerName) {
-          await setDoc(ref, { referredBy: resolvedReferrerName }, { merge: true });
-        }
-      }
-    };
-
-    ensureUserRecord();
-  }, [walletAddress]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -107,11 +68,7 @@ export default function ProfilePage() {
         setZipcode(data.zipcode || "");
         setLiveName(data.displayName || "Unnamed");
         setLiveZip(data.zipcode || "");
-      } else {
-        setDisplayName("Unnamed");
-        setZipcode("");
-        setLiveName("Unnamed");
-        setLiveZip("");
+        setSelectedRoles(data.roles || []);
       }
       setLoading(false);
     };
@@ -143,6 +100,13 @@ export default function ProfilePage() {
     setZipcode(liveZip);
     setEditingName(false);
     setEditingZip(false);
+  };
+
+  const handleSaveRoles = async () => {
+    if (!walletAddress) return;
+    const ref = doc(db, "users", walletAddress);
+    await setDoc(ref, { roles: selectedRoles }, { merge: true });
+    setEditingRoles(false);
   };
 
   const toggleRole = (role: string) => {
@@ -235,49 +199,78 @@ export default function ProfilePage() {
         )}
       </div>
 
-      {nameTaken && <p className="text-red-500 text-xs mb-2">Name already taken</p>}
-
       <p className="text-gray-400 break-all">Account: {walletAddress}</p>
 
-      <div className="mt-4 space-y-2 text-center">
-        {Array.from({ length: Math.ceil(roleOptions.length / 5) }).map((_, rowIndex) => (
-          <div key={rowIndex} className="flex justify-center flex-wrap gap-2">
-            {roleOptions.slice(rowIndex * 5, rowIndex * 5 + 5).map((role) => (
+      {adminWallets.includes(walletAddress) && (
+        <div className="inline-block px-3 py-1 mt-2 mb-4 text-xs font-semibold text-white rounded-full bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500">
+          Admin
+        </div>
+      )}
+
+      <div className="mt-6">
+        <div className="flex justify-center items-center gap-2">
+          <h2 className="text-lg font-bold">Roles</h2>
+          <button
+            onClick={() => setEditingRoles(!editingRoles)}
+            className="text-blue-400 text-sm hover:underline flex items-center"
+          >
+            <Pencil size={14} className="mr-1" />
+            Edit Roles
+          </button>
+        </div>
+
+        {editingRoles ? (
+          <div className="mt-4 space-y-2 text-center">
+            {Array.from({ length: Math.ceil(roleOptions.length / 5) }).map((_, rowIndex) => (
+              <div key={rowIndex} className="flex justify-center flex-wrap gap-2">
+                {roleOptions
+                  .slice(rowIndex * 5, rowIndex * 5 + 5)
+                  .map((role) => (
+                    <button
+                      key={role}
+                      onClick={() => toggleRole(role)}
+                      className={`w-44 px-3 py-1 rounded-full text-sm text-white font-semibold transition border border-white/10 ${
+                        selectedRoles.includes(role)
+                          ? roleGradients[role] || "bg-zinc-600"
+                          : "bg-zinc-800 hover:bg-zinc-700"
+                      }`}
+                    >
+                      {role}
+                    </button>
+                  ))}
+              </div>
+            ))}
+            <div className="mt-4">
               <button
+                onClick={handleSaveRoles}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-full text-sm"
+              >
+                Save Roles
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-2 flex flex-wrap justify-center gap-2">
+            {selectedRoles.map((role) => (
+              <span
                 key={role}
-                onClick={() => toggleRole(role)}
-                className={`w-44 px-3 py-1 rounded-full text-sm text-white transition border-none text-center ${
-                  selectedRoles.includes(role) ? "ring ring-offset-1 ring-white" : ""
-                } ${roleGradients[role]}`}
+                className={`w-44 px-3 py-1 rounded-full text-sm text-white font-semibold text-center ${
+                  roleGradients[role] || "bg-zinc-600"
+                }`}
               >
                 {role}
-              </button>
+              </span>
             ))}
           </div>
-        ))}
-      </div>
-
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-xl mx-auto">
-        <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-cyan-400 mb-2">Platform Balances</h3>
-          <p className="text-sm text-white">USD: ${balances.platform.USD}</p>
-          <p className="text-sm text-white">FOLIO: {balances.platform.FOLIO}</p>
-          <p className="text-sm text-white">CREDITS: {balances.platform.CREDITS}</p>
-        </div>
-        <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-purple-400 mb-2">Wallet Balances</h3>
-          <p className="text-sm text-white">USDC: ${balances.wallet.USDC}</p>
-          <p className="text-sm text-white">FOLIO: {balances.wallet.FOLIO}</p>
-          <p className="text-sm text-white">ETH: {balances.wallet.ETH}</p>
-        </div>
+        )}
       </div>
 
       <DashboardCards />
-
       <div className="max-w-6xl mx-auto mt-10 space-y-6">
         <div className="border border-zinc-700 rounded-xl p-6">
           <p className="text-left text-gray-300 text-sm mb-3">
-            You can send team requests and <span className="text-green-400 font-semibold">JV with other users</span> to collaborate on deals.
+            You can send team requests and {" "}
+            <span className="text-green-400 font-semibold">JV with other users</span> to collaborate on deals.
           </p>
           <TeamSection walletAddress={walletAddress} reloadFlag={reloadFlag} />
         </div>
@@ -285,7 +278,8 @@ export default function ProfilePage() {
         <div className="border border-zinc-700 rounded-xl p-6">
           <div className="flex items-center justify-between text-sm mb-3">
             <p className="text-left text-gray-300">
-              You’ll earn <span className="text-green-400 font-semibold">$300 for every closed deal</span> made by someone you invite.
+              You’ll earn <span className="text-green-400 font-semibold">$300 for every closed deal</span> made by
+              someone you invite.
             </p>
           </div>
           <ReferralSection walletAddress={walletAddress} />
