@@ -1,6 +1,5 @@
-// src/components/MyContractsTable.tsx
 import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore"; // ✅ import deleteDoc, doc
 import { db } from "../lib/firebase";
 import { useActiveAccount } from "thirdweb/react";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +32,20 @@ const MyContractsTable: React.FC = () => {
     fetchContracts();
   }, [walletAddress]);
 
+  // ✅ delete contract handler
+  const handleCancel = async (contractId: string) => {
+    const confirmDelete = window.confirm("Are you sure you want to cancel this contract?");
+    if (!confirmDelete) return;
+
+    try {
+      await deleteDoc(doc(db, `users/${walletAddress}/contracts/${contractId}`));
+      setContracts((prev) => prev.filter((c) => c.id !== contractId));
+    } catch (error) {
+      console.error("Failed to delete contract:", error);
+      alert("Error deleting contract. Please try again.");
+    }
+  };
+
   return (
     <div className="w-full overflow-x-auto">
       <table className="min-w-full text-left text-white border-collapse border border-neutral-700">
@@ -60,6 +73,7 @@ const MyContractsTable: React.FC = () => {
                     See Status
                   </button>
                   <button
+                    onClick={() => handleCancel(contract.id)} // ✅ hook up the delete
                     className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 whitespace-nowrap"
                     aria-label={`Cancel contract at ${contract.address}`}
                   >
