@@ -76,7 +76,9 @@ export default function Navbar() {
           onClick={() => navigate("/")}
         >
           <img src={favicon} alt="logo" className="w-8 h-8 sm:w-10 sm:h-10 shrink-0" />
-          <span className="truncate max-w-[40vw] sm:max-w-none">SyncFolio</span>
+          <span className="truncate max-w-[40vw] sm:max-w-none bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            SyncFolio
+          </span>
         </div>
 
         {/* Desktop Navigation Links */}

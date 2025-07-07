@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThirdwebProvider } from "thirdweb/react";
 import "./index.css";
+import { client } from "./client";
 
 import App from "./App";
 import ProfilePage from "./pages/ProfilePage";

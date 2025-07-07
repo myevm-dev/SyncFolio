@@ -100,21 +100,26 @@ export default function AnalyticsPage() {
   return (
     <div className="min-h-screen w-full bg-[#0B1519] text-white px-6 py-20">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-10 text-[#00FFFF]">🧠 SyncFolio Analytics</h1>
+        <h1 className="text-4xl font-bold text-center mb-10 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+          SyncFolio Analytics
+        </h1>
 
         <div className="flex justify-center gap-6 mb-10">
           {["users", "agents"].map((t) => (
             <button
               key={t}
               onClick={() => setTab(t as any)}
-              className={`px-6 py-2 rounded-full transition ${
-                tab === t ? "bg-[#6e5690] text-black" : "bg-transparent border border-zinc-600 text-white"
+              className={`px-6 py-2 rounded-full transition font-medium ${
+                tab === t
+                  ? "bg-gradient-to-r from-purple-400 to-cyan-400 text-black shadow-md"
+                  : "bg-transparent border border-zinc-600 text-white"
               }`}
             >
               {t === "users" ? "Deal Finders" : "RE Agents"}
             </button>
           ))}
         </div>
+
 
         {tab === "users" ? (
           <UsersTab

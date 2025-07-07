@@ -75,10 +75,12 @@ const MyListings: React.FC = () => {
           </button>
           <button
             onClick={() => setShowModal(true)}
-            className="bg-[#6e5690] text-white font-medium px-4 py-2 rounded w-full sm:w-auto hover:bg-accent2 hover:text-black transition"
+            className="bg-gradient-to-r from-purple-400 to-cyan-400 text-black hover:text-white font-medium px-4 py-2 rounded w-full sm:w-auto transition shadow-md"
           >
             Create Listing
           </button>
+
+
         </div>
       </div>
 

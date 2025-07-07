@@ -114,10 +114,12 @@ const Marketplace: React.FC = () => {
           </button>
           <button
             onClick={() => setShowModal(true)}
-            className="bg-[#6e5690] text-white font-medium px-4 py-2 rounded w-full sm:w-auto hover:bg-accent2 hover:text-black transition min-h-[44px]"
+            className="bg-gradient-to-r from-purple-400 to-cyan-400 text-black hover:text-white font-medium px-4 py-2 rounded w-full sm:w-auto transition min-h-[44px] shadow-md"
           >
             Submit BuyBox
           </button>
+
+
         </div>
       </div>
 

@@ -78,9 +78,10 @@ export default function FeaturesSection() {
 
   return (
     <section className="max-w-6xl mx-auto px-4 mt-16 text-white">
-      <h2 className="text-3xl font-bold text-center mb-8 text-[#6e5690]">
+      <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
         Live Platform Features
       </h2>
+
 
       <div
         ref={scrollRef}

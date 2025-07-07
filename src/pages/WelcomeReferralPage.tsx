@@ -17,23 +17,12 @@ const WelcomeReferralPage: React.FC<Props> = ({ onContinue }) => {
     const ref = params.get("ref");
 
     const fetchReferrerName = async () => {
-      if (!ref) {
-        setLoading(false);
-        return;
-      }
-
+      if (!ref) return setLoading(false);
       const snapshot = await getDocs(collection(db, "users"));
       const matched = snapshot.docs.find(
-        (doc) =>
-          doc.data().displayName?.toLowerCase() === ref.toLowerCase()
+        (doc) => doc.data().displayName?.toLowerCase() === ref.toLowerCase()
       );
-
-      if (matched) {
-        setReferrerName(matched.data().displayName || "a Syncfolio user");
-      } else {
-        setReferrerName("a Syncfolio user");
-      }
-
+      setReferrerName(matched?.data().displayName || "a Syncfolio user");
       setLoading(false);
     };
 
@@ -48,25 +37,57 @@ const WelcomeReferralPage: React.FC<Props> = ({ onContinue }) => {
   if (loading) return <div className="text-white p-6">Loading...</div>;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-center bg-black text-white px-4">
-      <h1 className="text-3xl font-bold mb-6">
-        You were invited by <span className="text-accent">{referrerName}</span>!
-      </h1>
+    <div className="min-h-screen bg-black flex items-center justify-center px-6 py-16 text-white">
+      <div className="max-w-2xl w-full text-center space-y-10">
+        <div>
+          <h1 className="text-5xl font-extrabold mb-4">
+            Welcome to{" "}
+            <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+              SyncFolio.Space
+            </span>
+          </h1>
+            <p className="text-xl text-gray-300">
+              You’ve been invited by<br/>{" "}
+              <span className="text-accent font-bold text-3xl">{referrerName}</span> <br/>to
+              join a smarter way to grow your real estate career.
+            </p>
 
-      <p className="text-lg mb-6">Follow the steps below to get started:</p>
+        </div>
 
-      <ol className="text-left text-white text-md mb-8 space-y-2 list-decimal list-inside">
-        <li><span className="text-accent font-medium">Sign in</span> to your dashboard </li>
-        <li><span className="text-accent font-medium">Set name & zipcode</span></li>
-        <li><span className="text-accent font-medium">Start earning now</span></li>
-      </ol>
+        <div className="bg-neutral-900/60 border border-neutral-800 backdrop-blur-md rounded-2xl p-6 text-left">
+          <h2 className="text-2xl font-semibold mb-5 text-accent">
+            Get Started in 3 Steps
+          </h2>
+          <ol className="list-decimal list-inside space-y-3 text-base text-gray-100">
+            <li>
+              <span className="font-semibold text-accent">Sign in</span> to
+              access your private dashboard
+            </li>
+            <li>
+              <span className="font-semibold text-accent">
+                Set your name & ZIP code
+              </span>{" "}
+              so we can personalize your experience
+            </li>
+            <li>
+              <span className="font-semibold text-accent">Start earning</span>{" "}
+              through exclusive tools and referrals
+            </li>
+          </ol>
+        </div>
 
-      <button
-        onClick={handleContinue}
-        className="bg-white text-black px-6 py-2 rounded hover:bg-accent"
-      >
-        Continue to Dashboard
-      </button>
+        <button
+          onClick={handleContinue}
+          className="bg-gradient-to-r from-purple-400 to-cyan-400 text-black hover:text-white font-medium px-8 py-3 rounded-lg shadow-md transition"
+        >
+          Continue to Dashboard
+        </button>
+
+
+        <p className="text-sm text-gray-500 mt-4">
+          Powered by SyncFolio. Your network, your advantage.
+        </p>
+      </div>
     </div>
   );
 };
