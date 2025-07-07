@@ -34,26 +34,28 @@ export default function FormActions({
         <button
           type="submit"
           onClick={handleSubmit}
-          className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
+          className="min-w-[160px] px-6 py-2 rounded-full text-white font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 transition"
         >
           See Offers
         </button>
+
         <button
           type="button"
           onClick={handleSave}
-          className={`px-6 py-2 rounded-full transition ${
+          className={`min-w-[160px] px-6 py-2 rounded-full font-semibold transition ${
             walletAddress
-              ? "bg-amber-500 text-white hover:bg-amber-600"
+              ? "bg-gradient-to-r from-amber-400 to-orange-500 text-white hover:from-amber-300 hover:to-orange-400"
               : "bg-gray-700 text-gray-400 cursor-not-allowed"
           }`}
           disabled={!walletAddress}
         >
           {currentDealId ? "Update" : "Save"}
         </button>
+
         <button
           type="button"
           onClick={handleClear}
-          className="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition"
+          className="min-w-[160px] px-6 py-2 rounded-full font-semibold text-white bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-400 hover:to-gray-600 transition"
         >
           Clear
         </button>
