@@ -17,7 +17,7 @@ const JVAgreementModal: React.FC<Props> = ({ onClose, onConfirm }) => {
           <span className="font-semibold text-green-400">40%</span> or a minimum of{" "}
           <span className="font-semibold text-green-400">$2250</span> +{" "}
           <span className="font-semibold" style={{ color: "#ff00ff" }}>
-            Bonus 𝒇olio Token
+            Bonus Ꞙolio Token
           </span>
           , whichever is more.
           <br />
