@@ -4,6 +4,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useActiveAccount } from "thirdweb/react";
 import { generateContractPdf } from "../lib/generateContractPdf";
+import SignatureModal from "../components/SignatureModal";
 
 const defaultSteps = [
   "Contract Signed by You",
@@ -22,6 +23,9 @@ const ContractStatusPage = () => {
   const [loading, setLoading] = useState(true);
 
   const [showForm, setShowForm] = useState(false);
+  const [showSignaturePad, setShowSignaturePad] = useState(false);
+  const [hasSignature, setHasSignature] = useState(false);
+
   const [formData, setFormData] = useState({
     sellerName: "",
     sellerAddress: "",
@@ -58,6 +62,16 @@ const ContractStatusPage = () => {
     };
     fetchContract();
   }, [walletAddress, contractId]);
+
+  useEffect(() => {
+    const checkSignature = async () => {
+      if (!walletAddress) return;
+      const sigRef = doc(db, "signatures", walletAddress);
+      const snap = await getDoc(sigRef);
+      setHasSignature(snap.exists());
+    };
+    checkSignature();
+  }, [walletAddress]);
 
   useEffect(() => {
     const price = parseFloat(formData.purchasePrice);
@@ -168,37 +182,45 @@ const ContractStatusPage = () => {
                 }
 
                 if (key === "state") {
-                const states = [
-                  "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD",
-                  "MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC",
-                  "SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"
-                ];
-                return (
-                  <React.Fragment key={key}>
-                    <select
-                      className="p-2 rounded bg-neutral-800 text-white text-sm w-full"
-                      value={value}
-                      onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, state: e.target.value }))
-                      }
-                    >
-                      <option value="" disabled>Select State</option>
-                      {states.map((s) => (
-                        <option key={s} value={s}>
-                          {s}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      className="bg-white text-black px-4 py-2 rounded text-sm font-semibold w-full"
-                      type="button"
-                    >
-                      Sign
-                    </button>
-                  </React.Fragment>
-                );
-              }
-
+                  const states = [
+                    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN",
+                    "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV",
+                    "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN",
+                    "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
+                  ];
+                  return (
+                    <React.Fragment key={key}>
+                      <select
+                        className="p-2 rounded bg-neutral-800 text-white text-sm w-full"
+                        value={value}
+                        onChange={(e) =>
+                          setFormData((prev) => ({ ...prev, state: e.target.value }))
+                        }
+                      >
+                        <option value="" disabled>Select State</option>
+                        {states.map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        className="bg-white text-black px-4 py-2 rounded text-sm font-semibold w-full"
+                        type="button"
+                        onClick={() => {
+                          if (hasSignature) {
+                            alert("Signature already saved. Proceeding...");
+                            // Optional: update contract step here
+                          } else {
+                            setShowSignaturePad(true);
+                          }
+                        }}
+                      >
+                        {hasSignature ? "Sign" : "Create Signature"}
+                      </button>
+                    </React.Fragment>
+                  );
+                }
 
                 return (
                   <input
@@ -230,6 +252,17 @@ const ContractStatusPage = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {showSignaturePad && (
+        <SignatureModal
+          walletAddress={walletAddress}
+          onClose={() => setShowSignaturePad(false)}
+          onSigned={() => {
+            setHasSignature(true);
+            setShowSignaturePad(false);
+          }}
+        />
       )}
     </div>
   );

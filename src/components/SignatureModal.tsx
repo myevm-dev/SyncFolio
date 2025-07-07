@@ -1,32 +1,53 @@
-import React from "react";
-import { useActiveAccount } from "thirdweb/react";
+// src/components/SignatureModal.tsx
+import React, { useState } from "react";
 import SignaturePad from "./SignaturePad";
 import { saveSignature } from "../lib/saveSignature";
 
-const SignatureModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const account = useActiveAccount();
+interface Props {
+  walletAddress: string;
+  onClose: () => void;
+  onSigned: () => void;
+}
+
+const SignatureModal: React.FC<Props> = ({ walletAddress, onClose, onSigned }) => {
+  const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSave = async (dataUrl: string) => {
-    if (!account?.address) {
-      alert("No wallet connected");
-      return;
+    setSaving(true);
+    try {
+      await saveSignature(walletAddress, dataUrl);
+      setSuccess(true);
+      setTimeout(() => {
+        setSaving(false);
+        setSuccess(false);
+        onSigned();
+        onClose();
+      }, 1500);
+    } catch (err) {
+      console.error("Error saving signature:", err);
+      setSaving(false);
     }
-
-    await saveSignature(account.address, dataUrl);
-    alert("Signature saved to Firebase!");
-    onClose(); // close modal after save
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded shadow-lg w-full max-w-md text-black">
-        <h2 className="text-xl font-bold mb-4 text-center">Sign Below</h2>
-        <SignaturePad onSave={handleSave} />
-        <div className="mt-4 flex justify-end">
-          <button onClick={onClose} className="text-sm px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">
-            Close
-          </button>
-        </div>
+      <div className="bg-neutral-900 rounded p-6 w-full max-w-md text-white">
+        {success ? (
+          <div className="text-center text-green-400 text-lg font-semibold">
+            ✅ Signature saved!
+          </div>
+        ) : (
+          <>
+            <SignaturePad onSave={handleSave} disabled={saving} />
+            <button
+              onClick={onClose}
+              className="mt-4 px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 w-full text-white"
+            >
+              Cancel
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
