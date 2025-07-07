@@ -5,6 +5,7 @@ import { db } from "../lib/firebase";
 import { useActiveAccount } from "thirdweb/react";
 import { generateContractPdf } from "../lib/generateContractPdf";
 import SignatureModal from "../components/SignatureModal";
+import JVAgreementModal from "../components/JVAgreementModal";
 
 const defaultSteps = [
   "Contract Signed by You",
@@ -25,6 +26,9 @@ const ContractStatusPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [showSignaturePad, setShowSignaturePad] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
+  const [jvSigned, setJvSigned] = useState(false);
+  const [showJvModal, setShowJvModal] = useState(false);
+
 
   const [formData, setFormData] = useState({
     sellerName: "",
@@ -91,6 +95,22 @@ const ContractStatusPage = () => {
     setShowForm(false);
   };
 
+  const handleJvDownload = async () => {
+    alert("Generating JV Agreement...");
+    await generateContractPdf({
+      ...formData,
+      purchasePrice: "0",
+      earnestMoney: "0",
+      balanceDue: "0",
+      dueDiligenceDays: "0",
+    });
+    setJvSigned(true);
+  };
+
+  const handleSellerUpload = () => {
+    alert("Upload contract signed by seller");
+  };
+
   if (loading) {
     return <div className="text-center text-white py-10">Loading contract status...</div>;
   }
@@ -129,11 +149,7 @@ const ContractStatusPage = () => {
                 {index + 1}
               </div>
               <div className="flex flex-col mt-1 gap-2">
-                <span
-                  className={`${
-                    index <= currentStep ? "text-white" : "text-neutral-500"
-                  }`}
-                >
+                <span className={`${index <= currentStep ? "text-white" : "text-neutral-500"}`}>
                   {label}
                 </span>
                 {index === 0 && currentStep === 0 && (
@@ -144,6 +160,23 @@ const ContractStatusPage = () => {
                     Sign and Download
                   </button>
                 )}
+                {index === 1 && (
+                  <button
+                    onClick={handleSellerUpload}
+                    className="text-xs px-4 py-1 rounded bg-yellow-500 text-black font-semibold w-max"
+                  >
+                    Upload Signed Contract
+                  </button>
+                )}
+                {index === 2 && (
+                  <button
+                    onClick={() => setShowJvModal(true)}
+                    className="text-xs px-4 py-1 rounded bg-cyan-500 text-black font-semibold w-max"
+                  >
+                    Sign and Download JV Agreement
+                  </button>
+                )}
+
               </div>
             </li>
           ))}
@@ -210,7 +243,6 @@ const ContractStatusPage = () => {
                         onClick={() => {
                           if (hasSignature) {
                             alert("Signature already saved. Proceeding...");
-                            // Optional: update contract step here
                           } else {
                             setShowSignaturePad(true);
                           }
@@ -261,6 +293,15 @@ const ContractStatusPage = () => {
           onSigned={() => {
             setHasSignature(true);
             setShowSignaturePad(false);
+          }}
+        />
+      )}
+      {showJvModal && (
+        <JVAgreementModal
+          onClose={() => setShowJvModal(false)}
+          onConfirm={() => {
+            setShowJvModal(false);
+            handleJvDownload();
           }}
         />
       )}
