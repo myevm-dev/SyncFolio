@@ -109,16 +109,17 @@ export default function AnalyticsPage() {
             <button
               key={t}
               onClick={() => setTab(t as any)}
-              className={`px-6 py-2 rounded-full transition font-medium ${
+              className={`w-40 py-2 rounded-full transition font-medium text-center ${
                 tab === t
                   ? "bg-gradient-to-r from-purple-400 to-cyan-400 text-black shadow-md"
                   : "bg-transparent border border-zinc-600 text-white"
               }`}
             >
-              {t === "users" ? "Deal Finders" : "RE Agents"}
+              {t === "users" ? "Users" : "RE Agents"}
             </button>
           ))}
         </div>
+
 
 
         {tab === "users" ? (
