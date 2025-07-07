@@ -13,17 +13,18 @@ const JVAgreementModal: React.FC<Props> = ({ onClose, onConfirm }) => {
           JV Agreement Summary
         </h2>
         <p className="text-sm text-center mb-6">
-          If this deal closes, you will receive{" "}
-          <span className="font-semibold text-green-400">40%</span> or a minimum of{" "}
-          <span className="font-semibold text-green-400">$2250</span> +{" "}
-          <span className="font-semibold" style={{ color: "#ff00ff" }}>
-            Bonus Ꞙolio Token
-          </span>
-          , whichever is more.
-          <br />
-          <br />
-          Syncfolio and/or any partner needed to secure a buyer will retain the remaining assignment fee.
-        </p>
+            If this deal closes, you will receive{" "}
+            <span className="font-semibold text-green-400">40%</span> or a minimum of{" "}
+            <span className="font-semibold text-green-400">$2250</span> +{" "}
+            <span className="font-semibold" style={{ color: "#ff00ff" }}>
+                Bonus 50k Ꞙolio Token
+            </span>
+            , whichever is <span className="font-bold">MORE</span>.
+            <br />
+            <br />
+            Syncfolio and/or any partner needed to secure a buyer will retain the remaining assignment fee. The total assignment fee from the deal will be known as buyers bid or stake for the oportunity.
+            </p>
+
         <div className="flex justify-between mt-6">
           <button
             onClick={onClose}
