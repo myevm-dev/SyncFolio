@@ -12,34 +12,10 @@ To learn how to create a client ID, refer to the [client documentation](https://
 Install dependencies
 
 ```bash
-yarn
+npm i
 ```
 
 Start development server
 
 ```bash
-yarn dev
-```
-
-Create a production build
-
-```bash
-yarn build
-```
-
-Preview the production build
-
-```bash
-yarn preview
-```
-
-## Additional Resources
-
-- [Documentation](https://portal.thirdweb.com/typescript/v5)
-- [Templates](https://thirdweb.com/templates)
-- [YouTube](https://www.youtube.com/c/thirdweb)
-- [Blog](https://blog.thirdweb.com)
-
-## Need help?
-
-For help or feedback, please [visit our support site](https://thirdweb.com/support)
+npm run dev
