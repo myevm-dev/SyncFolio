@@ -160,26 +160,27 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
               {/* Top corners */}
               {isActive && (
                 <>
-                  <Link
-                    to={`/profile/${member.address}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="absolute -top-2 -left-2 bg-green-600 text-white hover:bg-green-700 rounded-full p-1 hover:scale-110 transition"
-                    title="View Profile"
-                  >
-                    <ArrowRight size={12} />
-                  </Link>
-
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       removeTeamMember(member.address);
                     }}
-                    className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 transition"
+                    className="absolute -top-2 -left-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 transition"
                     title="Remove Member"
                   >
                     <X size={12} />
                   </button>
+
+                  <Link
+                    to={`/profile/${member.address}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute -top-2 -right-2 bg-green-600 text-white hover:bg-green-700 rounded-full p-1 hover:scale-110 transition"
+                    title="View Profile"
+                  >
+                    <ArrowRight size={12} />
+                  </Link>
                 </>
+
               )}
 
               {/* Avatar */}
