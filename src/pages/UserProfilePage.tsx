@@ -3,6 +3,8 @@ import { useParams, Link } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import DashboardCards from "../components/DashboardCards";
+import Balances from "../components/Balances";
+
 
 const roleGradients: Record<string, string> = {
   Investor: "bg-gradient-to-r from-green-400 to-blue-600",
@@ -84,6 +86,24 @@ export default function UserProfilePage() {
       <div className="mt-10">
         <DashboardCards walletAddress={id || ""} />
       </div>
+      {/* Balances Card */}
+      <div className="mt-10">
+        <Balances
+          balances={{
+            platform: {
+              USD: profile.platformUSD || 0,
+              FOLIO: profile.platformFOLIO || 0,
+              CREDITS: profile.platformCREDITS || 0,
+            },
+            wallet: {
+              USDC: profile.walletUSDC || 0,
+              FOLIO: profile.walletFOLIO || 0,
+              ETH: profile.walletETH || 0,
+            },
+          }}
+        />
+      </div>
+
 
       {/* Closed Deals Table (Social Proof) */}
       <div className="mt-16 max-w-5xl mx-auto text-left">
