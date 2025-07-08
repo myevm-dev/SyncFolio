@@ -56,7 +56,11 @@ export default function UserProfilePage() {
 
   return (
     <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
-      <Link to={`/profile/${id}`} className="w-28 h-28 mx-auto mb-4 block" dangerouslySetInnerHTML={{ __html: svg }} />
+      <Link
+        to={`/profile/${id}`}
+        className="w-28 h-28 mx-auto mb-4 block"
+        dangerouslySetInnerHTML={{ __html: svg }}
+      />
       <h2 className="text-2xl font-bold mb-1">{profile.displayName}</h2>
       <p className="text-gray-400 text-sm mb-4 break-all">{id}</p>
       {profile.zipcode && <p className="text-sm text-zinc-400">{profile.zipcode}</p>}
@@ -80,7 +84,47 @@ export default function UserProfilePage() {
       <div className="mt-10">
         <DashboardCards walletAddress={id || ""} />
       </div>
+
+      {/* Closed Deals Table (Social Proof) */}
+      <div className="mt-16 max-w-5xl mx-auto text-left">
+        <h3 className="text-xl font-bold text-white mb-4">Closed Deals</h3>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-[#050505] border border-neutral-700 text-sm text-left text-white rounded-md overflow-hidden">
+            <thead className="bg-[#0B1519] border-b border-neutral-700">
+              <tr>
+                <th className="px-4 py-3">Property</th>
+                <th className="px-4 py-3">City</th>
+                <th className="px-4 py-3">Close Date</th>
+                <th className="px-4 py-3">Price</th>
+                <th className="px-4 py-3">Method</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-zinc-700">
+                <td className="px-4 py-2">123 Main St</td>
+                <td className="px-4 py-2">Dallas, TX</td>
+                <td className="px-4 py-2">06/30/2025</td>
+                <td className="px-4 py-2 text-green-400 font-medium">$280,000</td>
+                <td className="px-4 py-2 text-cyan-300">Seller Finance</td>
+              </tr>
+              <tr className="border-b border-zinc-700">
+                <td className="px-4 py-2">456 Oak Ave</td>
+                <td className="px-4 py-2">Phoenix, AZ</td>
+                <td className="px-4 py-2">05/12/2025</td>
+                <td className="px-4 py-2 text-green-400 font-medium">$195,000</td>
+                <td className="px-4 py-2 text-blue-300">Cash</td>
+              </tr>
+              <tr className="border-b border-zinc-700">
+                <td className="px-4 py-2">789 Sunset Blvd</td>
+                <td className="px-4 py-2">Las Vegas, NV</td>
+                <td className="px-4 py-2">04/02/2025</td>
+                <td className="px-4 py-2 text-green-400 font-medium">$350,000</td>
+                <td className="px-4 py-2 text-yellow-300">Subto</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
-
