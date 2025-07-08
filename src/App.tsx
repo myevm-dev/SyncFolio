@@ -58,8 +58,10 @@ export default function App() {
   const [currentDealId, setCurrentDealId] = useState<string | null>(null);
   const [formData, setFormData] = useState<DealInput>(initialDeal);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [folioValueUSD, setFolioValueUSD] = useState<number>(0);
+  const [totalUSD, setTotalUSD] = useState<number>(0);
 
-  // ✅ Always show welcome screen if a ref param is present
+  // Show welcome screen if referral is present
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const ref = params.get("ref");
@@ -70,20 +72,41 @@ export default function App() {
     }
   }, []);
 
+  // Fetch OP price → calculate FOLIO price
+  useEffect(() => {
+    fetch("https://api.coingecko.com/api/v3/simple/price?ids=optimism&vs_currencies=usd")
+      .then((res) => res.json())
+      .then((data) => {
+        const opPrice = data?.optimism?.usd;
+        if (opPrice) setFolioValueUSD(opPrice * 0.02);
+      })
+      .catch((err) => console.error("Error fetching OP price:", err));
+  }, []);
+
   const handleSubmit = (data: DealInput) => {
-    setResults({
+    const offers = {
       cash: cashOffer(data),
       sellerFinance: sellerFinance(data),
       takeover: mortgageTakeover(data),
       hybrid: hybridOffer(data),
-    });
+    };
 
-    setCocResults([
+    const cocs = [
       cashOnCashCash(data),
       cashOnCashSeller(data),
       cashOnCashTakeover(data),
       cashOnCashHybrid(data),
-    ]);
+    ];
+
+    setResults(offers);
+    setCocResults(cocs);
+
+    const numPassing = cocs.filter((r) => r.pass).length;
+    const baseEarnUSD = 2250;
+    const folioPerDeal = 50000;
+    const total = numPassing * (baseEarnUSD + folioPerDeal * folioValueUSD);
+
+    setTotalUSD(Math.round(total));
   };
 
   const triggerRefreshDeals = () => {
@@ -102,14 +125,15 @@ export default function App() {
   };
 
   if (showWelcome) {
+    const fallbackUSD = 2250 + 50000 * folioValueUSD;
     return (
       <WelcomeReferralPage
-        onContinue={() => {
-          setShowWelcome(false);
-        }}
+        onContinue={() => setShowWelcome(false)}
+        totalUSD={totalUSD > 0 ? totalUSD : Math.round(fallbackUSD)}
       />
     );
   }
+
 
   return (
     <div className="w-full min-h-screen flex flex-col overflow-hidden">

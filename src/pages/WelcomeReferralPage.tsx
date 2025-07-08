@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom";
 
 interface Props {
   onContinue: () => void;
+  totalUSD?: number;
 }
 
-const WelcomeReferralPage: React.FC<Props> = ({ onContinue }) => {
+const WelcomeReferralPage: React.FC<Props> = ({ onContinue, totalUSD }) => {
   const [referrerName, setReferrerName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -20,7 +21,8 @@ const WelcomeReferralPage: React.FC<Props> = ({ onContinue }) => {
       if (!ref) return setLoading(false);
       const snapshot = await getDocs(collection(db, "users"));
       const matched = snapshot.docs.find(
-        (doc) => doc.data().displayName?.toLowerCase() === ref.toLowerCase()
+        (doc) =>
+          doc.data().displayName?.toLowerCase() === ref.toLowerCase()
       );
       setReferrerName(matched?.data().displayName || "a Syncfolio user");
       setLoading(false);
@@ -46,12 +48,14 @@ const WelcomeReferralPage: React.FC<Props> = ({ onContinue }) => {
               SyncFolio.Space
             </span>
           </h1>
-            <p className="text-xl text-gray-300">
-              You’ve been invited by<br/>{" "}
-              <span className="text-accent font-bold text-3xl">{referrerName}</span> <br/>to
-              join a smarter way to grow your real estate career.
-            </p>
-
+          <p className="text-xl text-gray-300">
+            You’ve been invited by<br />
+            <span className="text-accent font-bold text-3xl">
+              {referrerName}
+            </span>{" "}
+            <br />
+            to join a smarter way to grow your real estate career.
+          </p>
         </div>
 
         <div className="bg-neutral-900/60 border border-neutral-800 backdrop-blur-md rounded-2xl p-6 text-left">
@@ -60,20 +64,30 @@ const WelcomeReferralPage: React.FC<Props> = ({ onContinue }) => {
           </h2>
           <ol className="list-decimal list-inside space-y-3 text-base text-gray-100">
             <li>
-              <span className="font-semibold text-accent">Sign in</span> to
-              access your private dashboard
+              <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent font-semibold">
+                Sign in
+              </span>{" "}
+              to access your private dashboard
             </li>
             <li>
-              <span className="font-semibold text-accent">
+              <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent font-semibold">
                 Set your name, ZIP code, and role
               </span>{" "}
               so we can personalize your experience
             </li>
             <li>
-              <span className="font-semibold text-accent">Start earning</span>{" "}
+              <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent font-semibold">
+                Start earning
+              </span>{" "}
               through exclusive tools and referrals
+              {totalUSD !== undefined && (
+                <div className="mt-2 text-green-400 text-xl mb-2 font-bold">
+                  Earn a minimum of ${totalUSD.toLocaleString()} per closed deal!
+                </div>
+              )}
             </li>
           </ol>
+
         </div>
 
         <button
@@ -82,7 +96,6 @@ const WelcomeReferralPage: React.FC<Props> = ({ onContinue }) => {
         >
           Continue to Dashboard
         </button>
-
 
         <p className="text-sm text-gray-500 mt-4">
           Powered by SyncFolio. Your network, your advantage.
