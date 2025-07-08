@@ -102,7 +102,7 @@ const FAQSection: React.FC = () => {
     {
       question: "What is ETH?",
       answer:
-        "ETH is the native cryptocurrency of the Ethereum blockchain. It is used to pay for transactions and computational services on the network. If operating on-chain, please keep a few dollars of ETH to pay for transaction costs on the Base Chain Network.",
+        "ETH is the native cryptocurrency of Ethereum based blockchains. It is used to pay for transactions and computational services on the network. If operating on-chain, please keep a few dollars of ETH to pay for transaction costs on the Base Chain Network.",
     },
 
     {
