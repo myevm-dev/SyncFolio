@@ -1,4 +1,3 @@
-// src/components/MyOffersTable.tsx
 import React, { useEffect, useState } from "react";
 import {
   collection,
@@ -43,20 +42,22 @@ const MyOffersTable = () => {
 
   const markAsAccepted = async (offerId: string, offer: Offer) => {
     if (!walletAddress) return;
-    const offerRef = doc(db, `users/${walletAddress}/offers/${offerId}`);
-    await updateDoc(offerRef, { accepted: true });
 
     const contractsRef = collection(db, `users/${walletAddress}/contracts`);
     await addDoc(contractsRef, {
       address: offer.propertyAddress,
       closeDate: new Date().toISOString().slice(0, 10),
       status: "Under Contract",
+      method: offer.method,
+      offerAmount: offer.offerAmount,
+      content: offer.content,
       createdAt: serverTimestamp(),
     });
 
-    setOffers((prev) =>
-      prev.map((o) => (o.id === offerId ? { ...o, accepted: true } : o))
-    );
+    const offerRef = doc(db, `users/${walletAddress}/offers/${offerId}`);
+    await deleteDoc(offerRef);
+
+    setOffers((prev) => prev.filter((o) => o.id !== offerId));
   };
 
   const deleteOffer = async (offerId: string) => {
@@ -92,18 +93,12 @@ const MyOffersTable = () => {
                 {offer.createdAt?.toDate?.().toLocaleDateString() || "—"}
               </td>
               <td className="px-4 py-3 border-b border-neutral-700 space-x-2">
-                {offer.accepted ? (
-                  <span className="px-4 py-1 inline-block rounded-full bg-gradient-to-r from-green-400 to-teal-400 text-black font-semibold text-sm">
-                    Accepted
-                  </span>
-                ) : (
-                  <button
-                    onClick={() => markAsAccepted(offer.id, offer)}
-                    className="px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 text-black font-semibold text-sm hover:brightness-110"
-                  >
-                    Accept
-                  </button>
-                )}
+                <button
+                  onClick={() => markAsAccepted(offer.id, offer)}
+                  className="px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 text-black font-semibold text-sm hover:brightness-110"
+                >
+                  Accept
+                </button>
                 <button
                   onClick={() => handleEdit(offer.id)}
                   className="px-4 py-1 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 text-black font-semibold text-sm hover:brightness-110"

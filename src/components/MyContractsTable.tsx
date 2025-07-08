@@ -1,4 +1,3 @@
-// src/components/MyContractsTable.tsx
 import React, { useEffect, useState } from "react";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../lib/firebase";
@@ -11,7 +10,18 @@ interface Contract {
   closeDate: string;
   status: string;
   createdAt?: any;
+  statusIndex?: number;
+  steps?: string[];
 }
+
+const defaultSteps = [
+  "Contract Signed by You",
+  "Contract Signed by Seller",
+  "JV Agreement Signed Between You and Syncfolio",
+  "Searching for Buyer (Inspection Period)",
+  "Buyer Identified and Committed",
+  "Closed, Payment Credited to Account"
+];
 
 const MyContractsTable: React.FC = () => {
   const [contracts, setContracts] = useState<Contract[]>([]);
@@ -46,6 +56,17 @@ const MyContractsTable: React.FC = () => {
     }
   };
 
+  const getStatusLabel = (contract: Contract): string => {
+    const steps = Array.isArray(contract.steps) ? contract.steps : defaultSteps;
+    const index = typeof contract.statusIndex === "number" ? contract.statusIndex : 0;
+
+    if (Number.isInteger(index) && index >= 0 && index < steps.length) {
+      return steps[index];
+    }
+
+    return "Unknown Status";
+  };
+
   return (
     <div className="w-full overflow-x-auto">
       <table className="w-full text-left text-white border-collapse border border-neutral-700">
@@ -64,7 +85,7 @@ const MyContractsTable: React.FC = () => {
               <td className="px-4 py-3 border-b border-neutral-700">{contract.closeDate}</td>
               <td className="px-4 py-3 border-b border-neutral-700">
                 <span className="px-4 py-1 inline-block rounded-full bg-gradient-to-r from-green-400 to-teal-400 text-black font-semibold text-sm">
-                  {contract.status}
+                  {getStatusLabel(contract)}
                 </span>
               </td>
               <td className="px-4 py-3 border-b border-neutral-700 space-x-2">
