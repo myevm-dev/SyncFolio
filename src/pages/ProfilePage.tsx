@@ -9,6 +9,8 @@ import DashboardCards from "../components/DashboardCards";
 import TeamSection from "../components/TeamSection";
 import ReferralSection from "../components/ReferralSection";
 import IncomingInvites from "../components/IncomingInvites";
+import Balances from "../components/Balances";
+
 
 const roleOptions = [
   "Investor",
@@ -266,6 +268,7 @@ export default function ProfilePage() {
       </div>
 
       <DashboardCards walletAddress={walletAddress} />
+      <Balances balances={balances} />
 
       <div className="max-w-6xl mx-auto mt-10 space-y-6">
         <div className="border border-zinc-700 rounded-xl p-6">
