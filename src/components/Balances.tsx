@@ -1,4 +1,9 @@
-import React from "react";
+// src/components/Balances.tsx
+import React, { useState } from "react";
+import PlatformDepositModal from "./PlatformDepositModal";
+import PlatformWithdrawModal from "./PlatformWithdrawModal";
+import WalletDepositModal from "./WalletDepositModal";
+import WalletWithdrawModal from "./WalletWithdrawModal";
 
 interface BalancesProps {
   balances: {
@@ -22,6 +27,8 @@ const BalanceCard = ({
   walletAddress,
   showVerifyLink,
   showPofButton,
+  onDepositClick,
+  onWithdrawClick,
 }: {
   title: string;
   items: { label: string; value: number }[];
@@ -29,6 +36,8 @@ const BalanceCard = ({
   walletAddress?: string;
   showVerifyLink?: boolean;
   showPofButton?: boolean;
+  onDepositClick?: () => void;
+  onWithdrawClick?: () => void;
 }) => (
   <div className="bg-black border border-neutral-700 rounded-xl p-6 shadow-md flex flex-col justify-between text-left min-w-[300px]">
     <div className="flex items-center justify-between mb-4">
@@ -66,10 +75,16 @@ const BalanceCard = ({
 
     {!hideActions && (
       <div className="flex gap-2 mt-auto">
-        <button className="flex-1 py-1 text-sm rounded-full bg-blue-600 hover:bg-blue-700 text-white">
+        <button
+          onClick={onDepositClick}
+          className="flex-1 py-1 text-sm rounded-full bg-blue-600 hover:bg-blue-700 text-white"
+        >
           Deposit
         </button>
-        <button className="flex-1 py-1 text-sm rounded-full bg-red-600 hover:bg-red-700 text-white">
+        <button
+          onClick={onWithdrawClick}
+          className="flex-1 py-1 text-sm rounded-full bg-red-600 hover:bg-red-700 text-white"
+        >
           Withdraw
         </button>
       </div>
@@ -82,6 +97,11 @@ const Balances: React.FC<BalancesProps> = ({
   walletAddress,
   hideActions = false,
 }) => {
+  const [showPlatformDeposit, setShowPlatformDeposit] = useState(false);
+  const [showPlatformWithdraw, setShowPlatformWithdraw] = useState(false);
+  const [showWalletDeposit, setShowWalletDeposit] = useState(false);
+  const [showWalletWithdraw, setShowWalletWithdraw] = useState(false);
+
   const platformItems = [
     { label: "USD", value: balances.platform.USD },
     { label: "ꞘOLIO", value: balances.platform.FOLIO },
@@ -95,22 +115,64 @@ const Balances: React.FC<BalancesProps> = ({
   ];
 
   return (
-    <div className="max-w-6xl mx-auto mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
-      <BalanceCard
-        title="Platform Balance"
-        items={platformItems}
-        hideActions={hideActions}
-        showPofButton={true}
-      />
-      <BalanceCard
-        title="Wallet Balance"
-        items={walletItems}
-        hideActions={hideActions}
-        showVerifyLink={!!walletAddress}
-        walletAddress={walletAddress}
+    <>
+      <div className="max-w-6xl mx-auto mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <BalanceCard
+          title="Platform Balance"
+          items={platformItems}
+          hideActions={hideActions}
+          showPofButton={true}
+          onDepositClick={() => setShowPlatformDeposit(true)}
+          onWithdrawClick={() => setShowPlatformWithdraw(true)}
+        />
+        <BalanceCard
+          title="Wallet Balance"
+          items={walletItems}
+          hideActions={hideActions}
+          showVerifyLink={!!walletAddress}
+          walletAddress={walletAddress}
+          onDepositClick={() => setShowWalletDeposit(true)}
+          onWithdrawClick={() => setShowWalletWithdraw(true)}
+        />
+      </div>
+
+      <PlatformDepositModal
+        open={showPlatformDeposit}
+        onClose={() => setShowPlatformDeposit(false)}
+        onSelect={(method) => {
+          console.log("Platform deposit method:", method);
+          setShowPlatformDeposit(false);
+        }}
       />
 
-    </div>
+      <PlatformWithdrawModal
+        open={showPlatformWithdraw}
+        onClose={() => setShowPlatformWithdraw(false)}
+        onSelect={(method) => {
+          console.log("Platform withdraw method:", method);
+          setShowPlatformWithdraw(false);
+        }}
+      />
+
+      <WalletDepositModal
+        open={showWalletDeposit}
+        onClose={() => setShowWalletDeposit(false)}
+        onSelect={(method) => {
+          console.log("Wallet deposit method:", method);
+          setShowWalletDeposit(false);
+        }}
+      />
+
+      <WalletWithdrawModal
+        open={showWalletWithdraw}
+        onClose={() => setShowWalletWithdraw(false)}
+        onSelect={(method) => {
+          console.log("Wallet withdrawal method:", method);
+          setShowWalletWithdraw(false);
+          // Handle "wallet" or "coinbase" logic
+        }}
+      />
+    </>
   );
 };
 
