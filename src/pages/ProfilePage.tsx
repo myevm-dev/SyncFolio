@@ -268,7 +268,7 @@ export default function ProfilePage() {
       </div>
 
       <DashboardCards walletAddress={walletAddress} />
-      <Balances balances={balances} />
+      <Balances balances={balances} walletAddress={walletAddress} />
 
       <div className="max-w-6xl mx-auto mt-10 space-y-6">
         <div className="border border-zinc-700 rounded-xl p-6">
