@@ -5,7 +5,6 @@ import { db } from "../lib/firebase";
 import DashboardCards from "../components/DashboardCards";
 import Balances from "../components/Balances";
 
-
 const roleGradients: Record<string, string> = {
   Investor: "bg-gradient-to-r from-green-400 to-blue-600",
   Wholesaler: "bg-gradient-to-r from-lime-400 to-emerald-500",
@@ -86,9 +85,11 @@ export default function UserProfilePage() {
       <div className="mt-10">
         <DashboardCards walletAddress={id || ""} />
       </div>
+
       {/* Balances Card */}
       <div className="mt-10">
         <Balances
+          hideActions
           balances={{
             platform: {
               USD: profile.platformUSD || 0,
@@ -103,7 +104,6 @@ export default function UserProfilePage() {
           }}
         />
       </div>
-
 
       {/* Closed Deals Table (Social Proof) */}
       <div className="mt-16 max-w-5xl mx-auto text-left">
