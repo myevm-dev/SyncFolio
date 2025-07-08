@@ -16,7 +16,7 @@ export default function RoadmapSection({ items }: Props) {
         Roadmap
       </h2>
 
-      <p className="text-gray-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed mb-6">
+      <p className="text-gray-300 text-sm md:text-base max-w-3xl mx-auto leading-relaxed mb-6">
         Unlock the next generation of real estate intelligence. AI-driven tools will soon help
         you analyze, score, and optimize deals. Collaborate with partners or deploy smart agents
         to work deals on your behalf.

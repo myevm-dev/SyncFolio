@@ -18,6 +18,7 @@ const roles = [
     title: "For Sellers & Agents",
     text: "Get fast, qualified offers from active investors. Skip the listing process, reduce time on market, and close with certainty.",
   },
+  
 ];
 
 const comingSoonItems = [
