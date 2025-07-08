@@ -1,5 +1,4 @@
-// src/components/Balances.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PlatformDepositModal from "./PlatformDepositModal";
 import PlatformWithdrawModal from "./PlatformWithdrawModal";
 import WalletDepositModal from "./WalletDepositModal";
@@ -20,6 +19,8 @@ const format = (value: number) =>
     maximumFractionDigits: 2,
   });
 
+const folioToOP = 0.02;
+
 const BalanceCard = ({
   title,
   items,
@@ -29,6 +30,7 @@ const BalanceCard = ({
   showPofButton,
   onDepositClick,
   onWithdrawClick,
+  opPrice,
 }: {
   title: string;
   items: { label: string; value: number }[];
@@ -38,6 +40,7 @@ const BalanceCard = ({
   showPofButton?: boolean;
   onDepositClick?: () => void;
   onWithdrawClick?: () => void;
+  opPrice?: number | null;
 }) => (
   <div className="bg-black border border-neutral-700 rounded-xl p-6 shadow-md flex flex-col justify-between text-left min-w-[300px]">
     <div className="flex items-center justify-between mb-4">
@@ -63,14 +66,33 @@ const BalanceCard = ({
     </div>
 
     <div className="space-y-2 mb-4">
-      {items.map((item) => (
-        <div key={item.label} className="flex justify-between text-sm">
-          <span className="text-gray-400">{item.label}</span>
-          <span className="text-green-400 font-semibold">
-            ${format(item.value)}
-          </span>
-        </div>
-      ))}
+      {items.map((item) => {
+        const isFolio = item.label.includes("ꞘOLIO");
+        const folioUsd = isFolio && opPrice ? item.value * folioToOP * opPrice : null;
+
+        return (
+          <div key={item.label} className="flex justify-between text-sm">
+            {item.label === "ꞘOLIO" ? (
+              <>
+                <span className="text-[#fd01f5] font-semibold">ꞘOLIO</span>
+                <span className="text-[#fd01f5] font-semibold">
+                  Ꞙ{format(item.value)}
+                  {folioUsd !== null && (
+                    <span className="text-sm italic text-green-400 ml-2">
+                      (~${format(folioUsd)})
+                    </span>
+                  )}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="text-gray-400">{item.label}</span>
+                <span className="text-green-400 font-semibold">${format(item.value)}</span>
+              </>
+            )}
+          </div>
+        );
+      })}
     </div>
 
     {!hideActions && (
@@ -101,10 +123,21 @@ const Balances: React.FC<BalancesProps> = ({
   const [showPlatformWithdraw, setShowPlatformWithdraw] = useState(false);
   const [showWalletDeposit, setShowWalletDeposit] = useState(false);
   const [showWalletWithdraw, setShowWalletWithdraw] = useState(false);
+  const [opPrice, setOpPrice] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("https://api.coingecko.com/api/v3/simple/price?ids=optimism&vs_currencies=usd")
+      .then((res) => res.json())
+      .then((data) => {
+        const price = data?.optimism?.usd;
+        if (price) setOpPrice(price);
+      })
+      .catch((err) => console.error("Error fetching OP price:", err));
+  }, []);
 
   const platformItems = [
     { label: "USD", value: balances.platform.USD },
-    { label: "ꞘOLIO", value: balances.platform.FOLIO },
+    { label: "ꞘOLIO", value: 150000 }, // static vesting amount
     { label: "Credits", value: balances.platform.CREDITS },
   ];
 
@@ -124,6 +157,7 @@ const Balances: React.FC<BalancesProps> = ({
           showPofButton={true}
           onDepositClick={() => setShowPlatformDeposit(true)}
           onWithdrawClick={() => setShowPlatformWithdraw(true)}
+          opPrice={opPrice}
         />
         <BalanceCard
           title="Wallet Balance"
@@ -133,6 +167,7 @@ const Balances: React.FC<BalancesProps> = ({
           walletAddress={walletAddress}
           onDepositClick={() => setShowWalletDeposit(true)}
           onWithdrawClick={() => setShowWalletWithdraw(true)}
+          opPrice={opPrice}
         />
       </div>
 
@@ -169,7 +204,6 @@ const Balances: React.FC<BalancesProps> = ({
         onSelect={(method) => {
           console.log("Wallet withdrawal method:", method);
           setShowWalletWithdraw(false);
-          // Handle "wallet" or "coinbase" logic
         }}
       />
     </>

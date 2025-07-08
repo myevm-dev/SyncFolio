@@ -37,7 +37,7 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
       let totalBuy = 0;
       let totalSell = 0;
 
-      offersSnap.docs.forEach(doc => {
+      offersSnap.docs.forEach((doc) => {
         const data = doc.data();
         const amount = parseFloat(data.offerAmount?.replace(/[^0-9.]/g, "") || "0");
         if (["cash", "sellerFinance", "takeover", "hybrid"].includes(data.method)) {
@@ -47,7 +47,7 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
         }
       });
 
-      contractsSnap.docs.forEach(doc => {
+      contractsSnap.docs.forEach((doc) => {
         const data = doc.data();
         const amount = parseFloat(data.offerAmount?.replace(/[^0-9.]/g, "") || "0");
         if (["cash", "sellerFinance", "takeover", "hybrid"].includes(data.method)) {
@@ -82,13 +82,23 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
       route: "/buying-center",
       extra: (
         <div className="text-[15px] mt-1 text-blue-300">
-          Total Volume: ${buyingVolume.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          Total Volume: $
+          {buyingVolume.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
         </div>
       ),
     },
     {
       label: "Earnings",
-      value: "$0.00",
+      value:
+        opPrice !== null
+          ? `$${(vestingFolio * folioToOP * opPrice).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}`
+          : "$0.00",
       icon: "💰",
       route: "/yield",
       extra: (
@@ -104,7 +114,10 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
             <span className="relative group">
               <InformationCircleIcon className="w-4 h-4 text-blue-400 cursor-pointer" />
               <div className="absolute z-50 hidden group-hover:block w-[min(90vw,18rem)] p-3 bg-zinc-900 text-sm text-white border border-neutral-700 rounded-lg shadow-lg mt-2 left-1/2 -translate-x-1/2">
-                150k <span className="text-[#fd01f5] font-semibold">Ꞙolio</span> unlockable over your first 5 deals. Tokens to be delivered at TGE or on completion if after the event. This does not replace any rewards earned elsewhere in the app.
+                150k <span className="text-[#fd01f5] font-semibold">Ꞙolio</span>{" "}
+                unlockable over your first 5 deals. Tokens to be delivered at TGE or
+                on completion if after the event. This does not replace any rewards
+                earned elsewhere in the app.
               </div>
             </span>
           </span>
@@ -118,7 +131,11 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
       route: "/selling-center",
       extra: (
         <div className="text-[15px] mt-1 text-orange-300">
-          Total Volume: ${sellingVolume.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          Total Volume: $
+          {sellingVolume.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
         </div>
       ),
     },
@@ -129,7 +146,9 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
       {cards.map((card) => (
         <div
           key={card.label}
-          className={`bg-black rounded-xl p-6 shadow-md border border-neutral-700 flex flex-col items-center text-center ${!readOnly ? 'cursor-pointer hover:border-blue-500' : 'opacity-70'}`}
+          className={`bg-black rounded-xl p-6 shadow-md border border-neutral-700 flex flex-col items-center text-center ${
+            !readOnly ? "cursor-pointer hover:border-blue-500" : "opacity-70"
+          }`}
           {...(!readOnly ? { onClick: () => navigate(card.route) } : {})}
         >
           <p className="text-sm text-accent font-semibold mb-4">{card.label}</p>
