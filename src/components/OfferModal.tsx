@@ -91,7 +91,7 @@ export default function OfferModal({
 
         <div
           id="offer-preview"
-          className="space-y-6 bg-black text-white p-10 rounded-xl font-serif leading-relaxed"
+          className="space-y-6 bg-black text-white p-10 rounded-xl font-serif leading-relaxed whitespace-pre-wrap"
         >
           <OfferHeader propertyAddress={address} jvPartners={jvPartners} />
 
@@ -148,12 +148,10 @@ export default function OfferModal({
               />
               <div className="bg-black text-white border border-white p-4 rounded mb-4 text-sm">
                 <p>
-                  The seller is protected through a <strong>Deed of Trust</strong> and{" "}
-                  <strong>Promissory Note</strong>, which include a clause that in the
-                  event of two consecutive missed payments, ownership of the property
-                  automatically reverts to the seller without the need for judicial
-                  foreclosure. All prior payments, improvements, and the down payment
-                  would be forfeited to the seller.
+                  The seller is protected through a <strong>Deed of Trust</strong> and <strong>Promissory Note</strong>,
+                  which include a clause that in the event of two consecutive missed payments, ownership of the
+                  property automatically reverts to the seller without the need for judicial foreclosure. All prior
+                  payments, improvements, and the down payment would be forfeited to the seller.
                 </p>
               </div>
             </>
@@ -201,6 +199,33 @@ export default function OfferModal({
           <div className="flex justify-center gap-4 flex-wrap mb-4">
             <button
               onClick={async () => {
+                const paragraphs: string[] = [];
+                paragraphs.push(`I’m submitting an offer for ${address}.`);
+
+                if (type === "cash") {
+                  paragraphs.push(`Cash Offer\n\nOffer Price: $${offerPrice}\nTerms: Cash, as-is\n${inspectionDays} business days\nEMD: $1,500 non-refundable, submitted after inspection period`);
+                } else if (type === "sellerFinance") {
+                  paragraphs.push(
+                    `Seller Finance\n\nOffer Price: $${totalOffer}\nDown: $${down}\nMonthly: $${monthly}\nTerm: ${term} months\nBalloon: $${balloon} due in final month\nCommission: Seller’s agent fee paid from down payment\nSubject to a ${inspectionDays} business day inspection period\nEMD: $1,500 non-refundable, submitted after inspection period`
+                  );
+                  paragraphs.push(
+                    `The seller is protected through a Deed of Trust and Promissory Note, which include a clause that in the event of two consecutive missed payments, ownership of the property automatically reverts to the seller without the need for judicial foreclosure. All prior payments, improvements, and the down payment would be forfeited to the seller.`
+                  );
+                }
+
+                paragraphs.push(`Supporting Logic\n\nPoint One\nPoint Two\nPoint Three\nPoint Four\nPoint Five`);
+                paragraphs.push(`${name}\n${phone}\n${title}\n\nAttachments: Proof of Funds, Credibility Packet`);
+
+                const formatted = paragraphs.join("\n\n");
+                navigator.clipboard.writeText(formatted);
+              }}
+              className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-full hover:opacity-90 transition"
+            >
+              Copy Text
+            </button>
+
+            <button
+              onClick={async () => {
                 const element = document.getElementById("offer-preview");
                 if (!element) return;
                 const jsPDF = (await import("jspdf")).jsPDF;
@@ -221,17 +246,6 @@ export default function OfferModal({
               className="px-6 py-2 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-full hover:opacity-90 transition"
             >
               Download All
-            </button>
-
-            <button
-              onClick={() => {
-                const textToCopy =
-                  document.querySelector("#offer-preview")?.textContent || "";
-                navigator.clipboard.writeText(textToCopy);
-              }}
-              className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-full hover:opacity-90 transition"
-            >
-              Copy Text
             </button>
           </div>
 

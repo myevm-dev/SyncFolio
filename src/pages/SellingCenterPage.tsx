@@ -9,7 +9,7 @@ export default function SellingPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-6 text-white">
-      <h1 className="text-2xl font-bold text-center text-cyan-400 mb-10">Selling Center</h1>
+      <h1 className="text-2xl font-bold text-center text-cyan-400 mb-10">My Selling Center</h1>
 
       <div className="flex justify-center mb-10 gap-4">
         <button

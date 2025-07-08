@@ -9,7 +9,7 @@ export default function BuyingPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-6 text-white">
-      <h1 className="text-2xl font-bold text-center text-white mb-10">Buying Center</h1>
+      <h1 className="text-2xl font-bold text-center text-white mb-10">My Buying Center</h1>
 
       <div className="flex justify-center mb-10 gap-4">
         <button
