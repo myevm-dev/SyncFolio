@@ -25,7 +25,9 @@ export default function RoadmapSection({ items }: Props) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {items.map((item) => (
           <div key={item.label} className="text-left space-y-1">
-            <div className="text-sm text-white font-medium">{item.label}</div>
+            <div className="text-sm font-medium bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+              {item.label}
+            </div>
             <div className="w-full bg-zinc-800 rounded-full h-3">
               <div
                 className="bg-gradient-to-r from-purple-400 to-cyan-400 h-3 rounded-full transition-all duration-700 ease-out"

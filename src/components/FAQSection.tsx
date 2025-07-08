@@ -123,9 +123,10 @@ const FAQSection: React.FC = () => {
 
   return (
     <section className="mt-20 bg-[#050505] border border-neutral-700 rounded-lg p-8 shadow-md hover:shadow-lg transition text-white">
-      <h2 className="text-3xl md:text-4xl font-bold text-center mb-8" style={{ color: "#068989" }}>
+      <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
         Frequently Asked Questions
       </h2>
+
 
       <div className="space-y-4">
         {faqItems.map((item, index) => (
