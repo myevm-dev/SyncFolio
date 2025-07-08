@@ -100,15 +100,16 @@ const Balances: React.FC<BalancesProps> = ({
         title="Platform Balance"
         items={platformItems}
         hideActions={hideActions}
-        showPofButton={hideActions}
+        showPofButton={true}
       />
       <BalanceCard
         title="Wallet Balance"
         items={walletItems}
         hideActions={hideActions}
-        showVerifyLink={hideActions}
+        showVerifyLink={!!walletAddress}
         walletAddress={walletAddress}
       />
+
     </div>
   );
 };
