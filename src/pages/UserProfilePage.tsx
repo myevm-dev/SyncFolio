@@ -87,7 +87,10 @@ export default function UserProfilePage() {
 
       {/* Closed Deals Table (Social Proof) */}
       <div className="mt-16 max-w-5xl mx-auto text-left">
-        <h3 className="text-xl font-bold text-white mb-4">Closed Deals</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-bold text-white">Closed Deals</h3>
+          <p className="text-green-400 font-semibold">Total Volume: $825,000</p>
+        </div>
         <div className="overflow-x-auto">
           <table className="min-w-full bg-[#050505] border border-neutral-700 text-sm text-left text-white rounded-md overflow-hidden">
             <thead className="bg-[#0B1519] border-b border-neutral-700">

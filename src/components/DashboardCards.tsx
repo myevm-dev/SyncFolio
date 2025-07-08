@@ -1,4 +1,3 @@
-// DashboardCards.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../lib/firebase";
@@ -14,6 +13,8 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
   const navigate = useNavigate();
   const [offerCount, setOfferCount] = useState(0);
   const [opPrice, setOpPrice] = useState<number | null>(null);
+  const [buyingVolume, setBuyingVolume] = useState(0);
+  const [sellingVolume, setSellingVolume] = useState(0);
 
   const vestingFolio = 150000;
   const folioToOP = 0.02;
@@ -24,6 +25,21 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
       const offersRef = collection(db, `users/${walletAddress}/offers`);
       const snapshot = await getDocs(offersRef);
       setOfferCount(snapshot.size);
+
+      let totalBuy = 0;
+      let totalSell = 0;
+      snapshot.docs.forEach(doc => {
+        const data = doc.data();
+        const amount = parseFloat(data.offerAmount?.replace(/[^0-9.]/g, "") || "0");
+        if (data.method === "cash" || data.method === "sellerFinance" || data.method === "takeover" || data.method === "hybrid") {
+          totalBuy += amount;
+        } else {
+          totalSell += amount;
+        }
+      });
+
+      setBuyingVolume(totalBuy);
+      setSellingVolume(totalSell);
     };
     fetchOffers();
   }, [walletAddress]);
@@ -44,7 +60,11 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
       value: `${offerCount} Properties`,
       icon: "🏠",
       route: "/buying-center",
-      extra: null,
+      extra: (
+        <div className="text-[15px] mt-1 text-blue-300">
+          Total Volume: ${buyingVolume.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </div>
+      ),
     },
     {
       label: "Earnings",
@@ -76,7 +96,11 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
       value: "0 Properties",
       icon: "📄",
       route: "/selling-center",
-      extra: null,
+      extra: (
+        <div className="text-[15px] mt-1 text-orange-300">
+          Total Volume: ${sellingVolume.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </div>
+      ),
     },
   ];
 
