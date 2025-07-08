@@ -68,28 +68,55 @@ const BalanceCard = ({
     <div className="space-y-2 mb-4">
       {items.map((item) => {
         const isFolio = item.label.includes("ꞘOLIO");
-        const folioUsd = isFolio && opPrice ? item.value * folioToOP * opPrice : null;
+        const isUSD = item.label === "USD";
+        const isUSDC = item.label === "USDC";
+        const isETH = item.label === "ETH";
+        const isCredits = item.label === "Credits";
+        const folioUsd = isFolio && opPrice != null ? item.value * folioToOP * opPrice : null;
+
+        let labelColor = "text-gray-400";
+        let valueColor = "text-green-400";
+        let quantityPrefix = "$";
+        let quantityColor = valueColor;
+
+        if (isUSD || isUSDC) labelColor = "text-blue-400";
+        if (isETH || isCredits) labelColor = "text-white";
+        if (isFolio) labelColor = "text-[#fd01f5]";
+
+        if (isFolio) {
+          quantityPrefix = "Ꞙ";
+          quantityColor = "text-[#fd01f5]";
+        } else if (isETH) {
+          quantityPrefix = "Ξ";
+          quantityColor = "text-white";
+        } else if (isUSD || isUSDC) {
+          quantityPrefix = "$";
+          quantityColor = "text-blue-400";
+        }
 
         return (
           <div key={item.label} className="flex justify-between text-sm">
-            {item.label === "ꞘOLIO" ? (
-              <>
-                <span className="text-[#fd01f5] font-semibold">ꞘOLIO</span>
-                <span className="text-[#fd01f5] font-semibold">
-                  Ꞙ{format(item.value)}
-                  {folioUsd !== null && (
-                    <span className="text-sm italic text-green-400 ml-2">
-                      (~${format(folioUsd)})
-                    </span>
-                  )}
+            <span className={`${labelColor} font-semibold`}>{item.label}</span>
+            <span className="flex items-center gap-2">
+              <span className={`${quantityColor} font-semibold`}>
+                {quantityPrefix}{format(item.value)}
+              </span>
+              {isFolio && folioUsd != null && (
+                <span className="text-sm italic text-green-400">
+                  (~${format(folioUsd)})
                 </span>
-              </>
-            ) : (
-              <>
-                <span className="text-gray-400">{item.label}</span>
-                <span className="text-green-400 font-semibold">${format(item.value)}</span>
-              </>
-            )}
+              )}
+              {isETH && opPrice != null && (
+                <span className="text-green-400 text-sm">
+                  (${format(item.value * opPrice)})
+                </span>
+              )}
+              {(isUSD || isUSDC) && (
+                <span className="text-green-400 text-sm">
+                  (${format(item.value)})
+                </span>
+              )}
+            </span>
           </div>
         );
       })}
@@ -137,7 +164,7 @@ const Balances: React.FC<BalancesProps> = ({
 
   const platformItems = [
     { label: "USD", value: balances.platform.USD },
-    { label: "ꞘOLIO", value: 150000 }, // static vesting amount
+    { label: "ꞘOLIO", value: 150000 },
     { label: "Credits", value: balances.platform.CREDITS },
   ];
 
