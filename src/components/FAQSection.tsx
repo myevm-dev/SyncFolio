@@ -94,13 +94,23 @@ const FAQSection: React.FC = () => {
         </div>
       ),
     },
+    {
+      question: "Can I withdraw my Credits?",
+      answer:
+        "No, Credits are non-transferable and cannot be withdrawn from the platform. They are designed to be used within the SyncFolio ecosystem to access premium features and services.",
+    },
+    {
+      question: "What is ETH?",
+      answer:
+        "ETH is the native cryptocurrency of the Ethereum blockchain. It is used to pay for transactions and computational services on the network. If operating on-chain, please keep a few dollars of ETH to pay for transaction costs on the Base Chain Network.",
+    },
 
     {
       question: "How many leads can I manage?",
       answer:
         "You may save and manage up to 500 leads for no cost. In the future, we may offer a way to purchase additional lead management credits.",
     },
-        {
+    {
       question: "Do you have a pitch deck?",
       answer:
         "Yes, we have a pitch deck available for interested parties. Please contact us for more information at Yo@MyEVM.ORG.",
