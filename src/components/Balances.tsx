@@ -1,4 +1,3 @@
-// src/components/Balances.tsx
 import React from "react";
 
 interface BalancesProps {
@@ -6,6 +5,7 @@ interface BalancesProps {
     platform: { USD: number; FOLIO: number; CREDITS: number };
     wallet: { USDC: number; FOLIO: number; ETH: number };
   };
+  walletAddress?: string;
   hideActions?: boolean;
 }
 
@@ -19,13 +19,39 @@ const BalanceCard = ({
   title,
   items,
   hideActions = false,
+  walletAddress,
+  showVerifyLink,
+  showPofButton,
 }: {
   title: string;
   items: { label: string; value: number }[];
   hideActions?: boolean;
+  walletAddress?: string;
+  showVerifyLink?: boolean;
+  showPofButton?: boolean;
 }) => (
   <div className="bg-black border border-neutral-700 rounded-xl p-6 shadow-md flex flex-col justify-between text-left min-w-[300px]">
-    <h3 className="text-white font-semibold text-lg mb-4">{title}</h3>
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="text-white font-semibold text-lg">{title}</h3>
+      {showVerifyLink && walletAddress && (
+        <a
+          href={`https://basescan.org/address/${walletAddress}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 text-xs hover:underline"
+        >
+          Verify
+        </a>
+      )}
+      {showPofButton && (
+        <button
+          disabled
+          className="text-xs text-white bg-zinc-700 px-3 py-1 rounded-full cursor-not-allowed opacity-60"
+        >
+          Get POF
+        </button>
+      )}
+    </div>
 
     <div className="space-y-2 mb-4">
       {items.map((item) => (
@@ -51,7 +77,11 @@ const BalanceCard = ({
   </div>
 );
 
-const Balances: React.FC<BalancesProps> = ({ balances, hideActions = false }) => {
+const Balances: React.FC<BalancesProps> = ({
+  balances,
+  walletAddress,
+  hideActions = false,
+}) => {
   const platformItems = [
     { label: "USD", value: balances.platform.USD },
     { label: "ꞘOLIO", value: balances.platform.FOLIO },
@@ -66,8 +96,19 @@ const Balances: React.FC<BalancesProps> = ({ balances, hideActions = false }) =>
 
   return (
     <div className="max-w-6xl mx-auto mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
-      <BalanceCard title="Platform Balance" items={platformItems} hideActions={hideActions} />
-      <BalanceCard title="Wallet Balance" items={walletItems} hideActions={hideActions} />
+      <BalanceCard
+        title="Platform Balance"
+        items={platformItems}
+        hideActions={hideActions}
+        showPofButton={hideActions}
+      />
+      <BalanceCard
+        title="Wallet Balance"
+        items={walletItems}
+        hideActions={hideActions}
+        showVerifyLink={hideActions}
+        walletAddress={walletAddress}
+      />
     </div>
   );
 };

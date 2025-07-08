@@ -1,7 +1,7 @@
 import React, { useRef, useLayoutEffect } from "react";
 
 const features = [
-  { title: "🎁 Sign Up Rewards", description: "Get 150k Folio Token for signing up *subject to vesting." },
+  { title: "🎁 Sign Up Rewards", description: "Get 150k Ꞙolio Token for signing up *subject to vesting." },
   { title: "🗂 Lead Management CRM", description: "Manage up to 500 leads for free." },
   { title: "✨ Creative Offer Generator", description: "Create offers that are sure to sell to our buyer list." },
   { title: "📜 Customizable Call Scripts", description: "Dynamic call script using the checkmate pitch." },

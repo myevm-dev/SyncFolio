@@ -90,6 +90,7 @@ export default function UserProfilePage() {
       <div className="mt-10">
         <Balances
           hideActions
+          walletAddress={id}
           balances={{
             platform: {
               USD: profile.platformUSD || 0,
@@ -103,6 +104,8 @@ export default function UserProfilePage() {
             },
           }}
         />
+
+
       </div>
 
       {/* Closed Deals Table (Social Proof) */}

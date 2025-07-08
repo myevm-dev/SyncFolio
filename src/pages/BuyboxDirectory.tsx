@@ -63,7 +63,7 @@ const TAGS = [
   "⚡ Fast Response",
   "📈 Active Buyer",
   "🔥 High Demand",
-    "🎁 Bonus Folio" 
+  "🎁 Bonus Ꞙolio"
 ];
 
 const getRandomTags = () => {
