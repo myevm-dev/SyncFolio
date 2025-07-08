@@ -36,7 +36,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/buying-center" element={<BuyingCenterPage />} />
             <Route path="/selling-center" element={<SellingCenterPage />} />
             <Route path="/contracts/:id" element={<ContractStatusPage />} />
-            <Route path="/yield" element={<YieldPage />} /> {/* ✅ added route */}
+            <Route path="/yield" element={<YieldPage />} /> 
             <Route path="/profile/:id" element={<UserProfilePage />} />
 
           </Route>
