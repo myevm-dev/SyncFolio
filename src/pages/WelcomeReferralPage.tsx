@@ -71,7 +71,7 @@ const WelcomeReferralPage: React.FC<Props> = ({ onContinue, totalUSD }) => {
             </li>
             <li>
               <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent font-semibold">
-                Set your name, ZIP code, and role
+                Set your Name, ZIP code, and Role
               </span>{" "}
               so we can personalize your experience
             </li>
