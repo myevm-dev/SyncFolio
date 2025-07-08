@@ -65,7 +65,7 @@ const WelcomeReferralPage: React.FC<Props> = ({ onContinue }) => {
             </li>
             <li>
               <span className="font-semibold text-accent">
-                Set your name & ZIP code
+                Set your name, ZIP code, and role
               </span>{" "}
               so we can personalize your experience
             </li>
