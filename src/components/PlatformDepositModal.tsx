@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "./Dialog";
 import { Banknote, CreditCard, DollarSign, Star, Zap } from "lucide-react";
 
@@ -40,6 +40,13 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
 }) => {
   const [step, setStep] = useState<1 | 2>(1);
   const [selectedMethod, setSelectedMethod] = useState<"stripe" | "crypto" | null>(null);
+
+  useEffect(() => {
+    if (open) {
+      setStep(1);
+      setSelectedMethod(null);
+    }
+  }, [open]);
 
   const handleMethodSelect = (method: "stripe" | "crypto") => {
     setSelectedMethod(method);
