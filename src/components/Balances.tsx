@@ -72,7 +72,9 @@ const BalanceCard = ({
         const isUSDC = item.label === "USDC";
         const isETH = item.label === "ETH";
         const isCredits = item.label === "Credits";
-        const folioUsd = isFolio && opPrice != null ? item.value * folioToOP * opPrice : null;
+        const folioUsd = isFolio && typeof opPrice === "number"
+          ? item.value * folioToOP * opPrice
+          : null;
 
         let labelColor = "text-gray-400";
         let valueColor = "text-green-400";
@@ -109,14 +111,16 @@ const BalanceCard = ({
                   ? `${format(item.value)}`
                   : `${quantityPrefix}${format(item.value)}`}
               </span>
-              {isFolio && folioUsd != null && (
+              {isFolio && (
                 <span className="text-sm italic text-green-400">
-                  (~${format(folioUsd)})
+                  (~${folioUsd != null ? format(folioUsd) : "--"})
                 </span>
               )}
-              {isETH && opPrice != null && (
+              {isETH && (
                 <span className="text-green-400 text-sm">
-                  (~${format(item.value * opPrice)})
+                  (~${typeof opPrice === "number"
+                    ? format(item.value * opPrice)
+                    : "--"})
                 </span>
               )}
               {(isUSD || isUSDC) && (
@@ -148,7 +152,6 @@ const BalanceCard = ({
           Withdraw
         </button>
       </div>
-
     )}
   </div>
 );
@@ -169,7 +172,7 @@ const Balances: React.FC<BalancesProps> = ({
       .then((res) => res.json())
       .then((data) => {
         const price = data?.optimism?.usd;
-        if (price) setOpPrice(price);
+        if (typeof price === "number") setOpPrice(price);
       })
       .catch((err) => console.error("Error fetching OP price:", err));
   }, []);
@@ -213,37 +216,25 @@ const Balances: React.FC<BalancesProps> = ({
       <PlatformDepositModal
         open={showPlatformDeposit}
         onClose={() => setShowPlatformDeposit(false)}
-        onSelect={(method) => {
-          console.log("Platform deposit method:", method);
-          setShowPlatformDeposit(false);
-        }}
+        onSelect={() => setShowPlatformDeposit(false)}
       />
 
       <PlatformWithdrawModal
         open={showPlatformWithdraw}
         onClose={() => setShowPlatformWithdraw(false)}
-        onSelect={(method) => {
-          console.log("Platform withdraw method:", method);
-          setShowPlatformWithdraw(false);
-        }}
+        onSelect={() => setShowPlatformWithdraw(false)}
       />
 
       <WalletDepositModal
         open={showWalletDeposit}
         onClose={() => setShowWalletDeposit(false)}
-        onSelect={(method) => {
-          console.log("Wallet deposit method:", method);
-          setShowWalletDeposit(false);
-        }}
+        onSelect={() => setShowWalletDeposit(false)}
       />
 
       <WalletWithdrawModal
         open={showWalletWithdraw}
         onClose={() => setShowWalletWithdraw(false)}
-        onSelect={(method) => {
-          console.log("Wallet withdrawal method:", method);
-          setShowWalletWithdraw(false);
-        }}
+        onSelect={() => setShowWalletWithdraw(false)}
       />
     </>
   );
