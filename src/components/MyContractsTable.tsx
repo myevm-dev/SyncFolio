@@ -9,6 +9,7 @@ interface Contract {
   address: string;
   closeDate: string;
   status: string;
+  offerAmount?: string;
   createdAt?: any;
   statusIndex?: number;
   steps?: string[];
@@ -20,7 +21,7 @@ const defaultSteps = [
   "JV Agreement Signed Between You and Syncfolio",
   "Searching for Buyer (Inspection Period)",
   "Buyer Identified and Committed",
-  "Closed, Payment Credited to Account"
+  "Closed, Payment Credited to Account",
 ];
 
 const MyContractsTable: React.FC = () => {
@@ -74,6 +75,7 @@ const MyContractsTable: React.FC = () => {
           <tr>
             <th className="px-4 py-3 border-b border-neutral-700">Address</th>
             <th className="px-4 py-3 border-b border-neutral-700">Close Date</th>
+            <th className="px-4 py-3 border-b border-neutral-700">Price</th>
             <th className="px-4 py-3 border-b border-neutral-700">Status</th>
             <th className="px-4 py-3 border-b border-neutral-700">Action</th>
           </tr>
@@ -83,6 +85,16 @@ const MyContractsTable: React.FC = () => {
             <tr key={contract.id} className="hover:bg-neutral-800">
               <td className="px-4 py-3 border-b border-neutral-700">{contract.address}</td>
               <td className="px-4 py-3 border-b border-neutral-700">{contract.closeDate}</td>
+              <td className="px-4 py-3 border-b border-neutral-700 text-green-400 font-medium">
+                {contract.offerAmount
+                  ? `$${parseFloat(
+                      contract.offerAmount.replace(/[^0-9.]/g, "")
+                    ).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}`
+                  : "—"}
+              </td>
               <td className="px-4 py-3 border-b border-neutral-700">
                 <span className="px-4 py-1 inline-block rounded-full bg-gradient-to-r from-green-400 to-teal-400 text-black font-semibold text-sm">
                   {getStatusLabel(contract)}

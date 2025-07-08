@@ -12,6 +12,7 @@ interface Props {
 const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) => {
   const navigate = useNavigate();
   const [offerCount, setOfferCount] = useState(0);
+  const [contractCount, setContractCount] = useState(0);
   const [opPrice, setOpPrice] = useState<number | null>(null);
   const [buyingVolume, setBuyingVolume] = useState(0);
   const [sellingVolume, setSellingVolume] = useState(0);
@@ -20,18 +21,36 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
   const folioToOP = 0.02;
 
   useEffect(() => {
-    const fetchOffers = async () => {
+    const fetchVolumes = async () => {
       if (!walletAddress) return;
       const offersRef = collection(db, `users/${walletAddress}/offers`);
-      const snapshot = await getDocs(offersRef);
-      setOfferCount(snapshot.size);
+      const contractsRef = collection(db, `users/${walletAddress}/contracts`);
+
+      const [offersSnap, contractsSnap] = await Promise.all([
+        getDocs(offersRef),
+        getDocs(contractsRef),
+      ]);
+
+      setOfferCount(offersSnap.size);
+      setContractCount(contractsSnap.size);
 
       let totalBuy = 0;
       let totalSell = 0;
-      snapshot.docs.forEach(doc => {
+
+      offersSnap.docs.forEach(doc => {
         const data = doc.data();
         const amount = parseFloat(data.offerAmount?.replace(/[^0-9.]/g, "") || "0");
-        if (data.method === "cash" || data.method === "sellerFinance" || data.method === "takeover" || data.method === "hybrid") {
+        if (["cash", "sellerFinance", "takeover", "hybrid"].includes(data.method)) {
+          totalBuy += amount;
+        } else {
+          totalSell += amount;
+        }
+      });
+
+      contractsSnap.docs.forEach(doc => {
+        const data = doc.data();
+        const amount = parseFloat(data.offerAmount?.replace(/[^0-9.]/g, "") || "0");
+        if (["cash", "sellerFinance", "takeover", "hybrid"].includes(data.method)) {
           totalBuy += amount;
         } else {
           totalSell += amount;
@@ -41,7 +60,8 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
       setBuyingVolume(totalBuy);
       setSellingVolume(totalSell);
     };
-    fetchOffers();
+
+    fetchVolumes();
   }, [walletAddress]);
 
   useEffect(() => {
@@ -57,7 +77,7 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
   const cards = [
     {
       label: "Buying",
-      value: `${offerCount} Properties`,
+      value: `${offerCount + contractCount} Properties`,
       icon: "🏠",
       route: "/buying-center",
       extra: (
