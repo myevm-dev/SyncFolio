@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../lib/firebase";
-import { doc, getDoc, setDoc, collection, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
+import { Link } from "react-router-dom";
 
 interface ReferralSectionProps {
   walletAddress: string;
@@ -31,7 +32,6 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ walletAddress }) => {
     };
 
     fetchDisplayName();
-    // Delay fetchReferrals until name is known
     setTimeout(fetchReferrals, 300);
   }, [walletAddress, displayName]);
 
@@ -69,13 +69,19 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ walletAddress }) => {
           {referrals.map((ref) => {
             const svg = window.multiavatar(`${ref.displayName}-${ref.id}`);
             return (
-              <div key={ref.id} className="text-center">
+              <Link
+                to={`/profile/${ref.id}`}
+                key={ref.id}
+                className="text-center hover:scale-105 transition-transform"
+              >
                 <div
-                  className="w-16 h-16 mx-auto"
+                  className="w-16 h-16 mx-auto rounded-full overflow-hidden"
                   dangerouslySetInnerHTML={{ __html: svg }}
                 />
-                <p className="text-sm text-white truncate">{ref.displayName}</p>
-              </div>
+                <p className="text-sm text-white truncate mt-1">
+                  {ref.displayName}
+                </p>
+              </Link>
             );
           })}
         </div>

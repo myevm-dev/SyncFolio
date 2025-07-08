@@ -10,7 +10,8 @@ import {
   arrayRemove,
   deleteDoc,
 } from "firebase/firestore";
-import { X } from "lucide-react";
+import { X, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface TeamSectionProps {
   walletAddress: string;
@@ -36,7 +37,6 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
     const team: string[] = data.team || [];
 
     const invitesSnapshot = await getDocs(collection(db, "users", walletAddress, "sentInvites"));
-
     const pendingSent = invitesSnapshot.docs
       .filter((d) => d.data().status === "pending")
       .map((d) => d.data().to);
@@ -77,7 +77,6 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
     const toRef = doc(db, "users", newMember);
     const toSnap = await getDoc(toRef);
     if (!toSnap.exists()) return alert("User not found.");
-
     if (teamProfiles.some((t) => t.address === newMember)) return;
 
     const inviteRef = doc(collection(db, "users", newMember, "teamInvites"));
@@ -101,56 +100,32 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
   };
 
   const removeTeamMember = async (memberAddress: string) => {
-    const modal = document.createElement("div");
-    modal.className =
-      "fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50";
+    if (!window.confirm("Remove this team member?")) return;
 
-    modal.innerHTML = `
-      <div class='bg-white dark:bg-gray-900 rounded-lg p-6 shadow-xl max-w-sm w-full text-center'>
-        <h2 class='text-lg font-semibold mb-4 text-gray-900 dark:text-white'>Confirm Removal</h2>
-        <p class='text-sm text-gray-700 dark:text-gray-300 mb-6'>Are you sure you want to remove this team member?</p>
-        <div class='flex justify-center gap-4'>
-          <button id='confirmYes' class='px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700'>Yes</button>
-          <button id='confirmNo' class='px-4 py-1 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600'>Cancel</button>
-        </div>
-      </div>
-    `;
+    try {
+      await updateDoc(doc(db, "users", walletAddress), { team: arrayRemove(memberAddress) });
+      await updateDoc(doc(db, "users", memberAddress), { team: arrayRemove(walletAddress) });
 
-    document.body.appendChild(modal);
+      const sentInvitesCol = collection(db, "users", walletAddress, "sentInvites");
+      const sentInvitesSnap = await getDocs(sentInvitesCol);
+      const sentMatch = sentInvitesSnap.docs.find(doc => doc.data().to === memberAddress);
+      if (sentMatch) await deleteDoc(sentMatch.ref);
 
-    modal.querySelector("#confirmYes")?.addEventListener("click", async () => {
-      try {
-        await updateDoc(doc(db, "users", walletAddress), { team: arrayRemove(memberAddress) });
-        await updateDoc(doc(db, "users", memberAddress), { team: arrayRemove(walletAddress) });
+      const teamInvitesCol = collection(db, "users", memberAddress, "teamInvites");
+      const teamInvitesSnap = await getDocs(teamInvitesCol);
+      const teamMatch = teamInvitesSnap.docs.find(doc => doc.data().from === walletAddress);
+      if (teamMatch) await deleteDoc(teamMatch.ref);
 
-        // Delete your sent invite to them
-        const sentInvitesCol = collection(db, "users", walletAddress, "sentInvites");
-        const sentInvitesSnap = await getDocs(sentInvitesCol);
-        const sentMatch = sentInvitesSnap.docs.find(doc => doc.data().to === memberAddress);
-        if (sentMatch) await deleteDoc(sentMatch.ref);
-
-        // Delete their received invite from you
-        const teamInvitesCol = collection(db, "users", memberAddress, "teamInvites");
-        const teamInvitesSnap = await getDocs(teamInvitesCol);
-        const teamMatch = teamInvitesSnap.docs.find(doc => doc.data().from === walletAddress);
-        if (teamMatch) await deleteDoc(teamMatch.ref);
-
-        setTeamProfiles((prev) => prev.filter((m) => m.address !== memberAddress));
-      } catch (err) {
-        console.error("Failed to remove team member:", err);
-      } finally {
-        modal.remove();
-      }
-    });
-
-    modal.querySelector("#confirmNo")?.addEventListener("click", () => {
-      modal.remove();
-    });
+      setTeamProfiles((prev) => prev.filter((m) => m.address !== memberAddress));
+    } catch (err) {
+      console.error("Failed to remove team member:", err);
+    }
   };
 
   return (
     <div className="mt-4 text-left max-w-2xl mx-auto">
-      <h2 className="text-xl mt-10 font-bold text-white mb-2">Team Memebers</h2>
+      <h2 className="text-xl mt-10 font-bold text-white mb-2">Team Members</h2>
+
       <div className="flex items-center gap-2 mb-4">
         <input
           type="text"
@@ -168,42 +143,59 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
       </div>
 
       <div className="flex gap-4 flex-wrap justify-center">
-        {teamProfiles.map((member, idx) => (
-          <div
-            key={idx}
-            className="relative text-center cursor-pointer"
-            onClick={() =>
-              member.status === "accepted"
-                ? setActiveX(activeX === member.address ? null : member.address)
-                : null
-            }
-          >
+        {teamProfiles.map((member) => {
+          const svg = window.multiavatar(`${member.displayName}-${member.address}`);
+          const isActive = activeX === member.address;
+
+          return (
             <div
-              className="w-16 h-16"
-              dangerouslySetInnerHTML={{
-                __html: window.multiavatar(`${member.displayName}-${member.address}`),
-              }}
-            />
-            {activeX === member.address && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  removeTeamMember(member.address);
-                }}
-                className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700"
-                title="Remove"
-              >
-                <X size={12} />
-              </button>
-            )}
-            <p className="text-xs mt-1 text-gray-400 break-all max-w-[4rem] truncate">
-              {member.displayName}
-            </p>
-            {member.status === "pending" && (
-              <p className="text-[10px] text-yellow-400 italic mt-1">Pending</p>
-            )}
-          </div>
-        ))}
+              key={member.address}
+              className="relative text-center"
+              onClick={() =>
+                member.status === "accepted"
+                  ? setActiveX(isActive ? null : member.address)
+                  : null
+              }
+            >
+              {/* Top corners */}
+              {isActive && (
+                <>
+                  <Link
+                    to={`/profile/${member.address}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute -top-2 -left-2 bg-green-600 text-white hover:bg-green-700 rounded-full p-1 hover:scale-110 transition"
+                    title="View Profile"
+                  >
+                    <ArrowRight size={12} />
+                  </Link>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeTeamMember(member.address);
+                    }}
+                    className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 transition"
+                    title="Remove Member"
+                  >
+                    <X size={12} />
+                  </button>
+                </>
+              )}
+
+              {/* Avatar */}
+              <div
+                className="w-16 h-16 mx-auto"
+                dangerouslySetInnerHTML={{ __html: svg }}
+              />
+              <p className="text-xs mt-1 text-gray-400 break-all max-w-[4rem] truncate">
+                {member.displayName}
+              </p>
+              {member.status === "pending" && (
+                <p className="text-[10px] text-yellow-400 italic mt-1">Pending</p>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
