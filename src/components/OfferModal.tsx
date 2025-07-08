@@ -148,7 +148,7 @@ export default function OfferModal({
               />
               <div className="bg-black text-white border border-white p-4 rounded mb-4 text-sm">
                 <p>
-                  The seller is protected through a <strong>Deed of Trust</strong> and {" "}
+                  The seller is protected through a <strong>Deed of Trust</strong> and{" "}
                   <strong>Promissory Note</strong>, which include a clause that in the
                   event of two consecutive missed payments, ownership of the property
                   automatically reverts to the seller without the need for judicial
@@ -170,19 +170,21 @@ export default function OfferModal({
           />
 
           <div className="mt-6 text-white text-sm">
-            {makeEditableValue(name, () => {
-              const input = prompt("Edit Name", name);
-              if (input) setName(input);
-            })}<br/>
-            {makeEditableValue(phone, () => {
-              const input = prompt("Edit Phone", phone);
-              if (input) setPhone(input);
-            })}<br/>
-            {makeEditableValue(title, () => {
-              const input = prompt("Edit Title", title);
-              if (input) setTitle(input);
-            })}<br/>
-            <p><strong>Attachments:</strong> Proof of Funds, Credibility Packet</p>
+            <>
+              {makeEditableValue(name, () => {
+                const input = prompt("Edit Name", name);
+                if (input) setName(input);
+              })}<br />
+              {makeEditableValue(phone, () => {
+                const input = prompt("Edit Phone", phone);
+                if (input) setPhone(input);
+              })}<br />
+              {makeEditableValue(title, () => {
+                const input = prompt("Edit Title", title);
+                if (input) setTitle(input);
+              })}<br />
+              <span><strong>Attachments:</strong> Proof of Funds, Credibility Packet</span>
+            </>
           </div>
         </div>
 
@@ -196,14 +198,7 @@ export default function OfferModal({
             </div>
           )}
 
-          <div className="flex justify-center gap-4 flex-wrap">
-            <button
-              onClick={handleSave}
-              className="px-6 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-800 transition"
-            >
-              Save
-            </button>
-
+          <div className="flex justify-center gap-4 flex-wrap mb-4">
             <button
               onClick={async () => {
                 const element = document.getElementById("offer-preview");
@@ -223,7 +218,7 @@ export default function OfferModal({
                 });
                 pdf.save("offer.pdf");
               }}
-              className="px-6 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition"
+              className="px-6 py-2 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-full hover:opacity-90 transition"
             >
               Download All
             </button>
@@ -234,9 +229,18 @@ export default function OfferModal({
                   document.querySelector("#offer-preview")?.textContent || "";
                 navigator.clipboard.writeText(textToCopy);
               }}
-              className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
+              className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-full hover:opacity-90 transition"
             >
               Copy Text
+            </button>
+          </div>
+
+          <div className="flex justify-center">
+            <button
+              onClick={handleSave}
+              className="px-6 py-2 bg-gradient-to-r from-gray-500 to-gray-700 text-white rounded-full hover:opacity-90 transition"
+            >
+              Save
             </button>
           </div>
         </div>

@@ -106,16 +106,18 @@ export default function Offers({ results, cashOnCashResults, propertyAddress, wa
                 )}
                 <div className="flex w-full gap-2 mt-2">
                   <button
-                    className={`px-4 py-2 rounded-full transition w-full ${
+                    className={`w-full h-11 rounded-full font-semibold text-sm ${
                       isComingSoon
                         ? "bg-gray-500 text-gray-200 cursor-not-allowed"
-                        : "bg-blue-600 text-white hover:bg-blue-700"
+                        : "bg-gradient-to-r from-blue-500 to-cyan-400 text-black hover:brightness-110"
                     }`}
                     disabled={isComingSoon}
                     onClick={() => setActiveOfferType(typedKey)}
                   >
                     Edit
                   </button>
+
+
                 </div>
               </div>
             </div>
