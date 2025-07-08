@@ -80,7 +80,8 @@ const BalanceCard = ({
         let quantityColor = valueColor;
 
         if (isUSD || isUSDC) labelColor = "text-blue-400";
-        if (isETH || isCredits) labelColor = "text-white";
+        if (isETH) labelColor = "text-white";
+        if (isCredits) labelColor = "text-white";
         if (isFolio) labelColor = "text-[#fd01f5]";
 
         if (isFolio) {
@@ -92,14 +93,21 @@ const BalanceCard = ({
         } else if (isUSD || isUSDC) {
           quantityPrefix = "$";
           quantityColor = "text-blue-400";
+        } else if (isCredits) {
+          quantityPrefix = "";
+          quantityColor = "text-white";
         }
 
         return (
           <div key={item.label} className="flex justify-between text-sm">
-            <span className={`${labelColor} font-semibold`}>{item.label}</span>
+            <span className={`${labelColor} font-semibold`}>
+              {isCredits ? "Credits" : item.label}
+            </span>
             <span className="flex items-center gap-2">
               <span className={`${quantityColor} font-semibold`}>
-                {quantityPrefix}{format(item.value)}
+                {isCredits
+                  ? `${format(item.value)}`
+                  : `${quantityPrefix}${format(item.value)}`}
               </span>
               {isFolio && folioUsd != null && (
                 <span className="text-sm italic text-green-400">
@@ -108,13 +116,16 @@ const BalanceCard = ({
               )}
               {isETH && opPrice != null && (
                 <span className="text-green-400 text-sm">
-                  (${format(item.value * opPrice)})
+                  (~${format(item.value * opPrice)})
                 </span>
               )}
               {(isUSD || isUSDC) && (
                 <span className="text-green-400 text-sm">
-                  (${format(item.value)})
+                  (~${format(item.value)})
                 </span>
+              )}
+              {isCredits && (
+                <span className="text-green-400 text-sm">--</span>
               )}
             </span>
           </div>
