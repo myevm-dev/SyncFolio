@@ -43,6 +43,7 @@ const statusColors: Record<string, string> = {
 
 const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
 
+
   export default function DealsTable({
     refreshKey,
     onLoad,
@@ -68,6 +69,9 @@ const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
   const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [sharedUsers, setSharedUsers] = useState<Record<string, { displayName: string }>>({});
+
+
 
   const fetchDeals = async () => {
     if (!walletAddress) return;
@@ -85,6 +89,8 @@ const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
       const limitedData = isAdmin ? data : data.slice(0, 500);
 
       setDeals(limitedData);
+      await fetchSharedUsers(limitedData); // <-- Add this line
+
     } catch (err) {
       console.error("Error fetching deals:", err);
     } finally {
@@ -115,6 +121,29 @@ const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
     fetchDeals();
     fetchTeamMembers();
   }, [refreshKey, walletAddress]);
+
+  const fetchSharedUsers = async (deals: Deal[]) => {
+  const addresses = Array.from(
+    new Set([
+      ...deals.map((d) => d.sharedBy).filter(Boolean),
+      ...deals.flatMap((d) => d.sharedWith || []),
+    ])
+  ) as string[];
+
+  const result: Record<string, { displayName: string }> = {};
+
+  await Promise.all(
+    addresses.map(async (addr) => {
+      const ref = doc(db, "users", addr);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        result[addr] = { displayName: snap.data().displayName || "Unnamed" };
+      }
+    })
+  );
+
+  setSharedUsers(result);
+};
 
   const handleDelete = async (id: string) => {
     const modal = document.createElement("div");
@@ -316,14 +345,59 @@ const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
             {filteredDeals.map((deal) => (
               <tr key={deal.id} className="hover:bg-neutral-900">
                 <td className="border px-3 py-2">
-                  {deal.zillowUrl ? (
-                    <a href={deal.zillowUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
-                      {deal.address}
-                    </a>
-                  ) : (
-                    deal.address
-                  )}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {deal.zillowUrl ? (
+                      <a
+                        href={deal.zillowUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:underline"
+                      >
+                        {deal.address}
+                      </a>
+                    ) : (
+                      deal.address
+                    )}
+
+                    {/* Avatar for sharedBy (sender) */}
+                    {deal.sharedBy && sharedUsers[deal.sharedBy] && (
+                      <a
+                        href={`/profile/${deal.sharedBy}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-5 h-5 rounded-full overflow-hidden border border-white"
+                        title={`Shared by ${sharedUsers[deal.sharedBy].displayName}`}
+                        dangerouslySetInnerHTML={{
+                          __html: window.multiavatar(
+                            `${sharedUsers[deal.sharedBy].displayName}-${deal.sharedBy}`
+                          ),
+                        }}
+                      />
+                    )}
+
+                    {/* Avatars for sharedWith (recipients) */}
+                    {deal.sharedWith?.map(
+                      (addr) =>
+                        sharedUsers[addr] && (
+                          <a
+                            key={addr}
+                            href={`/profile/${addr}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-5 h-5 rounded-full overflow-hidden border border-blue-400"
+                            title={`Shared with ${sharedUsers[addr].displayName}`}
+                            dangerouslySetInnerHTML={{
+                              __html: window.multiavatar(
+                                `${sharedUsers[addr].displayName}-${addr}`
+                              ),
+                            }}
+                          />
+                        )
+                    )}
+                  </div>
                 </td>
+
+
                 <td className="border px-3 py-2 text-center">{deal.beds || "-"}</td>
                 <td className="border px-3 py-2 text-center">{deal.baths || "-"}</td>
                 <td className="border px-3 py-2 text-center">${deal.arv || "-"}</td>

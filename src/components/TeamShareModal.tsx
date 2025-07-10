@@ -1,7 +1,7 @@
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { useEffect } from "react";
 import { Deal } from "../types/deal";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 
 interface TeamMember {
@@ -133,6 +133,7 @@ export default function TeamShareModal({
                       if (!selectedDeal) return;
 
                       try {
+                        // Share with recipient
                         const ref = doc(
                           db,
                           `users/${member.address}/deals`,
@@ -142,6 +143,25 @@ export default function TeamShareModal({
                           ...selectedDeal,
                           sharedBy: walletAddress,
                           sharedAt: new Date(),
+                        });
+
+                        // Update sender's sharedWith list
+                        const senderRef = doc(
+                          db,
+                          `users/${walletAddress}/deals`,
+                          selectedDeal.id
+                        );
+                        const senderSnap = await getDoc(senderRef);
+                        const prevSharedWith = senderSnap.exists()
+                          ? senderSnap.data().sharedWith || []
+                          : [];
+
+                        const updatedSharedWith = Array.from(
+                          new Set([...prevSharedWith, member.address])
+                        );
+
+                        await updateDoc(senderRef, {
+                          sharedWith: updatedSharedWith,
                         });
 
                         alert(`Deal shared with ${member.displayName}`);

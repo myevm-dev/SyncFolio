@@ -28,5 +28,7 @@ export interface DealInput {
   repairKeys?: string[];
   foundationFlags?: string[];
   agentRating?: number;
+  sharedBy?: string;
+  sharedWith?: string[]; 
 
 }
