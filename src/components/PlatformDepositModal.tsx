@@ -1,7 +1,7 @@
 // src/components/PlatformDepositModal.tsx
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "./Dialog";
-import { Banknote, CreditCard, DollarSign, Zap } from "lucide-react";
+import { Banknote, CreditCard, DollarSign } from "lucide-react";
 
 interface PlatformDepositModalProps {
   open: boolean;
@@ -34,28 +34,6 @@ const DepositCard = ({
       <h3 className="text-lg font-semibold">{label}</h3>
     </div>
     <p className="text-gray-400 text-sm">{description}</p>
-  </div>
-);
-
-const CreditTierCard = ({
-  title,
-  credits,
-  price,
-  onClick,
-}: {
-  title: string;
-  credits: number;
-  price: string;
-  onClick: () => void;
-}) => (
-  <div
-    onClick={onClick}
-    className="flex flex-col items-center justify-center bg-black border border-neutral-700 rounded-xl p-6 text-white hover:shadow-xl cursor-pointer hover:border-blue-600 transition-all min-w-[200px] min-h-[220px]"
-  >
-    <img src="/assets/isailogo.png" alt="Credits" className="w-12 h-12 mb-3" />
-    <h3 className="text-lg font-bold mb-1">{title}</h3>
-    <p className="text-gray-300 text-sm mb-1">{credits.toLocaleString()} Credits</p>
-    <p className="text-gray-400 text-sm">{price}</p>
   </div>
 );
 
@@ -94,17 +72,6 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
       }
     } else {
       setStep(3);
-    }
-  };
-
-  const handleCreditTierSelect = () => {
-    if (selectedMethod) {
-      onSelect(selectedMethod, "CREDITS");
-      setTimeout(() => {
-        setStep(1);
-        setSelectedMethod(null);
-        setReceiveType(null);
-      }, 300);
     }
   };
 
@@ -151,12 +118,16 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
             {[{
               label: "Receive USD",
               description: "Deposit to receive USD in your platform balance.",
-              icon: DollarSign,
+              icon: () => (
+                <div className="bg-green-600 p-3 rounded-full">
+                  <DollarSign className="w-6 h-6 text-white" />
+                </div>
+              ),
               onClick: () => handleReceiveSelect("USD"),
             }, {
               label: "Receive Credits",
               description: "Deposit to receive non-withdrawable platform credits.",
-              icon: Zap,
+              icon: () => <img src="/assets/isailogo.png" alt="Credits" className="w-12 h-12" />, // adjusted size
               onClick: () => handleReceiveSelect("CREDITS"),
             }].map(({ label, description, icon, onClick }) => (
               <div
@@ -164,9 +135,7 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
                 onClick={onClick}
                 className="flex flex-col justify-start items-center text-center bg-black border border-neutral-700 rounded-xl px-6 py-8 text-white hover:shadow-xl cursor-pointer hover:border-blue-600 transition-all min-w-[200px] min-h-[220px]"
               >
-                <div className="bg-blue-700 p-3 rounded-full mb-3">
-                  {React.createElement(icon, { className: "w-6 h-6 text-white" })}
-                </div>
+                <div className="mb-3">{icon()}</div>
                 <h3 className="text-lg font-semibold mb-2">{label}</h3>
                 <p className="text-gray-400 text-sm max-w-[200px]">{description}</p>
               </div>
@@ -176,9 +145,36 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
 
         {step === 3 && (
           <div className="flex flex-col sm:flex-row justify-center items-stretch gap-4">
-            <CreditTierCard title="Starter" credits={10000} price="$10.00" onClick={handleCreditTierSelect} />
-            <CreditTierCard title="Pro" credits={55000} price="$50.00" onClick={handleCreditTierSelect} />
-            <CreditTierCard title="Elite" credits={300000} price="$250.00" onClick={handleCreditTierSelect} />
+            {[{
+              name: "Starter",
+              credits: "10,000",
+              url: "https://buy.stripe.com/9B63cuaby361dOn9fr1ZS05",
+            }, {
+              name: "Pro",
+              credits: "55,000",
+              url: "https://buy.stripe.com/3cI28qerO361aCb77j1ZS06",
+            }, {
+              name: "Elite",
+              credits: "300,000",
+              url: "https://buy.stripe.com/bJe28q83q9up7pZajv1ZS07",
+            }].map(({ name, credits, url }) => (
+              <div
+                key={name}
+                className="bg-black border border-neutral-700 rounded-xl p-6 flex flex-col items-center min-w-[200px]"
+              >
+                <img src="/assets/isailogo.png" alt="Logo" className="w-10 h-10 mb-3" />
+                <h3 className="text-white text-lg font-bold mb-1">{name}</h3>
+                <p className="text-sm text-gray-400 mb-3">{credits} Credits</p>
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-auto text-blue-400 hover:underline"
+                >
+                  Buy with Stripe
+                </a>
+              </div>
+            ))}
           </div>
         )}
       </DialogContent>

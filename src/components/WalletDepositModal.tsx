@@ -75,7 +75,7 @@ const WalletDepositModal: React.FC<WalletDepositModalProps> = ({
                 onClick={() => handleSelect("send")}
               />
               <WalletDepositCard
-                label="Buy with Coinbase"
+                label="Buy Crypto w/ Coinbase Pay"
                 description="Purchase crypto using Coinbase and deposit it directly into your wallet."
                 icon={ShoppingCart}
                 onClick={() => handleSelect("coinbase")}
