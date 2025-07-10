@@ -2,7 +2,7 @@
 
 export const tokens = [
   {
-    name: "Native ETH",
+    name: "NativeETH",
     address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", 
     coingeckoId: "ethereum",
   },

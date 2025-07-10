@@ -1,4 +1,4 @@
-// Modified version of PlatformDepositModal to add step 4 for chain & token selection
+// Modified version of PlatformDepositModal to add step 4 for chain & token selection with token cost calculation
 
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "./Dialog";
@@ -26,6 +26,13 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
   const [selectedMethod, setSelectedMethod] = useState<"stripe" | "crypto" | null>(null);
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
   const [selectedChainId, setSelectedChainId] = useState<number | null>(null);
+  const [tokenPrices, setTokenPrices] = useState<Record<string, number>>({});
+
+  const tierUsdValue: Record<string, number> = {
+    starter: 10,
+    pro: 50,
+    elite: 250,
+  };
 
   useEffect(() => {
     if (open) {
@@ -35,6 +42,24 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
       setSelectedChainId(null);
     }
   }, [open]);
+
+  useEffect(() => {
+    if (step === 5 && selectedChainId) {
+      const tokens = getTokensForChain(selectedChainId);
+      const ids = tokens.map(t => t.coingeckoId).join(',');
+      fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`)
+        .then(res => res.json())
+        .then(data => {
+          const prices: Record<string, number> = {};
+          tokens.forEach(t => {
+            if (t.coingeckoId && data[t.coingeckoId]?.usd) {
+              prices[t.address] = data[t.coingeckoId].usd;
+            }
+          });
+          setTokenPrices(prices);
+        });
+    }
+  }, [step, selectedChainId]);
 
   const handleMethodSelect = (method: "stripe" | "crypto") => {
     setSelectedMethod(method);
@@ -112,22 +137,14 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
               label: "Deposit with Stripe",
               description: "Use your debit/credit card to deposit USD to your platform balance.",
               icon: () => (
-                <img
-                  src="/assets/stripelogo.png"
-                  alt="Stripe"
-                  className="w-14 h-14 object-contain"
-                />
+                <img src="/assets/stripelogo.png" alt="Stripe" className="w-14 h-14 object-contain" />
               ),
               onClick: () => handleMethodSelect("stripe"),
             }, {
               label: "Deposit with Crypto",
               description: "Transfer an altcoin from your basechain wallet to fund your platform balance.",
               icon: () => (
-                <img
-                  src="/assets/ethlogo.png"
-                  alt="Ethereum"
-                  className="w-14 h-14 object-contain"
-                />
+                <img src="/assets/ethlogo.png" alt="Ethereum" className="w-14 h-14 object-contain" />
               ),
               onClick: () => handleMethodSelect("crypto"),
             }].map(({ label, description, icon, onClick }) => (
@@ -149,7 +166,6 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
             {creditTiers.map(({ name, credits, price, stripeUrl, cryptoKey }) => {
               const isStripe = selectedMethod === "stripe";
               const label = isStripe ? "Buy with Stripe" : "Buy with Crypto";
-
               return (
                 <div
                   key={name}
@@ -198,17 +214,27 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
 
         {step === 5 && selectedTier && selectedChainId && (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {getTokensForChain(selectedChainId).map((token: { name: string; address: string }) => (
-              <div
-                key={token.address}
-                className="bg-neutral-900 border border-neutral-700 rounded-xl p-4 cursor-pointer hover:border-green-500"
-                onClick={() => {
-                  onSelect("crypto", "CREDITS", selectedTier, selectedChainId, token.address);
-                }}
-              >
-                <p className="text-center font-semibold text-white">{token.name}</p>
-              </div>
-            ))}
+            {getTokensForChain(selectedChainId).map((token: { name: string; address: string; coingeckoId?: string }) => {
+              const price = tokenPrices[token.address];
+              const cost =
+                selectedTier && price
+                  ? (tierUsdValue[selectedTier] / price).toFixed(6)
+                  : null;
+              return (
+                <div
+                  key={token.address}
+                  className="bg-neutral-900 border border-neutral-700 rounded-xl p-4 cursor-pointer hover:border-green-500"
+                  onClick={() => {
+                    onSelect("crypto", "CREDITS", selectedTier, selectedChainId, token.address);
+                  }}
+                >
+                  <p className="text-center font-semibold text-white">{token.name}</p>
+                  {cost && (
+                    <p className="text-center text-gray-400 text-sm">≈ {cost} {token.name}</p>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
 

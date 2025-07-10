@@ -2,7 +2,7 @@
 
 export const tokens = [
   {
-    name: "Native ETH",
+    name: "NativeETH",
     address: "native", 
     coingeckoId: "ethereum",
 
@@ -10,7 +10,7 @@ export const tokens = [
   {
     name: "OP",
     address: "0x4200000000000000000000000000000000000042",
-    coingeckId: "optimism",
+    coingeckoId: "optimism",
   },
   {
     name: "WBTC",
