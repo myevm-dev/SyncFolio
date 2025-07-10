@@ -46,7 +46,7 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ walletAddress }) => {
 
   return (
     <div className="mt-8 max-w-2xl mx-auto text-center">
-      <h2 className="text-xl mt-10 font-bold text-white mb-2">Referral</h2>
+      <h2 className="text-xl mt-10 font-bold text-white mb-2">Referrals</h2>
 
       <div className="flex items-center gap-2 mb-4 w-full">
         <input
