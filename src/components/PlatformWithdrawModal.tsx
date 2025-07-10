@@ -126,21 +126,29 @@ const PlatformWithdrawModal: React.FC<PlatformWithdrawModalProps> = ({
           <div className="flex flex-col sm:flex-row justify-center items-stretch gap-4">
             {[
               {
+                label: "Withdraw USDC",
+                icon: DollarSign,
+                description: "Send USDC to your connected crypto wallet.",
+                onClick: () => handleTokenSelect("USDC"),
+              },
+              {
                 label: "Withdraw ꞘOLIO",
-                description: "COMINIG SOON: This is one way feature to withdraw after the token generation event.",
                 icon: Star,
+                description:
+                  "This is a one-way feature available after the TGE.",
                 onClick: () => handleTokenSelect("FOLIO"),
               },
-            ].map(({ label, icon, onClick }) => (
+            ].map(({ label, icon, description, onClick }) => (
               <div
                 key={label}
                 onClick={onClick}
-                className="flex flex-col justify-start items-center text-center bg-black border border-neutral-700 rounded-xl px-6 py-8 text-white hover:shadow-xl cursor-pointer hover:border-red-600 transition-all min-w-[200px] min-h-[200px]"
+                className="flex flex-col justify-start items-center text-center bg-black border border-neutral-700 rounded-xl px-6 py-8 text-white hover:shadow-xl cursor-pointer hover:border-red-600 transition-all min-w-[200px] min-h-[220px]"
               >
                 <div className="bg-red-700 p-3 rounded-full mb-3">
                   {React.createElement(icon, { className: "w-6 h-6 text-white" })}
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{label}</h3>
+                <p className="text-gray-400 text-sm max-w-[200px]">{description}</p>
               </div>
             ))}
           </div>
