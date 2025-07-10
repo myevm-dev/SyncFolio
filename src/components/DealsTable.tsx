@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Deal } from "../types/deal";
+
 import { Dice5Icon } from "lucide-react";
 import { CurrencyDollarIcon, LinkIcon } from "@heroicons/react/24/solid";
 
@@ -14,30 +16,7 @@ import { db } from "../lib/firebase";
 import { XCircleIcon, PlusCircleIcon, ShareIcon } from "@heroicons/react/24/solid";
 import TeamShareModal from "./TeamShareModal";
 
-interface Deal {
-  id: string;
-  address: string;
-  zillowUrl?: string;
-  beds?: string;
-  baths?: string;
-  listingPrice?: string;
-  arv?: string;
-  status?: string;
-  method?: string;
-  rentalValue?: string;
-  rehabCost?: string;
-  taxes?: string;
-  hoa?: string;
-  insurance?: string;
-  loanAmount?: string;
-  mortgageBalance?: string;
-  interestRate?: string;
-  loanPayment?: string;
-  createdAt?: any;
-  agentName?: string;
-  agentPhone?: string;
-  agentTimezone?: string;
-}
+
 
 interface TeamMember {
   address: string;
@@ -409,9 +388,14 @@ const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
                 </button>
 
                 {/* Share Button */}
-                <button onClick={() => { setSelectedDeal(deal); setShowShareModal(true); }} title="Share">
+                <button
+                  onClick={() => (setSelectedDeal(deal), setShowShareModal(true))}
+                  title="Share"
+                >
                   <ShareIcon className="w-5 h-5 text-purple-500 hover:text-purple-600 inline-block" />
                 </button>
+
+
               </td>
 
               </tr>
@@ -422,11 +406,14 @@ const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
       {selectedDeal && showShareModal && (
         <TeamShareModal
           teamMembers={teamMembers}
+          selectedDeal={selectedDeal}
+          walletAddress={walletAddress}
           onClose={() => {
             setSelectedDeal(null);
             setShowShareModal(false);
           }}
         />
+
 
       )}
     </div>

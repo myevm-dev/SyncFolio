@@ -1,5 +1,8 @@
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { useEffect } from "react";
+import { Deal } from "../types/deal";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 interface TeamMember {
   address: string;
@@ -17,9 +20,13 @@ declare global {
 
 export default function TeamShareModal({
   teamMembers = [],
+  selectedDeal,
+  walletAddress,
   onClose,
 }: {
   teamMembers?: TeamMember[];
+  selectedDeal: Deal | null;
+  walletAddress: string;
   onClose: () => void;
 }) {
   useEffect(() => {
@@ -57,7 +64,7 @@ export default function TeamShareModal({
           Share Deal with your Connections
         </h2>
 
-        {/* Admin Profile (0xNateZ) */}
+        {/* Admin Profile */}
         <div className="mb-4 border border-neutral-700 rounded-md p-4 bg-[#050505]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -107,13 +114,43 @@ export default function TeamShareModal({
                       }}
                     />
                     <div>
-                      <p className="text-sm font-semibold text-white">{member.displayName}</p>
-                      <p className="text-xs text-gray-400">{shortenAddress(member.address)}</p>
+                      <p className="text-sm font-semibold text-white">
+                        {member.displayName}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {shortenAddress(member.address)}
+                      </p>
                     </div>
                   </div>
                   <button
-                    className="bg-gray-500 hover:bg-gray-600 text-white text-xs px-3 py-1 rounded"
-                    onClick={() => alert(`Send clicked for ${member.displayName}`)}
+                    disabled={!selectedDeal}
+                    className={`text-xs px-3 py-1 rounded text-white transition ${
+                      selectedDeal
+                        ? "bg-gradient-to-r from-purple-500 to-cyan-500 hover:opacity-90"
+                        : "bg-gray-600 cursor-not-allowed"
+                    }`}
+                    onClick={async () => {
+                      if (!selectedDeal) return;
+
+                      try {
+                        const ref = doc(
+                          db,
+                          `users/${member.address}/deals`,
+                          selectedDeal.id
+                        );
+                        await setDoc(ref, {
+                          ...selectedDeal,
+                          sharedBy: walletAddress,
+                          sharedAt: new Date(),
+                        });
+
+                        alert(`Deal shared with ${member.displayName}`);
+                        onClose();
+                      } catch (err) {
+                        console.error("Error sharing deal:", err);
+                        alert("Failed to share deal.");
+                      }
+                    }}
                   >
                     Send
                   </button>
