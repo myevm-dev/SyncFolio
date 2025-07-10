@@ -1,6 +1,6 @@
 // lib/tokens/optimismTokens.ts
 
-export const optimismTokens = [
+export const tokens = [
   {
     name: "Native ETH",
     address: "native", // Use this string if your app differentiates native tokens

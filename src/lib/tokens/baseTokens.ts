@@ -1,6 +1,6 @@
 // lib/tokens/baseTokens.ts
 
-export const baseTokens = [
+export const tokens = [
   {
     name: "Native ETH",
     address: "native",

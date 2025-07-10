@@ -3,6 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "./Dialog";
 import { CHAINS } from "../lib/chains";
+import { tokens as arbitrumTokens } from "../lib/tokens/arbitrumTokens";
+import { tokens as baseTokens } from "../lib/tokens/baseTokens";
+import { tokens as ethTokens } from "../lib/tokens/ethTokens";
+import { tokens as optimismTokens } from "../lib/tokens/optimismTokens";
+import { tokens as polygonTokens } from "../lib/tokens/polygonTokens";
 
 interface PlatformDepositModalProps {
   open: boolean;
@@ -17,7 +22,7 @@ interface PlatformDepositModalProps {
 }
 
 const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClose, onSelect }) => {
-  const [step, setStep] = useState<1 | 3 | 4>(1);
+  const [step, setStep] = useState<1 | 3 | 4 | 5>(1);
   const [selectedMethod, setSelectedMethod] = useState<"stripe" | "crypto" | null>(null);
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
   const [selectedChainId, setSelectedChainId] = useState<number | null>(null);
@@ -60,6 +65,23 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
     },
   ];
 
+  const getTokensForChain = (chainId: number) => {
+    switch (chainId) {
+      case 42161:
+        return arbitrumTokens;
+      case 8453:
+        return baseTokens;
+      case 1:
+        return ethTokens;
+      case 10:
+        return optimismTokens;
+      case 137:
+        return polygonTokens;
+      default:
+        return [];
+    }
+  };
+
   return (
     <Dialog
       open={open}
@@ -79,7 +101,9 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
             ? "Choose Deposit Method"
             : step === 3
             ? "Choose a Credit Tier"
-            : "Choose Chain and Token"}
+            : step === 4
+            ? "Choose Chain"
+            : "Choose Token"}
         </h2>
 
         {step === 1 && (
@@ -163,7 +187,7 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
                 className="bg-neutral-900 border border-neutral-700 rounded-xl p-4 cursor-pointer hover:border-blue-500"
                 onClick={() => {
                   setSelectedChainId(chainId);
-                  onSelect("crypto", "CREDITS", selectedTier, chainId);
+                  setStep(5);
                 }}
               >
                 <p className="font-semibold text-white text-center">{name}</p>
@@ -171,6 +195,23 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
             ))}
           </div>
         )}
+
+        {step === 5 && selectedTier && selectedChainId && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {getTokensForChain(selectedChainId).map((token: { name: string; address: string }) => (
+              <div
+                key={token.address}
+                className="bg-neutral-900 border border-neutral-700 rounded-xl p-4 cursor-pointer hover:border-green-500"
+                onClick={() => {
+                  onSelect("crypto", "CREDITS", selectedTier, selectedChainId, token.address);
+                }}
+              >
+                <p className="text-center font-semibold text-white">{token.name}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
       </DialogContent>
     </Dialog>
   );

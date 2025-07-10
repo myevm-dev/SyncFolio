@@ -1,6 +1,6 @@
 // lib/tokens/arbitrumTokens.ts
 
-export const arbitrumTokens = [
+export const tokens = [
   {
     name: "Native ETH",
     address: "native",

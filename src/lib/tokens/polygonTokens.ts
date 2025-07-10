@@ -1,6 +1,6 @@
 // lib/tokens/polygonTokens.ts
 
-export const polygonTokens = [
+export const tokens = [
   {
     name: "Native POL",
     address: "native",
