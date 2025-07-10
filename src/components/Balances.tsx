@@ -179,7 +179,7 @@ const Balances: React.FC<BalancesProps> = ({
 
   const platformItems = [
     { label: "USD", value: balances.platform.USD },
-    { label: "ꞘOLIO", value: 150000 },
+    { label: "ꞘOLIO", value: 100000 },
     { label: "Credits", value: balances.platform.CREDITS },
   ];
 
