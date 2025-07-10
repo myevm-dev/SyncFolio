@@ -1,7 +1,7 @@
 // src/components/PlatformDepositModal.tsx
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "./Dialog";
-import { Banknote, CreditCard, DollarSign } from "lucide-react";
+import { DollarSign } from "lucide-react";
 
 interface PlatformDepositModalProps {
   open: boolean;
@@ -15,22 +15,24 @@ interface PlatformDepositModalProps {
 const DepositCard = ({
   label,
   description,
-  icon: Icon,
+  image,
+  imageClassName = "w-10 h-10",
   onClick,
 }: {
   label: string;
   description: string;
-  icon: React.ElementType;
+  image: string;
+  imageClassName?: string;
   onClick: () => void;
 }) => (
+
   <div
     onClick={onClick}
     className="flex flex-col justify-between bg-black border border-neutral-700 rounded-xl p-6 text-left text-white hover:shadow-xl cursor-pointer hover:border-blue-600 transition-all duration-200 w-full max-w-sm"
   >
     <div className="flex items-center gap-4 mb-4">
-      <div className="bg-blue-700 p-3 rounded-full">
-        <Icon className="w-6 h-6 text-white" />
-      </div>
+      <img src={image} alt={label} className={`${imageClassName}`} />
+
       <h3 className="text-lg font-semibold">{label}</h3>
     </div>
     <p className="text-gray-400 text-sm">{description}</p>
@@ -101,14 +103,18 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
             <DepositCard
               label="Deposit with Stripe"
               description="Use your debit/credit card to deposit USD directly into your platform balance."
-              icon={CreditCard}
+              image="/assets/stripelogo.png"
               onClick={() => handleMethodSelect("stripe")}
+              imageClassName="w-[80px] h-[80px] object-contain"
             />
+
+
             <DepositCard
               label="Deposit with Crypto"
               description="Transfer USDC from your wallet to fund your platform balance."
-              icon={Banknote}
+              image="/assets/ethlogo.png"
               onClick={() => handleMethodSelect("crypto")}
+              imageClassName="w-[50px] h-[50px] object-contain"
             />
           </div>
         )}
@@ -120,14 +126,14 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
               description: "Deposit to receive USD in your platform balance.",
               icon: () => (
                 <div className="bg-green-600 p-3 rounded-full">
-                  <DollarSign className="w-6 h-6 text-white" />
+                  <DollarSign className="w-8 h-8 text-white" />
                 </div>
               ),
               onClick: () => handleReceiveSelect("USD"),
             }, {
               label: "Receive Credits",
               description: "Deposit to receive non-withdrawable platform credits.",
-              icon: () => <img src="/assets/isailogo.png" alt="Credits" className="w-12 h-12" />, // adjusted size
+              icon: () => <img src="/assets/isailogo.png" alt="Credits" className="w-14 h-14" />, // matched sizing
               onClick: () => handleReceiveSelect("CREDITS"),
             }].map(({ label, description, icon, onClick }) => (
               <div
@@ -151,11 +157,11 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
               url: "https://buy.stripe.com/9B63cuaby361dOn9fr1ZS05",
             }, {
               name: "Pro",
-              credits: "55,000",
+              credits: "60,000",
               url: "https://buy.stripe.com/3cI28qerO361aCb77j1ZS06",
             }, {
               name: "Elite",
-              credits: "300,000",
+              credits: "350,000",
               url: "https://buy.stripe.com/bJe28q83q9up7pZajv1ZS07",
             }].map(({ name, credits, url }) => (
               <div
