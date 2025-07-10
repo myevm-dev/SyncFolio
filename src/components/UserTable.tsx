@@ -35,9 +35,13 @@ export default function UserTable({ users }: { users: User[] }) {
                 </Link>
               </td>
               <td className="px-4 py-2">
-                <Link to={`/profile/${user.displayName}`} className="hover:underline text-accent">
+                <Link
+                  to={`/profile/${user.displayName}`}
+                  className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 hover:underline"
+                >
                   {user.displayName}
                 </Link>
+
               </td>
               <td className="px-4 py-2 break-all text-accent">{user.id}</td>
               <td className="px-4 py-2">

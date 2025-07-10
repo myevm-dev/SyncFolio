@@ -54,7 +54,7 @@ export default function TeamShareModal({
         </button>
 
         <h2 className="text-2xl font-bold text-center mb-6 text-[#6e5690]">
-          Share Deal with Team
+          Share Deal with your Connections
         </h2>
 
         {/* Admin Profile (0xNateZ) */}
@@ -85,10 +85,10 @@ export default function TeamShareModal({
         {teamMembers.length === 0 ? (
           <div className="text-center">
             <p className="text-sm text-gray-400 mb-4">
-              You don’t have any team members yet.
+              You don’t have any connections yet.
             </p>
             <a href="/profile" className="text-sm text-[#068989] hover:underline">
-              Add Team Members
+              Add Connections
             </a>
           </div>
         ) : (
@@ -126,7 +126,7 @@ export default function TeamShareModal({
                 href="/profile"
                 className="inline-block px-4 py-2 text-sm font-medium bg-[#068989] text-white rounded hover:bg-[#06a5a5]"
               >
-                Add Team Members
+                Add Connections
               </a>
             </div>
           </>

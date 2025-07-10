@@ -273,8 +273,8 @@ export default function ProfilePage() {
       <div className="max-w-6xl mx-auto mt-10 space-y-6">
         <div className="border border-zinc-700 rounded-xl p-6">
           <p className="text-left text-gray-300 text-sm mb-3">
-            You can send team requests and {" "}
-            <span className="text-green-400 font-semibold">JV with other users</span> to collaborate on deals.
+            You can {" "}
+            <span className="text-green-400 font-semibold">connect and JV with other users</span> to collaborate on deals.
           </p>
           <TeamSection walletAddress={walletAddress} reloadFlag={reloadFlag} />
         </div>

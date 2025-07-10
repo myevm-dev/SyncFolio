@@ -38,15 +38,29 @@ export default function UserGrowthChart({ users }: { users: User[] }) {
   return (
     <div className="w-full h-64 bg-[#050505] rounded-lg p-4 mb-8 border border-neutral-700">
       <h2 className="text-white text-lg font-semibold mb-4">📈 User Growth Over Time</h2>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
-          <CartesianGrid stroke="#333" />
-          <XAxis dataKey="date" stroke="#888" />
-          <YAxis stroke="#888" />
-          <Tooltip />
-          <Line type="monotone" dataKey="count" stroke="#00FFFF" strokeWidth={2} />
-        </LineChart>
-      </ResponsiveContainer>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data}>
+            <defs>
+              <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#c084fc" /> {/* purple-400 */}
+                <stop offset="100%" stopColor="#22d3ee" /> {/* cyan-400 */}
+              </linearGradient>
+            </defs>
+            <CartesianGrid stroke="#333" />
+            <XAxis dataKey="date" stroke="#888" />
+            <YAxis stroke="#888" />
+            <Tooltip />
+            <Line
+              type="monotone"
+              dataKey="count"
+              stroke="url(#lineGradient)"
+              strokeWidth={2}
+              dot={{ r: 2 }}
+              activeDot={{ r: 5 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+
     </div>
   );
 }

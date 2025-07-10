@@ -1,4 +1,3 @@
-// src/components/UserSearchBar.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
@@ -10,32 +9,34 @@ export default function UserSearchBar() {
   const navigate = useNavigate();
 
   const handleSearch = async (e: React.FormEvent) => {
-  e.preventDefault();
-  const q = query.trim().toLowerCase();
-  if (!q) return;
+    e.preventDefault();
+    const q = query.trim().toLowerCase();
+    if (!q) return;
 
-  setLoading(true);
+    setLoading(true);
 
-  const snapshot = await getDocs(collection(db, "users"));
-  const users = snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...(doc.data() as { displayName?: string }),
-  }));
+    const snapshot = await getDocs(collection(db, "users"));
+    const users = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...(doc.data() as { displayName?: string }),
+    }));
 
-  const match =
-    users.find((u) => u.displayName?.toLowerCase() === q) ||
-    users.find((u) => u.id.toLowerCase() === q);
+    const match =
+      users.find((u) => u.displayName?.toLowerCase() === q) ||
+      users.find((u) => u.id.toLowerCase() === q);
 
-  setLoading(false);
+    setLoading(false);
 
-  if (match?.displayName) {
-    navigate(`/profile/${match.displayName}`);
-    setQuery(""); // ✅ reset input field
-  } else {
-    alert("User not found");
-  }
-};
+    if (match) {
+      navigate(`/profile/${match.displayName || match.id}`);
+    } else if (q.startsWith("0x") && q.length === 42) {
+      navigate(`/profile/${q}`);
+    } else {
+      alert("User not found");
+    }
 
+    setQuery(""); // always clear input
+  };
 
   return (
     <form
