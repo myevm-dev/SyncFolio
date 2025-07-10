@@ -18,6 +18,8 @@ interface TeamSectionProps {
   reloadFlag: number;
 }
 
+// ... (imports remain unchanged)
+
 const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) => {
   const [newMember, setNewMember] = useState("");
   const [teamProfiles, setTeamProfiles] = useState<
@@ -79,16 +81,14 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
     if (!toSnap.exists()) return alert("User not found.");
     if (teamProfiles.some((t) => t.address === newMember)) return;
 
-    const inviteRef = doc(collection(db, "users", newMember, "teamInvites"));
-    await setDoc(inviteRef, {
+    await setDoc(doc(collection(db, "users", newMember, "teamInvites")), {
       from: walletAddress,
       to: newMember,
       status: "pending",
       createdAt: new Date(),
     });
 
-    const sentRef = doc(collection(db, "users", walletAddress, "sentInvites"));
-    await setDoc(sentRef, {
+    await setDoc(doc(collection(db, "users", walletAddress, "sentInvites")), {
       to: newMember,
       status: "pending",
       createdAt: new Date(),
@@ -97,6 +97,24 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
     alert("Invite sent.");
     setNewMember("");
     loadTeamAndInvites();
+  };
+
+  const cancelPendingInvite = async (address: string) => {
+    if (!window.confirm("Cancel this pending invite?")) return;
+
+    try {
+      const sentSnap = await getDocs(collection(db, "users", walletAddress, "sentInvites"));
+      const match = sentSnap.docs.find((doc) => doc.data().to === address);
+      if (match) await deleteDoc(match.ref);
+
+      const incomingSnap = await getDocs(collection(db, "users", address, "teamInvites"));
+      const match2 = incomingSnap.docs.find((doc) => doc.data().from === walletAddress);
+      if (match2) await deleteDoc(match2.ref);
+
+      setTeamProfiles((prev) => prev.filter((p) => p.address !== address));
+    } catch (err) {
+      console.error("Cancel failed:", err);
+    }
   };
 
   const removeTeamMember = async (memberAddress: string) => {
@@ -157,7 +175,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
                   : null
               }
             >
-              {isActive && (
+              {isActive && member.status === "accepted" && (
                 <>
                   <button
                     onClick={(e) => {
@@ -188,8 +206,17 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
               <p className="text-xs mt-1 text-gray-400 break-all max-w-[4rem] truncate">
                 {member.displayName}
               </p>
+
               {member.status === "pending" && (
-                <p className="text-[10px] text-yellow-400 italic mt-1">Pending</p>
+                <div className="mt-1">
+                  <p className="text-[10px] text-yellow-400 italic">Pending</p>
+                  <button
+                    onClick={() => cancelPendingInvite(member.address)}
+                    className="mt-1 text-[10px] text-red-400 underline hover:text-red-500"
+                  >
+                    Cancel
+                  </button>
+                </div>
               )}
             </div>
           );
