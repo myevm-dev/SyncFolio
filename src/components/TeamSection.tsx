@@ -123,7 +123,7 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
   };
 
   return (
-    <div className="mt-4 text-left max-w-2xl mx-auto">
+    <div className="mt-4 max-w-2xl mx-auto text-center">
       <h2 className="text-xl mt-10 font-bold text-white mb-2">Connections</h2>
 
       <div className="flex items-center gap-2 mb-4">
@@ -157,7 +157,6 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
                   : null
               }
             >
-              {/* Top corners */}
               {isActive && (
                 <>
                   <button
@@ -171,20 +170,17 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
                     <X size={12} />
                   </button>
 
-                    <Link
-                      to={`/profile/${member.displayName}`}
-                      onClick={(e) => e.stopPropagation()}
-                      className="absolute -top-2 -right-2 bg-green-600 text-white hover:bg-green-700 rounded-full p-1 hover:scale-110 transition"
-                      title="View Profile"
-                    >
-
+                  <Link
+                    to={`/profile/${member.displayName}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute -top-2 -right-2 bg-green-600 text-white hover:bg-green-700 rounded-full p-1 hover:scale-110 transition"
+                    title="View Profile"
+                  >
                     <ArrowRight size={12} />
                   </Link>
                 </>
-
               )}
 
-              {/* Avatar */}
               <div
                 className="w-16 h-16 mx-auto"
                 dangerouslySetInnerHTML={{ __html: svg }}

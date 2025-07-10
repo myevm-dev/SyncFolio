@@ -45,11 +45,10 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ walletAddress }) => {
   };
 
   return (
-    <div className="text-left flex flex-col justify-between h-full">
-      <div className="mt-4">
-        <h2 className="text-xl mt-4 font-bold text-white mb-2">Referral</h2>
-      </div>
-      <div className="flex items-center gap-2 mb-4 max-w-2xl mx-auto w-full">
+    <div className="mt-8 max-w-2xl mx-auto text-center">
+      <h2 className="text-xl mt-10 font-bold text-white mb-2">Referral</h2>
+
+      <div className="flex items-center gap-2 mb-4 w-full">
         <input
           type="text"
           readOnly
@@ -69,12 +68,11 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ walletAddress }) => {
           {referrals.map((ref) => {
             const svg = window.multiavatar(`${ref.displayName}-${ref.id}`);
             return (
-                <Link
-                  to={`/profile/${ref.displayName}`}
-                  key={ref.id}
-                  className="text-center hover:scale-105 transition-transform"
-                >
-
+              <Link
+                to={`/profile/${ref.displayName}`}
+                key={ref.id}
+                className="text-center hover:scale-105 transition-transform"
+              >
                 <div
                   className="w-16 h-16 mx-auto rounded-full overflow-hidden"
                   dangerouslySetInnerHTML={{ __html: svg }}
