@@ -26,7 +26,6 @@ const comingSoonItems = [
   { label: "Decay and Expiring Offers", percent: 85 },
   { label: "Cash Auto-Contracts", percent: 80 },
   { label: "Printable Referral Cards", percent: 75 },
-  { label: "Team Collaboration", percent: 70 },
   { label: "Affiliate Page", percent: 65 },
   { label: "Earn Platform Credits", percent: 65 },
   { label: "JV With Us", percent: 55 },
@@ -43,11 +42,13 @@ const comingSoonItems = [
   { label: "Buy and Sell Leads", percent: 15 },
   { label: "AI Virtual Assistant", percent: 10 },
   { label: "Activity Heatmap", percent: 10 },
-  { label: "REI Portfolio Management", percent: 5 },
+ // { label: "REI Portfolio Management", percent: 5 },
   { label: "Field Network", percent: 5 },
   { label: "Live AI Scripting", percent: 5 },
   { label: "Swipe to Shop Deals", percent: 5 },
   { label: "User Acreditation", percent: 5 },
+ // { label: ".", percent: 5 },
+
 ];
 
 export default function AboutPage() {
