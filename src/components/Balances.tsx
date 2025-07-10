@@ -229,7 +229,9 @@ const Balances: React.FC<BalancesProps> = ({
         open={showWalletDeposit}
         onClose={() => setShowWalletDeposit(false)}
         onSelect={() => setShowWalletDeposit(false)}
+        walletAddress={walletAddress || ""}
       />
+
 
       <WalletWithdrawModal
         open={showWalletWithdraw}

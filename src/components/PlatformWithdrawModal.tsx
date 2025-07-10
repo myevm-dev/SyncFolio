@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+// src/components/PlatformWithdrawModal.tsx
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "./Dialog";
 import { Banknote, Landmark, DollarSign, Star } from "lucide-react";
 
 interface PlatformWithdrawModalProps {
   open: boolean;
   onClose: () => void;
-  onSelect: (method: "crypto" | "ach", tokenOrData?: "USDC" | "FOLIO" | { routing: string; account: string }) => void;
+  onSelect: (
+    method: "crypto" | "ach",
+    tokenOrData?: "USDC" | "FOLIO" | { routing: string; account: string }
+  ) => void;
 }
 
 const WithdrawCard = ({
@@ -43,6 +47,15 @@ const PlatformWithdrawModal: React.FC<PlatformWithdrawModalProps> = ({
   const [routing, setRouting] = useState("");
   const [account, setAccount] = useState("");
 
+  useEffect(() => {
+    if (open) {
+      setStep(1);
+      setSelectedMethod(null);
+      setRouting("");
+      setAccount("");
+    }
+  }, [open]);
+
   const handleMethodSelect = (method: "crypto" | "ach") => {
     setSelectedMethod(method);
     setStep(2);
@@ -71,7 +84,18 @@ const PlatformWithdrawModal: React.FC<PlatformWithdrawModalProps> = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (!nextOpen) {
+          setStep(1);
+          setSelectedMethod(null);
+          setRouting("");
+          setAccount("");
+          onClose();
+        }
+      }}
+    >
       <DialogContent className="bg-[#0a0a0a] border border-neutral-700 max-w-2xl text-white rounded-2xl p-8">
         <h2 className="text-xl font-bold mb-6">
           {step === 1
