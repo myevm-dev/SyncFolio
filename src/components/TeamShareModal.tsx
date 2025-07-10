@@ -80,8 +80,9 @@ export default function TeamShareModal({
               </div>
             </div>
             <button
-              className="bg-purple-600 hover:bg-purple-700 text-white text-xs px-3 py-1 rounded"
-              onClick={() => alert("COMING SOON!")}
+              disabled
+              className="bg-gray-600 text-white text-xs px-3 py-1 rounded cursor-not-allowed"
+              title="Coming Soon"
             >
               JV with us
             </button>
@@ -162,6 +163,7 @@ export default function TeamShareModal({
 
                         await updateDoc(senderRef, {
                           sharedWith: updatedSharedWith,
+                          sharedAt: new Date(),
                         });
 
                         alert(`Deal shared with ${member.displayName}`);

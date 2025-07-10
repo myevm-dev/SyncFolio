@@ -394,6 +394,12 @@ const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
                           />
                         )
                     )}
+                    {deal.sharedAt && (
+                      <span className="text-[10px] text-gray-400">
+                        ({new Date(deal.sharedAt.seconds * 1000).toLocaleDateString()})
+                      </span>
+                    )}
+
                   </div>
                 </td>
 
