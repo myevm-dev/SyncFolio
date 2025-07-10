@@ -10,7 +10,7 @@ export default function HeroHeader() {
         </span>
       </h1>
       <p className="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mt-1">
-        A creative platform for real estate deals. Built to connect, analyze, and close faster.
+        A creative platform for real estate deals.<br/> Built to connect, analyze, and close faster with social proof by default.
       </p>
     </header>
   );
