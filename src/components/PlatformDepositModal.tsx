@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "./Dialog";
 import { DollarSign } from "lucide-react";
+import { CreditCard, Wallet } from "lucide-react";
+
 
 interface PlatformDepositModalProps {
   open: boolean;
@@ -15,27 +17,25 @@ interface PlatformDepositModalProps {
 const DepositCard = ({
   label,
   description,
-  image,
-  imageClassName = "w-10 h-10",
+  icon,
   onClick,
 }: {
   label: string;
   description: string;
-  image: string;
-  imageClassName?: string;
+  icon: React.ReactNode;
   onClick: () => void;
 }) => (
-
   <div
     onClick={onClick}
-    className="flex flex-col justify-between bg-black border border-neutral-700 rounded-xl p-6 text-left text-white hover:shadow-xl cursor-pointer hover:border-blue-600 transition-all duration-200 w-full max-w-sm"
+    className="flex flex-col justify-start bg-black border border-neutral-700 rounded-xl p-6 text-left text-white hover:shadow-xl cursor-pointer hover:border-blue-600 transition-all duration-200 w-full max-w-sm"
   >
     <div className="flex items-center gap-4 mb-4">
-      <img src={image} alt={label} className={`${imageClassName}`} />
-
-      <h3 className="text-lg font-semibold">{label}</h3>
+      <div className="p-2 bg-neutral-900 rounded-full">
+        {icon}
+      </div>
+      <h3 className="text-lg font-semibold leading-tight">{label}</h3>
     </div>
-    <p className="text-gray-400 text-sm">{description}</p>
+    <p className="text-gray-400 text-sm leading-relaxed min-h-[48px]">{description}</p>
   </div>
 );
 
@@ -99,25 +99,43 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
         </h2>
 
         {step === 1 && (
-          <div className="flex flex-col sm:flex-row gap-6 mb-6">
-            <DepositCard
-              label="Deposit with Stripe"
-              description="Use your debit/credit card to deposit USD directly into your platform balance."
-              image="/assets/stripelogo.png"
-              onClick={() => handleMethodSelect("stripe")}
-              imageClassName="w-[80px] h-[80px] object-contain"
-            />
-
-
-            <DepositCard
-              label="Deposit with Crypto"
-              description="Transfer USDC from your wallet to fund your platform balance."
-              image="/assets/ethlogo.png"
-              onClick={() => handleMethodSelect("crypto")}
-              imageClassName="w-[50px] h-[50px] object-contain"
-            />
+          <div className="flex flex-col sm:flex-row justify-center items-stretch gap-4 mb-6">
+            {[{
+              label: "Deposit with Stripe",
+              description: "Use your debit/credit card to deposit USD to your platform balance.",
+              icon: () => (
+                <img
+                  src="/assets/stripelogo.png"
+                  alt="Stripe"
+                  className="w-14 h-14 object-contain"
+                />
+              ),
+              onClick: () => handleMethodSelect("stripe"),
+            }, {
+              label: "Deposit with Crypto",
+              description: "Transfer USDC or ETH from your wallet to fund your platform balance.",
+              icon: () => (
+                <img
+                  src="/assets/ethlogo.png"
+                  alt="Ethereum"
+                  className="w-14 h-14 object-contain"
+                />
+              ),
+              onClick: () => handleMethodSelect("crypto"),
+            }].map(({ label, description, icon, onClick }) => (
+              <div
+                key={label}
+                onClick={onClick}
+                className="flex flex-col justify-start items-center text-center bg-black border border-neutral-700 rounded-xl px-6 py-8 text-white hover:shadow-xl cursor-pointer hover:border-blue-600 transition-all min-w-[200px] min-h-[220px]"
+              >
+                <div className="mb-3">{icon()}</div>
+                <h3 className="text-lg font-semibold mb-2">{label}</h3>
+                <p className="text-gray-400 text-sm max-w-[200px]">{description}</p>
+              </div>
+            ))}
           </div>
         )}
+
 
         {step === 2 && (
           <div className="flex flex-col sm:flex-row justify-center items-stretch gap-4">
