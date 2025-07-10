@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import DashboardCards from "../components/DashboardCards";
 import Balances from "../components/Balances";
@@ -19,17 +19,23 @@ const roleGradients: Record<string, string> = {
 };
 
 export default function UserProfilePage() {
-  const { id } = useParams();
+  const { id } = useParams(); // id = displayName from URL
   const [profile, setProfile] = useState<any | null>(null);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
       if (!id) return;
-      const ref = doc(db, "users", id);
-      const snap = await getDoc(ref);
-      if (snap.exists()) {
-        setProfile(snap.data());
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("displayName", "==", id));
+      const snapshot = await getDocs(q);
+      if (!snapshot.empty) {
+        const docSnap = snapshot.docs[0];
+        setProfile(docSnap.data());
+        setWalletAddress(docSnap.id);
+      } else {
+        setProfile(null);
       }
       setLoading(false);
     };
@@ -44,7 +50,7 @@ export default function UserProfilePage() {
     );
   }
 
-  if (!profile) {
+  if (!profile || !walletAddress) {
     return (
       <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
         <h1 className="text-3xl font-bold mb-6">User Not Found</h1>
@@ -52,18 +58,18 @@ export default function UserProfilePage() {
     );
   }
 
-  const avatarSeed = `${profile.displayName}-${id}`;
+  const avatarSeed = `${profile.displayName}-${walletAddress}`;
   const svg = window.multiavatar(avatarSeed);
 
   return (
     <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
       <Link
-        to={`/profile/${id}`}
+        to={`/profile/${profile.displayName}`}
         className="w-28 h-28 mx-auto mb-4 block"
         dangerouslySetInnerHTML={{ __html: svg }}
       />
       <h2 className="text-2xl font-bold mb-1">{profile.displayName}</h2>
-      <p className="text-gray-400 text-sm mb-4 break-all">{id}</p>
+      <p className="text-gray-400 text-sm mb-4 break-all">{walletAddress}</p>
       {profile.zipcode && <p className="text-sm text-zinc-400">{profile.zipcode}</p>}
 
       {profile.roles && profile.roles.length > 0 && (
@@ -83,14 +89,14 @@ export default function UserProfilePage() {
 
       {/* Dashboard Cards */}
       <div className="mt-10">
-        <DashboardCards walletAddress={id || ""} />
+        <DashboardCards walletAddress={walletAddress} />
       </div>
 
       {/* Balances Card */}
       <div className="mt-10">
         <Balances
           hideActions
-          walletAddress={id}
+          walletAddress={walletAddress}
           balances={{
             platform: {
               USD: profile.platformUSD || 0,
@@ -104,11 +110,9 @@ export default function UserProfilePage() {
             },
           }}
         />
-
-
       </div>
 
-      {/* Closed Deals Table (Social Proof) */}
+      {/* Closed Deals Table */}
       <div className="mt-16 max-w-5xl mx-auto text-left">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-bold text-white">Closed Deals</h3>

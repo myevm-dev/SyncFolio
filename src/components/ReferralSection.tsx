@@ -69,11 +69,12 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ walletAddress }) => {
           {referrals.map((ref) => {
             const svg = window.multiavatar(`${ref.displayName}-${ref.id}`);
             return (
-              <Link
-                to={`/profile/${ref.id}`}
-                key={ref.id}
-                className="text-center hover:scale-105 transition-transform"
-              >
+                <Link
+                  to={`/profile/${ref.displayName}`}
+                  key={ref.id}
+                  className="text-center hover:scale-105 transition-transform"
+                >
+
                 <div
                   className="w-16 h-16 mx-auto rounded-full overflow-hidden"
                   dangerouslySetInnerHTML={{ __html: svg }}

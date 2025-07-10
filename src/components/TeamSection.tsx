@@ -171,12 +171,13 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
                     <X size={12} />
                   </button>
 
-                  <Link
-                    to={`/profile/${member.address}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="absolute -top-2 -right-2 bg-green-600 text-white hover:bg-green-700 rounded-full p-1 hover:scale-110 transition"
-                    title="View Profile"
-                  >
+                    <Link
+                      to={`/profile/${member.displayName}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute -top-2 -right-2 bg-green-600 text-white hover:bg-green-700 rounded-full p-1 hover:scale-110 transition"
+                      title="View Profile"
+                    >
+
                     <ArrowRight size={12} />
                   </Link>
                 </>

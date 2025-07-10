@@ -27,7 +27,7 @@ export default function UserTable({ users }: { users: User[] }) {
           {users.map((user) => (
             <tr key={user.id} className="border-b border-zinc-700">
               <td className="px-4 py-2">
-                <Link to={`/profile/${user.id}`}>
+                <Link to={`/profile/${user.displayName}`}>
                   <div
                     className="w-8 h-8 rounded-full overflow-hidden hover:scale-110 transition-transform"
                     dangerouslySetInnerHTML={{ __html: user.avatar }}
@@ -35,7 +35,7 @@ export default function UserTable({ users }: { users: User[] }) {
                 </Link>
               </td>
               <td className="px-4 py-2">
-                <Link to={`/profile/${user.id}`} className="hover:underline text-accent">
+                <Link to={`/profile/${user.displayName}`} className="hover:underline text-accent">
                   {user.displayName}
                 </Link>
               </td>
