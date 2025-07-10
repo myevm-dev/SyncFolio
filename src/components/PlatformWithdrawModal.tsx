@@ -126,12 +126,8 @@ const PlatformWithdrawModal: React.FC<PlatformWithdrawModalProps> = ({
           <div className="flex flex-col sm:flex-row justify-center items-stretch gap-4">
             {[
               {
-                label: "Withdraw USDC",
-                icon: DollarSign,
-                onClick: () => handleTokenSelect("USDC"),
-              },
-              {
                 label: "Withdraw ꞘOLIO",
+                description: "COMINIG SOON: This is one way feature to withdraw after the token generation event.",
                 icon: Star,
                 onClick: () => handleTokenSelect("FOLIO"),
               },

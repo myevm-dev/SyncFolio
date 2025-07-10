@@ -193,7 +193,7 @@ const Balances: React.FC<BalancesProps> = ({
     <>
       <div className="max-w-6xl mx-auto mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
         <BalanceCard
-          title="Platform Balance"
+          title="Platform Balance (WEB 2)"
           items={platformItems}
           hideActions={hideActions}
           showPofButton={true}
@@ -202,7 +202,7 @@ const Balances: React.FC<BalancesProps> = ({
           opPrice={opPrice}
         />
         <BalanceCard
-          title="Wallet Balance"
+          title="Wallet Balance (WEB 3)"
           items={walletItems}
           hideActions={hideActions}
           showVerifyLink={!!walletAddress}
