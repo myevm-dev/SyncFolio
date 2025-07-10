@@ -37,19 +37,42 @@ const DepositCard = ({
   </div>
 );
 
+const CreditTierCard = ({
+  title,
+  credits,
+  price,
+  onClick,
+}: {
+  title: string;
+  credits: number;
+  price: string;
+  onClick: () => void;
+}) => (
+  <div
+    onClick={onClick}
+    className="flex flex-col items-center justify-center bg-black border border-neutral-700 rounded-xl p-6 text-white hover:shadow-xl cursor-pointer hover:border-blue-600 transition-all min-w-[200px] min-h-[220px]"
+  >
+    <img src="/assets/isailogo.png" alt="Credits" className="w-12 h-12 mb-3" />
+    <h3 className="text-lg font-bold mb-1">{title}</h3>
+    <p className="text-gray-300 text-sm mb-1">{credits.toLocaleString()} Credits</p>
+    <p className="text-gray-400 text-sm">{price}</p>
+  </div>
+);
+
 const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
   open,
   onClose,
   onSelect,
 }) => {
-  const [step, setStep] = useState<1 | 2>(1);
-  const [selectedMethod, setSelectedMethod] =
-    useState<"stripe" | "crypto" | null>(null);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [selectedMethod, setSelectedMethod] = useState<"stripe" | "crypto" | null>(null);
+  const [receiveType, setReceiveType] = useState<"USD" | "CREDITS" | null>(null);
 
   useEffect(() => {
     if (open) {
       setStep(1);
       setSelectedMethod(null);
+      setReceiveType(null);
     }
   }, [open]);
 
@@ -59,11 +82,28 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
   };
 
   const handleReceiveSelect = (receive: "USD" | "CREDITS") => {
+    setReceiveType(receive);
+    if (receive === "USD") {
+      if (selectedMethod) {
+        onSelect(selectedMethod, receive);
+        setTimeout(() => {
+          setStep(1);
+          setSelectedMethod(null);
+          setReceiveType(null);
+        }, 300);
+      }
+    } else {
+      setStep(3);
+    }
+  };
+
+  const handleCreditTierSelect = () => {
     if (selectedMethod) {
-      onSelect(selectedMethod, receive);
+      onSelect(selectedMethod, "CREDITS");
       setTimeout(() => {
         setStep(1);
         setSelectedMethod(null);
+        setReceiveType(null);
       }, 300);
     }
   };
@@ -75,6 +115,7 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
         if (!nextOpen) {
           setStep(1);
           setSelectedMethod(null);
+          setReceiveType(null);
           onClose();
         }
       }}
@@ -83,7 +124,9 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
         <h2 className="text-xl font-bold mb-6">
           {step === 1
             ? "Choose Deposit Method"
-            : "What do you want to receive?"}
+            : step === 2
+            ? "What do you want to receive?"
+            : "Choose a Credit Tier"}
         </h2>
 
         {step === 1 && (
@@ -105,37 +148,37 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
 
         {step === 2 && (
           <div className="flex flex-col sm:flex-row justify-center items-stretch gap-4">
-            {[
-              {
-                label: "Receive USD",
-                description: "Deposit to receive USD in your platform balance.",
-                icon: DollarSign,
-                onClick: () => handleReceiveSelect("USD"),
-              },
-              {
-                label: "Receive Credits",
-                description:
-                  "Deposit to receive non-withdrawable platform credits.",
-                icon: Zap,
-                onClick: () => handleReceiveSelect("CREDITS"),
-              },
-            ].map(({ label, description, icon, onClick }) => (
+            {[{
+              label: "Receive USD",
+              description: "Deposit to receive USD in your platform balance.",
+              icon: DollarSign,
+              onClick: () => handleReceiveSelect("USD"),
+            }, {
+              label: "Receive Credits",
+              description: "Deposit to receive non-withdrawable platform credits.",
+              icon: Zap,
+              onClick: () => handleReceiveSelect("CREDITS"),
+            }].map(({ label, description, icon, onClick }) => (
               <div
                 key={label}
                 onClick={onClick}
                 className="flex flex-col justify-start items-center text-center bg-black border border-neutral-700 rounded-xl px-6 py-8 text-white hover:shadow-xl cursor-pointer hover:border-blue-600 transition-all min-w-[200px] min-h-[220px]"
               >
                 <div className="bg-blue-700 p-3 rounded-full mb-3">
-                  {React.createElement(icon, {
-                    className: "w-6 h-6 text-white",
-                  })}
+                  {React.createElement(icon, { className: "w-6 h-6 text-white" })}
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{label}</h3>
-                <p className="text-gray-400 text-sm max-w-[200px]">
-                  {description}
-                </p>
+                <p className="text-gray-400 text-sm max-w-[200px]">{description}</p>
               </div>
             ))}
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="flex flex-col sm:flex-row justify-center items-stretch gap-4">
+            <CreditTierCard title="Starter" credits={10000} price="$10.00" onClick={handleCreditTierSelect} />
+            <CreditTierCard title="Pro" credits={55000} price="$50.00" onClick={handleCreditTierSelect} />
+            <CreditTierCard title="Elite" credits={300000} price="$250.00" onClick={handleCreditTierSelect} />
           </div>
         )}
       </DialogContent>
