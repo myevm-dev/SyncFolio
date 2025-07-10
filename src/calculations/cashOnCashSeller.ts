@@ -26,7 +26,7 @@ export default function cashOnCashSeller(input: DealInput): CashOnCashResult {
     annualCashFlow,
     entry: totalEntry,
     cashOnCash,
-    pass: cashOnCash >= 20,
+    pass: cashOnCash >= 15,
     monthlyPayment: sellerPayment,
   };
 }

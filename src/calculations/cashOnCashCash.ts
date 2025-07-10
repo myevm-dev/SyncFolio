@@ -9,7 +9,7 @@ export default function cashOnCashCash(input: DealInput): CashOnCashResult {
   const insurance = parseFloat(input.insurance || "0");
   const hoa = parseFloat(input.hoa || "0");
 
-  const offerPrice = (arv * 0.71) - rehab;
+  const offerPrice = (arv * 0.73) - rehab;
   const down = offerPrice * 0.2;
   const financed = offerPrice * 0.8;
 
@@ -31,7 +31,7 @@ export default function cashOnCashCash(input: DealInput): CashOnCashResult {
     annualCashFlow,
     entry: totalEntry,
     cashOnCash,
-    pass: cashOnCash >= 20,
+    pass: cashOnCash >= 15,
     monthlyPayment
   };
 }
