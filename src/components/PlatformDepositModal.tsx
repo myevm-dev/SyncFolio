@@ -135,14 +135,14 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
             {[{
               label: "Deposit with Stripe",
-              description: "Use your debit/credit card to deposit USD to your platform balance.",
+              description: "Use a debit or credit card to fund your platform balance. Stripe Fees Apply",
               icon: () => (
                 <img src="/assets/stripelogo.png" alt="Stripe" className="w-14 h-14 object-contain" />
               ),
               onClick: () => handleMethodSelect("stripe"),
             }, {
               label: "Deposit with Crypto",
-              description: "Transfer an altcoin from your basechain wallet to fund your platform balance.",
+              description: "Send an altcoin from an EVM chain to fund your platform balance. Network Fees Apply",
               icon: () => (
                 <img src="/assets/ethlogo.png" alt="Ethereum" className="w-14 h-14 object-contain" />
               ),
