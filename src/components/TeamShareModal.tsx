@@ -23,11 +23,15 @@ export default function TeamShareModal({
   selectedDeal,
   walletAddress,
   onClose,
+  setDeals,
+  fetchSharedUsers,
 }: {
   teamMembers?: TeamMember[];
   selectedDeal: Deal | null;
   walletAddress: string;
   onClose: () => void;
+  setDeals: React.Dispatch<React.SetStateAction<Deal[]>>;
+  fetchSharedUsers: (deals: Deal[]) => Promise<void>;
 }) {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -134,7 +138,7 @@ export default function TeamShareModal({
                       if (!selectedDeal) return;
 
                       try {
-                        // Share with recipient
+                        // Write deal to recipient
                         const ref = doc(
                           db,
                           `users/${member.address}/deals`,
@@ -146,7 +150,7 @@ export default function TeamShareModal({
                           sharedAt: new Date(),
                         });
 
-                        // Update sender's sharedWith list
+                        // Update sender's deal with sharedWith
                         const senderRef = doc(
                           db,
                           `users/${walletAddress}/deals`,
@@ -166,7 +170,27 @@ export default function TeamShareModal({
                           sharedAt: new Date(),
                         });
 
-                        alert(`Deal shared with ${member.displayName}`);
+                        // Reflect changes in local state
+                        setDeals((prev) =>
+                          prev.map((deal) =>
+                            deal.id === selectedDeal.id
+                              ? {
+                                  ...deal,
+                                  sharedWith: updatedSharedWith,
+                                  sharedAt: new Date(),
+                                }
+                              : deal
+                          )
+                        );
+
+                        // Update avatar list instantly
+                        await fetchSharedUsers([
+                          {
+                            ...selectedDeal,
+                            sharedWith: updatedSharedWith,
+                          },
+                        ]);
+
                         onClose();
                       } catch (err) {
                         console.error("Error sharing deal:", err);

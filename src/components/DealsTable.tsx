@@ -71,6 +71,17 @@ const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [sharedUsers, setSharedUsers] = useState<Record<string, { displayName: string }>>({});
 
+const formatSharedDate = (sharedAt: any): string | null => {
+  try {
+    if (!sharedAt) return null;
+    if (sharedAt.seconds) {
+      return new Date(sharedAt.seconds * 1000).toLocaleDateString();
+    }
+    return new Date(sharedAt).toLocaleDateString();
+  } catch {
+    return null;
+  }
+};
 
 
   const fetchDeals = async () => {
@@ -394,11 +405,12 @@ const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
                           />
                         )
                     )}
-                    {deal.sharedAt && (
-                      <span className="text-[10px] text-gray-400">
-                        ({new Date(deal.sharedAt.seconds * 1000).toLocaleDateString()})
-                      </span>
-                    )}
+                  {deal.sharedAt && (
+                    <span className="text-[10px] text-gray-400">
+                      ({formatSharedDate(deal.sharedAt)})
+                    </span>
+                  )}
+
 
                   </div>
                 </td>
@@ -488,11 +500,14 @@ const methods = ["unknown", "cash", "seller finance", "takeover", "hybrid"];
           teamMembers={teamMembers}
           selectedDeal={selectedDeal}
           walletAddress={walletAddress}
+          setDeals={setDeals}
+          fetchSharedUsers={fetchSharedUsers}
           onClose={() => {
             setSelectedDeal(null);
             setShowShareModal(false);
           }}
         />
+
 
 
       )}
