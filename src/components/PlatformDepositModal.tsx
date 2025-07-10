@@ -1,35 +1,64 @@
-// src/components/PlatformDepositModal.tsx
+// Modified version of PlatformDepositModal to add step 4 for chain & token selection
+
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "./Dialog";
+import { CHAINS } from "../lib/chains";
 
 interface PlatformDepositModalProps {
   open: boolean;
   onClose: () => void;
   onSelect: (
     method: "stripe" | "crypto",
-    receive: "CREDITS"
+    receive: "CREDITS",
+    tier?: string,
+    chainId?: number,
+    tokenAddress?: string
   ) => void;
 }
 
-const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
-  open,
-  onClose,
-  onSelect,
-}) => {
-  const [step, setStep] = useState<1 | 3>(1);
+const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClose, onSelect }) => {
+  const [step, setStep] = useState<1 | 3 | 4>(1);
   const [selectedMethod, setSelectedMethod] = useState<"stripe" | "crypto" | null>(null);
+  const [selectedTier, setSelectedTier] = useState<string | null>(null);
+  const [selectedChainId, setSelectedChainId] = useState<number | null>(null);
 
   useEffect(() => {
     if (open) {
       setStep(1);
       setSelectedMethod(null);
+      setSelectedTier(null);
+      setSelectedChainId(null);
     }
   }, [open]);
 
   const handleMethodSelect = (method: "stripe" | "crypto") => {
     setSelectedMethod(method);
-    setStep(3); // Skip straight to credit tiers
+    setStep(3);
   };
+
+  const creditTiers = [
+    {
+      name: "Starter",
+      credits: "10,000",
+      price: "$10",
+      stripeUrl: "https://buy.stripe.com/9B63cuaby361dOn9fr1ZS05",
+      cryptoKey: "starter",
+    },
+    {
+      name: "Pro",
+      credits: "60,000",
+      price: "$50",
+      stripeUrl: "https://buy.stripe.com/3cI28qerO361aCb77j1ZS06",
+      cryptoKey: "pro",
+    },
+    {
+      name: "Elite",
+      credits: "350,000",
+      price: "$250",
+      stripeUrl: "https://buy.stripe.com/bJe28q83q9up7pZajv1ZS07",
+      cryptoKey: "elite",
+    },
+  ];
 
   return (
     <Dialog
@@ -38,6 +67,8 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
         if (!nextOpen) {
           setStep(1);
           setSelectedMethod(null);
+          setSelectedTier(null);
+          setSelectedChainId(null);
           onClose();
         }
       }}
@@ -46,11 +77,13 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
         <h2 className="text-xl font-bold mb-6">
           {step === 1
             ? "Choose Deposit Method"
-            : "Choose a Credit Tier"}
+            : step === 3
+            ? "Choose a Credit Tier"
+            : "Choose Chain and Token"}
         </h2>
 
         {step === 1 && (
-          <div className="flex flex-col sm:flex-row justify-center items-stretch gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-6">
             {[{
               label: "Deposit with Stripe",
               description: "Use your debit/credit card to deposit USD to your platform balance.",
@@ -88,61 +121,56 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
         )}
 
         {step === 3 && (
-          <div className="flex flex-col sm:flex-row justify-center items-stretch gap-4">
-            {[
-              {
-                name: "Starter",
-                credits: "10,000",
-                price: "$10",
-                stripeUrl: "https://buy.stripe.com/9B63cuaby361dOn9fr1ZS05",
-                cryptoUrl: "https://your-dapp.com/pay/starter",
-              },
-              {
-                name: "Pro",
-                credits: "60,000",
-                price: "$50",
-                stripeUrl: "https://buy.stripe.com/3cI28qerO361aCb77j1ZS06",
-                cryptoUrl: "https://your-dapp.com/pay/pro",
-              },
-              {
-                name: "Elite",
-                credits: "350,000",
-                price: "$250",
-                stripeUrl: "https://buy.stripe.com/bJe28q83q9up7pZajv1ZS07",
-                cryptoUrl: "https://your-dapp.com/pay/elite",
-              },
-            ].map(({ name, credits, price, stripeUrl, cryptoUrl }) => {
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+            {creditTiers.map(({ name, credits, price, stripeUrl, cryptoKey }) => {
               const isStripe = selectedMethod === "stripe";
-              const url = isStripe ? stripeUrl : cryptoUrl;
               const label = isStripe ? "Buy with Stripe" : "Buy with Crypto";
 
               return (
                 <div
                   key={name}
-                  className="bg-black border border-neutral-700 rounded-xl p-6 flex flex-col items-center min-w-[190px]"
+                  className="bg-black border border-neutral-700 rounded-xl p-5 flex flex-col items-center w-[160px]"
                 >
-                  <img src="/assets/isailogo.png" alt="Logo" className="w-10 h-10 mb-3" />
-                  <h3 className="text-white text-lg font-bold mb-1">{name}</h3>
+                  <img src="/assets/isailogo.png" alt="Logo" className="w-10 h-10 mb-2" />
+                  <h3 className="text-white text-base font-bold mb-1">{name}</h3>
                   <p className="text-sm text-gray-400 mb-1">{credits} Credits</p>
-                  <p className="text-lg font-semibold text-white mb-3">{price}</p> {/* Larger price text */}
-
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-auto text-blue-400 hover:underline"
+                  <p className="text-lg font-semibold text-white mb-3">{price}</p>
+                  <button
                     onClick={() => {
-                      if (selectedMethod) onSelect(selectedMethod, "CREDITS");
+                      if (isStripe) {
+                        onSelect("stripe", "CREDITS");
+                        window.open(stripeUrl, "_blank");
+                      } else {
+                        setSelectedTier(cryptoKey);
+                        setStep(4);
+                      }
                     }}
+                    className="text-blue-400 hover:underline text-sm"
                   >
                     {label}
-                  </a>
+                  </button>
                 </div>
               );
             })}
           </div>
         )}
 
+        {step === 4 && selectedTier && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {Object.entries(CHAINS).map(([key, { name, chainId }]) => (
+              <div
+                key={key}
+                className="bg-neutral-900 border border-neutral-700 rounded-xl p-4 cursor-pointer hover:border-blue-500"
+                onClick={() => {
+                  setSelectedChainId(chainId);
+                  onSelect("crypto", "CREDITS", selectedTier, chainId);
+                }}
+              >
+                <p className="font-semibold text-white text-center">{name}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
