@@ -93,22 +93,25 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
               {
                 name: "Starter",
                 credits: "10,000",
+                price: "$10",
                 stripeUrl: "https://buy.stripe.com/9B63cuaby361dOn9fr1ZS05",
-                cryptoUrl: "https://your-dapp.com/pay/starter", // Replace with your crypto logic
+                cryptoUrl: "https://your-dapp.com/pay/starter",
               },
               {
                 name: "Pro",
                 credits: "60,000",
+                price: "$50",
                 stripeUrl: "https://buy.stripe.com/3cI28qerO361aCb77j1ZS06",
                 cryptoUrl: "https://your-dapp.com/pay/pro",
               },
               {
                 name: "Elite",
                 credits: "350,000",
+                price: "$250",
                 stripeUrl: "https://buy.stripe.com/bJe28q83q9up7pZajv1ZS07",
                 cryptoUrl: "https://your-dapp.com/pay/elite",
               },
-            ].map(({ name, credits, stripeUrl, cryptoUrl }) => {
+            ].map(({ name, credits, price, stripeUrl, cryptoUrl }) => {
               const isStripe = selectedMethod === "stripe";
               const url = isStripe ? stripeUrl : cryptoUrl;
               const label = isStripe ? "Buy with Stripe" : "Buy with Crypto";
@@ -116,11 +119,13 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
               return (
                 <div
                   key={name}
-                  className="bg-black border border-neutral-700 rounded-xl p-6 flex flex-col items-center min-w-[200px]"
+                  className="bg-black border border-neutral-700 rounded-xl p-6 flex flex-col items-center min-w-[190px]"
                 >
                   <img src="/assets/isailogo.png" alt="Logo" className="w-10 h-10 mb-3" />
                   <h3 className="text-white text-lg font-bold mb-1">{name}</h3>
-                  <p className="text-sm text-gray-400 mb-3">{credits} Credits</p>
+                  <p className="text-sm text-gray-400 mb-1">{credits} Credits</p>
+                  <p className="text-lg font-semibold text-white mb-3">{price}</p> {/* Larger price text */}
+
                   <a
                     href={url}
                     target="_blank"
