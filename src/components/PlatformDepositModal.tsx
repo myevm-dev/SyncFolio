@@ -1,14 +1,14 @@
 // src/components/PlatformDepositModal.tsx
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "./Dialog";
-import { Banknote, CreditCard, DollarSign, Star, Zap } from "lucide-react";
+import { Banknote, CreditCard, DollarSign, Zap } from "lucide-react";
 
 interface PlatformDepositModalProps {
   open: boolean;
   onClose: () => void;
   onSelect: (
     method: "stripe" | "crypto",
-    receive: "USD" | "FOLIO" | "CREDITS"
+    receive: "USD" | "CREDITS"
   ) => void;
 }
 
@@ -58,7 +58,7 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
     setStep(2);
   };
 
-  const handleReceiveSelect = (receive: "USD" | "FOLIO" | "CREDITS") => {
+  const handleReceiveSelect = (receive: "USD" | "CREDITS") => {
     if (selectedMethod) {
       onSelect(selectedMethod, receive);
       setTimeout(() => {
@@ -96,7 +96,7 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
             />
             <DepositCard
               label="Deposit with Crypto"
-              description="Transfer USDC or ꞘOLIO from your wallet to fund your platform balance."
+              description="Transfer USDC from your wallet to fund your platform balance."
               icon={Banknote}
               onClick={() => handleMethodSelect("crypto")}
             />
@@ -111,13 +111,6 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
                 description: "Deposit to receive USD in your platform balance.",
                 icon: DollarSign,
                 onClick: () => handleReceiveSelect("USD"),
-              },
-              {
-                label: "Receive ꞘOLIO",
-                description:
-                  "Deposit to receive ꞘOLIO tokens in your platform balance.",
-                icon: Star,
-                onClick: () => handleReceiveSelect("FOLIO"),
               },
               {
                 label: "Receive Credits",
