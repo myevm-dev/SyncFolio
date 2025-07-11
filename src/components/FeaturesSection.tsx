@@ -27,7 +27,7 @@ export default function FeaturesSection() {
           className="sm:col-span-2 lg:col-span-3 border border-zinc-700 bg-black p-6 rounded-2xl shadow-md hover:shadow-xl transition hover:border-cyan-500 block text-center"
         >
           <h3 className="text-lg font-semibold mb-2 text-[#068989]">
-            🧭 Full Platform Walkthrough
+            🧭 Platform Walkthrough Coming Soon
           </h3>
           <p className="text-sm text-gray-300">
             A step-by-step demo of how SyncFolio works from sign up to offer submission.

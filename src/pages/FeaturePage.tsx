@@ -69,7 +69,7 @@ export default function FeaturePage() {
       {/* CTA */}
       <div className="text-center mt-12">
         <Link to="/" className="inline-block bg-cyan-500 hover:bg-cyan-600 text-black font-semibold px-6 py-3 rounded-xl transition">
-          Try this feature
+          Try Now
         </Link>
       </div>
 
