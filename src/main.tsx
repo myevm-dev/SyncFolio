@@ -12,6 +12,8 @@ import UserProfilePage from "./pages/UserProfilePage";
 import BuyPage from "./pages/BuyPage";
 import SellPage from "./pages/SellPage";
 import AboutPage from "./pages/AboutPage";
+import FeaturePage from "./pages/FeaturePage";
+
 import Layout from "./components/Layout";
 import BuyboxDirectoryPage from "./pages/BuyboxDirectory";
 import AnalyticsPage from "./pages/AnalyticsPage";
@@ -38,6 +40,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/contracts/:id" element={<ContractStatusPage />} />
             <Route path="/yield" element={<YieldPage />} /> 
             <Route path="/profile/:id" element={<UserProfilePage />} />
+            <Route path="/features/:slug" element={<FeaturePage />} />
 
           </Route>
         </Routes>

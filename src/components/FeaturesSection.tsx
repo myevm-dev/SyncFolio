@@ -1,15 +1,16 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const features = [
-  { title: "🚀 Get Started", description: "As simple as Click sign in, pick a username, and enter your zip code." },
-  { title: "🤝 Social Proof Network", description: "Build credibility, JV, and connect with trusted investors, agents, and dealmakers." },
-  { title: "🎁 Sign Up Rewards", description: "Get 100k Ꞙolio Token for signing up *subject to vesting." },
-  { title: "📁 Lead Management CRM", description: "Manage up to 500 leads for free and share with team members." },
-  { title: "🛠️ Quick Repair Calculator", description: "Calculate repairs by pictures and just a few questions." },
-  { title: "✨ Creative Offer Generator", description: "Create Creative Finance and Cash offers that are sure to sell to our buyer list." },
-  { title: "📜 Customizable Call Scripts", description: "Dynamic call script using the checkmate pitch w/ real time calculations." },
-  { title: "💸 Referral Program", description: "Earn $300 every time a person you invite closes a deal. Invite to your own welcome page." },
-  { title: "🏆 Top Ranked Real Estate Agents", description: "View America's best and worst agents based on user rankings." },
+  { slug: "get-started", title: "🚀 Get Started", description: "Click sign in, pick a username, and enter your zip code." },
+  { slug: "social-proof-network", title: "🤝 Social Proof Network", description: "Build credibility, JV, and connect with trusted investors, agents, and dealmakers." },
+  { slug: "sign-up-rewards", title: "🎁 Sign Up Rewards", description: "Get 100k Ꞙolio Token for signing up *subject to vesting." },
+  { slug: "lead-management-crm", title: "📁 Lead Management CRM", description: "Manage up to 500 leads for free." },
+  { slug: "quick-repair-calculator", title: "🛠️ Quick Repair Calculator", description: "Calculate repairs by picture and just a few questions." },
+  { slug: "creative-offer-generator", title: "✨ Creative Offer Generator", description: "Create offers that are sure to sell to our buyer list." },
+  { slug: "customizable-call-scripts", title: "📜 Customizable Call Scripts", description: "Dynamic call script using the checkmate pitch." },
+  { slug: "referral-program", title: "💸 Referral Program", description: "Earn $300 every time a person you invite closes a deal." },
+  { slug: "top-ranked-agents", title: "🏆 Top Ranked Real Estate Agents", description: "View America's best and worst agents based on user rankings." },
 ];
 
 export default function FeaturesSection() {
@@ -21,9 +22,10 @@ export default function FeaturesSection() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {features.map((feature, index) => (
-          <div
+          <Link
+            to={`/features/${feature.slug}`}
             key={index}
-            className="border border-zinc-700 bg-black p-6 rounded-2xl shadow-md hover:shadow-xl transition hover:border-cyan-500"
+            className="border border-zinc-700 bg-black p-6 rounded-2xl shadow-md hover:shadow-xl transition hover:border-cyan-500 block"
           >
             <h3 className="text-lg font-semibold mb-2 text-[#068989] flex items-center">
               {feature.title}
@@ -39,7 +41,7 @@ export default function FeaturesSection() {
                 feature.description
               )}
             </p>
-          </div>
+          </Link>
         ))}
       </div>
     </section>
