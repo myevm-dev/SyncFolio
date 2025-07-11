@@ -6,22 +6,21 @@ import WalletWithdrawModal from "./WalletWithdrawModal";
 import { usePlatformCredits } from "../hooks/usePlatformCredits";
 import { useWalletBalances } from "../hooks/useWalletBalances";
 
-/* ------------------------------------------------------------------
-  Helpers
-------------------------------------------------------------------- */
+/* ------------------------------------------------------------------ */
+/* Helpers                                                            */
+/* ------------------------------------------------------------------ */
 const smartFormat = (value: number, forceDecimals = 2) => {
-  const small = value !== 0 && value < 0.01; // show more precision for tiny balances
+  const small = value !== 0 && value < 0.01;
   return value.toLocaleString(undefined, {
     minimumFractionDigits: small ? 6 : forceDecimals,
     maximumFractionDigits: small ? 6 : forceDecimals,
   });
 };
+const folioToOP = 0.02; // 1 FOLIO ≈ 0.02 OP
 
-const folioToOP = 0.02; // 1 FOLIO = 0.02 OP (example peg)
-
-/* ------------------------------------------------------------------
-  BalanceCard component
-------------------------------------------------------------------- */
+/* ------------------------------------------------------------------ */
+/* BalanceCard                                                        */
+/* ------------------------------------------------------------------ */
 interface BalanceCardProps {
   title: string;
   items: { label: string; value: number }[];
@@ -119,7 +118,6 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
                 {isCredits ? formatted : `${prefix}${formatted}`}
               </span>
 
-              {/* approximations */}
               {isFolio && (
                 <span className="text-sm italic text-green-400">
                   (~${folioUsd != null ? smartFormat(folioUsd) : "--"})
@@ -162,31 +160,34 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
   </div>
 );
 
-/* ------------------------------------------------------------------
-  Balances main component
-------------------------------------------------------------------- */
+/* ------------------------------------------------------------------ */
+/* Balances (main)                                                    */
+/* ------------------------------------------------------------------ */
 interface BalancesProps {
   balances: {
-    platform: { USD: number; FOLIO: number };
+    platform: { USD: number; FOLIO: number; CREDITS?: number };
     wallet: { USDC: number; FOLIO: number; ETH: number };
   };
   walletAddress?: string;
   hideActions?: boolean;
+  /** When true, use the numbers supplied in `balances` and skip hooks. */
+  remote?: boolean;
 }
 
-const Balances: React.FC<BalancesProps> = ({ balances, walletAddress, hideActions = false }) => {
-  const [showPlatformDeposit, setShowPlatformDeposit] = useState(false);
-  const [showPlatformWithdraw, setShowPlatformWithdraw] = useState(false);
-  const [showWalletDeposit, setShowWalletDeposit] = useState(false);
-  const [showWalletWithdraw, setShowWalletWithdraw] = useState(false);
+const Balances: React.FC<BalancesProps> = ({
+  balances,
+  walletAddress,
+  hideActions = false,
+  remote = false,
+}) => {
+  /* live hooks (only when viewing your own account) */
+  const creditsHook = usePlatformCredits();
+  const { eth: ethHook, usdc: usdcHook } = useWalletBalances();
 
+  /* price lookup */
   const [opPrice, setOpPrice] = useState<number | null>(null);
   const [ethPrice, setEthPrice] = useState<number | null>(null);
 
-  const credits = usePlatformCredits();
-  const { eth, usdc } = useWalletBalances();
-
-  /* Fetch OP + ETH prices once */
   useEffect(() => {
     fetch(
       "https://api.coingecko.com/api/v3/simple/price?ids=optimism,ethereum&vs_currencies=usd"
@@ -199,17 +200,25 @@ const Balances: React.FC<BalancesProps> = ({ balances, walletAddress, hideAction
       .catch((e) => console.error("Price fetch failed:", e));
   }, []);
 
+  /* choose values (remote ≙ static / local ≙ hooks) */
+  const creditsVal = remote
+    ? balances.platform.CREDITS ?? 0
+    : creditsHook ?? 0;
+
+  const usdcVal = remote ? balances.wallet.USDC : usdcHook;
+  const ethVal = remote ? balances.wallet.ETH : ethHook;
+
   /* assemble items */
   const platformItems = [
     { label: "USD", value: balances.platform.USD },
-    { label: "ꞘOLIO", value: 100000 }, // hard-coded demo balance
-    { label: "Credits", value: credits || 0 },
+    { label: "ꞘOLIO", value: balances.platform.FOLIO },
+    { label: "Credits", value: creditsVal },
   ];
 
   const walletItems = [
-    { label: "USDC", value: usdc },
-    { label: "ꞘOLIO", value: 0 },
-    { label: "ETH", value: eth },
+    { label: "USDC", value: usdcVal },
+    { label: "ꞘOLIO", value: balances.wallet.FOLIO },
+    { label: "ETH", value: ethVal },
   ];
 
   return (
@@ -220,8 +229,8 @@ const Balances: React.FC<BalancesProps> = ({ balances, walletAddress, hideAction
           items={platformItems}
           hideActions={hideActions}
           showPofButton
-          onDepositClick={() => setShowPlatformDeposit(true)}
-          onWithdrawClick={() => setShowPlatformWithdraw(true)}
+          onDepositClick={() => {}}
+          onWithdrawClick={() => {}}
           opPrice={opPrice}
         />
         <BalanceCard
@@ -230,38 +239,39 @@ const Balances: React.FC<BalancesProps> = ({ balances, walletAddress, hideAction
           hideActions={hideActions}
           showVerifyLink={!!walletAddress}
           walletAddress={walletAddress}
-          onDepositClick={() => setShowWalletDeposit(true)}
-          onWithdrawClick={() => setShowWalletWithdraw(true)}
+          onDepositClick={() => {}}
+          onWithdrawClick={() => {}}
           opPrice={opPrice}
           ethPrice={ethPrice}
         />
       </div>
 
-      {/* Modals */}
-      <PlatformDepositModal
-        open={showPlatformDeposit}
-        onClose={() => setShowPlatformDeposit(false)}
-        onSelect={() => setShowPlatformDeposit(false)}
-      />
-
-      <PlatformWithdrawModal
-        open={showPlatformWithdraw}
-        onClose={() => setShowPlatformWithdraw(false)}
-        onSelect={() => setShowPlatformWithdraw(false)}
-      />
-
-      <WalletDepositModal
-        open={showWalletDeposit}
-        onClose={() => setShowWalletDeposit(false)}
-        onSelect={() => setShowWalletDeposit(false)}
-        walletAddress={walletAddress || ""}
-      />
-
-      <WalletWithdrawModal
-        open={showWalletWithdraw}
-        onClose={() => setShowWalletWithdraw(false)}
-        onSelect={() => setShowWalletWithdraw(false)}
-      />
+      {/* live-account modals only render when remote == false */}
+      {!remote && (
+        <>
+          <PlatformDepositModal
+            open={false}
+            onClose={() => {}}
+            onSelect={() => {}}
+          />
+          <PlatformWithdrawModal
+            open={false}
+            onClose={() => {}}
+            onSelect={() => {}}
+          />
+          <WalletDepositModal
+            open={false}
+            onClose={() => {}}
+            onSelect={() => {}}
+            walletAddress={walletAddress || ""}
+          />
+          <WalletWithdrawModal
+            open={false}
+            onClose={() => {}}
+            onSelect={() => {}}
+          />
+        </>
+      )}
     </>
   );
 };

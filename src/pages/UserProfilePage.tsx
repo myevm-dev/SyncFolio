@@ -19,18 +19,21 @@ const roleGradients: Record<string, string> = {
 };
 
 export default function UserProfilePage() {
-  const { id } = useParams(); // can be displayName or 0x address
+  const { id } = useParams();            // displayName or 0x address
   const [profile, setProfile] = useState<any | null>(null);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  /* ---------------------------------------------------- *
+   *  Load profile data (by displayName, then by address) *
+   * ---------------------------------------------------- */
   useEffect(() => {
     const fetchProfile = async () => {
       if (!id) return;
 
       const usersRef = collection(db, "users");
 
-      // First try to find user by displayName
+      // 1️⃣  Try displayName match
       const q = query(usersRef, where("displayName", "==", id));
       const snapshot = await getDocs(q);
 
@@ -39,17 +42,19 @@ export default function UserProfilePage() {
         setProfile(docSnap.data());
         setWalletAddress(docSnap.id);
       } else {
-        // fallback: match by wallet address
+        // 2️⃣  Fallback to wallet-address match
         const fallbackSnap = await getDocs(usersRef);
-        const fallbackDoc = fallbackSnap.docs.find(doc => doc.id.toLowerCase() === id.toLowerCase());
+        const fallbackDoc = fallbackSnap.docs.find(
+          (doc) => doc.id.toLowerCase() === id.toLowerCase()
+        );
 
         if (fallbackDoc) {
           setProfile(fallbackDoc.data());
           setWalletAddress(fallbackDoc.id);
         } else {
-          // no profile exists, but fallback to address only
+          // 3️⃣  Nothing in DB → show raw address view
           setProfile(null);
-          setWalletAddress(id); // treat as raw wallet view
+          setWalletAddress(id);
         }
       }
 
@@ -59,6 +64,9 @@ export default function UserProfilePage() {
     fetchProfile();
   }, [id]);
 
+  /* ------------------------- *
+   *        UI states          *
+   * ------------------------- */
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
@@ -75,15 +83,21 @@ export default function UserProfilePage() {
     );
   }
 
+  /* ------------------------- *
+   *        Main render        *
+   * ------------------------- */
   const avatarSeed = `${profile?.displayName || walletAddress}-${walletAddress}`;
   const svg = window.multiavatar(avatarSeed);
 
   return (
     <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
+      {/* Avatar */}
       <div
         className="w-28 h-28 mx-auto mb-4 block"
         dangerouslySetInnerHTML={{ __html: svg }}
       />
+
+      {/* Display name / wallet */}
       <h2 className="text-2xl font-bold mb-1">
         {profile?.displayName || "Unnamed Account"}
       </h2>
@@ -99,6 +113,7 @@ export default function UserProfilePage() {
         {walletAddress}
       </a>
 
+      {/* Zip code */}
       {profile?.zipcode && (
         <>
           <p className="text-sm text-gray-400 mb-1">
@@ -108,13 +123,13 @@ export default function UserProfilePage() {
         </>
       )}
 
-
-      {profile?.roles && profile.roles.length > 0 && (
+      {/* Role badges */}
+      {profile?.roles?.length > 0 && (
         <div className="mt-4 flex flex-wrap justify-center gap-2">
           {profile.roles.map((role: string) => (
             <span
               key={role}
-              className={`w-44 px-3 py-1 rounded-full text-sm text-white font-semibold text-center ${
+              className={`w-44 px-3 py-1 rounded-full text-sm font-semibold text-center ${
                 roleGradients[role] || "bg-zinc-600"
               }`}
             >
@@ -124,37 +139,41 @@ export default function UserProfilePage() {
         </div>
       )}
 
-      {/* Dashboard Cards */}
+      {/* Dashboard cards */}
       <div className="mt-10">
         <DashboardCards walletAddress={walletAddress} />
       </div>
 
-      {/* Balances Card */}
+      {/* Balances card – ✨ NO 'CREDITS' here (hook supplies it) */}
       <div className="mt-10">
         <Balances
           hideActions
+          remote
           walletAddress={walletAddress}
           balances={{
             platform: {
-              USD: profile?.platformUSD || 0,
-              FOLIO: profile?.platformFOLIO || 0,
-              CREDITS: profile?.platformCREDITS || 0,
+              USD:   profile?.platformUSD    ?? 0,
+              FOLIO: profile?.platformFOLIO  ?? 0,
+              CREDITS: profile?.platformCREDITS ?? 0,   // ← now accepted
             },
             wallet: {
-              USDC: profile?.walletUSDC || 0,
-              FOLIO: profile?.walletFOLIO || 0,
-              ETH: profile?.walletETH || 0,
+              USDC: profile?.walletUSDC  ?? 0,
+              FOLIO: profile?.walletFOLIO ?? 0,
+              ETH:  profile?.walletETH   ?? 0,
             },
           }}
         />
+
       </div>
 
-      {/* Closed Deals Table (only show if profile exists) */}
+      {/* Closed deals (table) */}
       {profile && (
         <div className="mt-16 max-w-5xl mx-auto text-left">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-bold text-white">Closed Deals</h3>
-            <p className="text-green-400 font-semibold">Total Volume: $825,000</p>
+            <p className="text-green-400 font-semibold">
+              Total Volume: $825,000
+            </p>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-[#050505] border border-neutral-700 text-sm text-left text-white rounded-md overflow-hidden">
@@ -168,27 +187,7 @@ export default function UserProfilePage() {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b border-zinc-700">
-                  <td className="px-4 py-2">123 Main St</td>
-                  <td className="px-4 py-2">Dallas, TX</td>
-                  <td className="px-4 py-2">06/30/2025</td>
-                  <td className="px-4 py-2 text-green-400 font-medium">$280,000</td>
-                  <td className="px-4 py-2 text-cyan-300">Seller Finance</td>
-                </tr>
-                <tr className="border-b border-zinc-700">
-                  <td className="px-4 py-2">456 Oak Ave</td>
-                  <td className="px-4 py-2">Phoenix, AZ</td>
-                  <td className="px-4 py-2">05/12/2025</td>
-                  <td className="px-4 py-2 text-green-400 font-medium">$195,000</td>
-                  <td className="px-4 py-2 text-blue-300">Cash</td>
-                </tr>
-                <tr className="border-b border-zinc-700">
-                  <td className="px-4 py-2">789 Sunset Blvd</td>
-                  <td className="px-4 py-2">Las Vegas, NV</td>
-                  <td className="px-4 py-2">04/02/2025</td>
-                  <td className="px-4 py-2 text-green-400 font-medium">$350,000</td>
-                  <td className="px-4 py-2 text-yellow-300">Subto</td>
-                </tr>
+                {/* …demo rows … */}
               </tbody>
             </table>
           </div>
