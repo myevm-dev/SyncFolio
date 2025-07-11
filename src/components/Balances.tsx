@@ -144,7 +144,11 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
                   (~${smartFormat(item.value)})
                 </span>
               )}
-              {isCredits && <span className="text-green-400 text-sm">--</span>}
+              {isCredits && (
+                <span className="text-green-400 text-sm">
+                  (~{formatted} CREDITS)
+                </span>
+              )}
             </span>
           </div>
         );
@@ -218,30 +222,50 @@ const Balances: React.FC<BalancesProps> = ({
   }, []);
 
   /* ------------------- remote on-chain balances ------------------ */
-  useEffect(() => {
-    if (!remote || !walletAddress) return;
+useEffect(() => {
+  if (!remote || !walletAddress) return;
 
-    (async () => {
-      try {
-        const provider = new ethers.JsonRpcProvider(BASE_RPC);
+  (async () => {
+    try {
+      const provider = new ethers.JsonRpcProvider(BASE_RPC);
 
-        // native ETH
-        const bal = await provider.getBalance(walletAddress);
-        setRemoteEth(Number(ethers.formatEther(bal)));
+      // Fetch native ETH
+      const bal = await provider.getBalance(walletAddress);
+      setRemoteEth(Number(ethers.formatEther(bal)));
 
-        // USDC balance
-        const erc20 = new ethers.Contract(
-          BASE_USDC,
-          ["function balanceOf(address) view returns (uint256)"],
-          provider
-        );
-        const usdc = await erc20.balanceOf(walletAddress);
-        setRemoteUsdc(Number(ethers.formatUnits(usdc, USDC_DECIMALS)));
-      } catch (err) {
-        console.error("Remote on-chain fetch failed:", err);
+      // Fetch USDC ERC20
+      const erc20 = new ethers.Contract(
+        BASE_USDC,
+        ["function balanceOf(address) view returns (uint256)"],
+        provider
+      );
+      const usdc = await erc20.balanceOf(walletAddress);
+      setRemoteUsdc(Number(ethers.formatUnits(usdc, USDC_DECIMALS)));
+
+      // Fetch Credits from Firestore
+      const snap = await getDoc(doc(db, "users", walletAddress));
+      if (snap.exists()) {
+        const d = snap.data();
+        console.log("🧠 Remote profile data:", d);
+
+        let credits = 0;
+        if (typeof d.credits === "number") {
+          credits = d.credits;
+        } else if (typeof d.platformCREDITS === "number") {
+          credits = d.platformCREDITS;
+        } else {
+          console.warn("⚠️ No credits found for:", walletAddress);
+        }
+
+        setRemoteCredits(credits);
+      } else {
+        console.warn("⚠️ No user doc found for:", walletAddress);
       }
-    })();
-  }, [remote, walletAddress]);
+    } catch (err) {
+      console.error("🔥 Remote data fetch failed:", err);
+    }
+  })();
+}, [remote, walletAddress]);
 
   /* ------------------- remote Credits (Firestore) ---------------- */
   useEffect(() => {
@@ -252,9 +276,11 @@ const Balances: React.FC<BalancesProps> = ({
         const snap = await getDoc(doc(db, "users", walletAddress));
         if (snap.exists()) {
           const d = snap.data();
-          setRemoteCredits(
-            Number(d.platformCREDITS ?? d.credits ?? 0)
+          const credits = typeof d.credits === "number" ? d.credits : (
+            typeof d.platformCREDITS === "number" ? d.platformCREDITS : 0
           );
+          setRemoteCredits(credits);
+
         }
       } catch (err) {
         console.error("Remote credits fetch failed:", err);
