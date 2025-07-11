@@ -62,12 +62,12 @@ export default function AboutPage() {
           {roles.map((card) => (
             <div
               key={card.title}
-              className="bg-[#050505] border border-neutral-700 rounded-lg p-6 shadow-md transition hover:bg-[#6e5690] hover:text-black hover:border-[#6e5690] cursor-pointer group"
+              className="bg-black border border-neutral-700 rounded-2xl p-6 shadow-md hover:shadow-xl transition hover:border-cyan-500 cursor-pointer group"
             >
-              <h2 className="text-lg font-semibold mb-2 group-hover:text-black" style={{ color: "#068989" }}>
+              <h2 className="text-lg font-semibold mb-2 text-[#068989] group-hover:text-[#068989]">
                 {card.title}
               </h2>
-              <p className="text-gray-300 text-sm leading-relaxed group-hover:text-black">{card.text}</p>
+              <p className="text-gray-300 text-sm leading-relaxed group-hover:text-white">{card.text}</p>
             </div>
           ))}
         </section>
