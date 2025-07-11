@@ -120,7 +120,7 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
                 className="flex flex-col justify-start items-center text-center bg-black border border-neutral-700 rounded-xl px-6 py-8 text-white hover:shadow-xl cursor-pointer hover:border-blue-600 transition-all min-w-[200px] min-h-[220px]"
               >
                 <div className="mb-3">{icon()}</div>
-                <h3 className="text-lg font-semibold mb-2">{label}</h3>
+                <h3 className="text-lg font-semibold mb-2 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">{label}</h3>
                 <p className="text-gray-400 text-sm max-w-[200px]">{description}</p>
               </div>
             ))}
@@ -151,7 +151,7 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
                         setStep(4);
                       }
                     }}
-                    className="text-blue-400 hover:underline text-sm"
+                    className="bg-gradient-to-r from-purple-400 to-cyan-400 text-black hover:text-white font-medium px-3 py-1 rounded-md text-sm"
                   >
                     {label}
                   </button>
@@ -169,7 +169,7 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
               supportedTokens={supportedTokens}
               tokenAddress="0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
               amount={tierUsdValue[selectedTier].toString()}
-              seller="0xYourWalletAddress"
+              seller="0x7aF53BA9c01ecB6893a4a6af87393805b1c05444"
               name={`${selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1)} Credit Tier`}
               description={`Purchase ${selectedTier} credits`}
               paymentMethods={["crypto", "card"]}
