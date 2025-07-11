@@ -100,21 +100,29 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
             ? item.value * ethPrice
             : null;
 
-        /* colours / prefixes */
+        // color logic
         let labelColor    = "text-gray-400";
         let quantityColor = "text-green-400";
         let prefix        = "$";
 
-        if (isUSD || isUSDC) labelColor = "text-blue-400";
-        if (isETH || isCredits) labelColor = "text-white";
-        if (isFolio) {
-          labelColor    = "text-[#fd01f5]";
-          prefix        = "Ꞙ";
-          quantityColor = "text-[#fd01f5]";
+        if (isUSD || isUSDC) {
+          labelColor    = "text-blue-400";
+          quantityColor = "text-blue-400";
         }
         if (isETH) {
-          prefix        = "Ξ";
+          labelColor    = "text-white";
           quantityColor = "text-white";
+          prefix        = "Ξ";
+        }
+        if (isFolio) {
+          labelColor    = "text-[#fd01f5]";
+          quantityColor = "text-[#fd01f5]";
+          prefix        = "Ꞙ";
+        }
+        if (isCredits) {
+          labelColor    = "text-white";
+          quantityColor = "text-white";
+          prefix        = "";
         }
 
         const formatted = smartFormat(item.value);
@@ -122,7 +130,7 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
         return (
           <div key={item.label} className="flex justify-between text-sm">
             <span className={`${labelColor} font-semibold`}>
-              {isCredits ? "Credits" : item.label}
+              {item.label}
             </span>
             <span className="flex items-center gap-2">
               <span className={`${quantityColor} font-semibold`}>
@@ -130,7 +138,7 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
               </span>
 
               {isFolio && (
-                <span className="text-sm italic text-green-400">
+                <span className="text-green-400 text-sm italic">
                   (~${folioUsd != null ? smartFormat(folioUsd) : "--"})
                 </span>
               )}
@@ -142,11 +150,6 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
               {(isUSD || isUSDC) && (
                 <span className="text-green-400 text-sm">
                   (~${smartFormat(item.value)})
-                </span>
-              )}
-              {isCredits && (
-                <span className="text-green-400 text-sm">
-                  (~{formatted} CREDITS)
                 </span>
               )}
             </span>
