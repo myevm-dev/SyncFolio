@@ -9,12 +9,13 @@ interface Props {
   setFormData: React.Dispatch<React.SetStateAction<DealInput>>;
 }
 
-/* strip non‑digits -> last 10 digits */
+/** Strip non-digits and take last 10 digits */
 const normalizePhone = (raw = ""): string => raw.replace(/\D/g, "").slice(-10);
 
-/** agent id pref: email (lc); else name+phoneDigits; fallback 'unknown' */
+/** Create agent ID from email or fallback to name+phone */
 function agentKey(name = "", phone = "", email = "") {
-  if (email.trim()) return email.trim().toLowerCase();
+  const cleanedEmail = email?.trim().toLowerCase();
+  if (cleanedEmail) return cleanedEmail;
   const digits = normalizePhone(phone);
   if (!name.trim() && !digits) return "unknown";
   return `${name.trim().toLowerCase()}-${digits}`;
@@ -22,43 +23,42 @@ function agentKey(name = "", phone = "", email = "") {
 
 export default function ContactInfoSection({ formData, handleChange, setFormData }: Props) {
   const [hover, setHover] = useState<number | null>(null);
-  const ratingCommitted   = formData.agentRating ?? 0;
-  const display           = hover ?? ratingCommitted;
+  const ratingCommitted = formData.agentRating ?? 0;
+  const display = hover ?? ratingCommitted;
 
-  /* ---------------------------------------------------------------- save */
   const commitRating = async (val: number) => {
     setFormData((prev) => ({ ...prev, agentRating: val }));
 
     const key = agentKey(formData.agentName, formData.agentPhone, formData.agentEmail);
+    const phone = normalizePhone(formData.agentPhone);
+
     try {
       await setDoc(
         doc(db, "agents", key),
         {
-          name:     formData.agentName || "Unknown",
-          phone:    normalizePhone(formData.agentPhone),
-          email:    formData.agentEmail?.toLowerCase() || undefined,
+          name: formData.agentName || "Unknown",
+          phone,
+          email: formData.agentEmail?.trim().toLowerCase() || undefined,
           timezone: formData.agentTimezone || undefined,
           lastRating: val,
-          /* create / increment */
           ratingCount: increment(1),
           ratingTotal: increment(val),
-          updatedAt:   serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          // createdAt: serverTimestamp(), // Optional: Only on new doc (needs extra logic)
         },
         { merge: true }
       );
     } catch (err) {
-      console.error("⚠️  agent rating save failed", err);
+      console.error("⚠️ agent rating save failed:", err);
     }
   };
 
-  /* reset hover when committed value changes */
   useEffect(() => setHover(null), [ratingCommitted]);
 
   return (
     <>
       <h2 className="text-center text-xl font-semibold text-[#6e5690] mt-8">2. Contact Info</h2>
 
-      {/* contact fields */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {["agentName", "agentPhone", "agentEmail"].map((field) => (
           <div key={field}>
@@ -89,7 +89,6 @@ export default function ContactInfoSection({ formData, handleChange, setFormData
         </div>
       </div>
 
-      {/* rating */}
       <div className="mt-6 text-center select-none">
         <label className="block text-sm font-medium mb-2">Rate this Agent</label>
         <div className="flex justify-center items-center gap-2" title="Click a star to rate">
@@ -101,7 +100,10 @@ export default function ContactInfoSection({ formData, handleChange, setFormData
                 onMouseLeave={() => setHover(null)}
                 onClick={() => commitRating(v)}
                 className={`h-6 w-6 cursor-pointer transition-colors ${
-                  v <= display ? "fill-yellow-400" : "fill-gray-500 hover:fill-yellow-300"}`}
+                  v <= display
+                    ? "fill-yellow-400"
+                    : "fill-gray-500 hover:fill-yellow-300"
+                }`}
                 viewBox="0 0 22 20"
                 fill="currentColor"
                 xmlns="http://www.w3.org/2000/svg"

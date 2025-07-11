@@ -18,8 +18,6 @@ interface TeamSectionProps {
   reloadFlag: number;
 }
 
-// ... (imports remain unchanged)
-
 const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) => {
   const [newMember, setNewMember] = useState("");
   const [teamProfiles, setTeamProfiles] = useState<
@@ -81,18 +79,26 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
     if (!toSnap.exists()) return alert("User not found.");
     if (teamProfiles.some((t) => t.address === newMember)) return;
 
-    await setDoc(doc(collection(db, "users", newMember, "teamInvites")), {
-      from: walletAddress,
-      to: newMember,
-      status: "pending",
-      createdAt: new Date(),
-    });
+    await setDoc(
+      doc(db, "users", newMember, "teamInvites", walletAddress),
+      {
+        from: walletAddress,
+        to: newMember,
+        status: "pending",
+        createdAt: new Date(),
+      },
+      { merge: true }
+    );
 
-    await setDoc(doc(collection(db, "users", walletAddress, "sentInvites")), {
-      to: newMember,
-      status: "pending",
-      createdAt: new Date(),
-    });
+    await setDoc(
+      doc(db, "users", walletAddress, "sentInvites", newMember),
+      {
+        to: newMember,
+        status: "pending",
+        createdAt: new Date(),
+      },
+      { merge: true }
+    );
 
     alert("Invite sent.");
     setNewMember("");
@@ -103,13 +109,8 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
     if (!window.confirm("Cancel this pending invite?")) return;
 
     try {
-      const sentSnap = await getDocs(collection(db, "users", walletAddress, "sentInvites"));
-      const match = sentSnap.docs.find((doc) => doc.data().to === address);
-      if (match) await deleteDoc(match.ref);
-
-      const incomingSnap = await getDocs(collection(db, "users", address, "teamInvites"));
-      const match2 = incomingSnap.docs.find((doc) => doc.data().from === walletAddress);
-      if (match2) await deleteDoc(match2.ref);
+      await deleteDoc(doc(db, "users", walletAddress, "sentInvites", address));
+      await deleteDoc(doc(db, "users", address, "teamInvites", walletAddress));
 
       setTeamProfiles((prev) => prev.filter((p) => p.address !== address));
     } catch (err) {
@@ -124,15 +125,8 @@ const TeamSection: React.FC<TeamSectionProps> = ({ walletAddress, reloadFlag }) 
       await updateDoc(doc(db, "users", walletAddress), { team: arrayRemove(memberAddress) });
       await updateDoc(doc(db, "users", memberAddress), { team: arrayRemove(walletAddress) });
 
-      const sentInvitesCol = collection(db, "users", walletAddress, "sentInvites");
-      const sentInvitesSnap = await getDocs(sentInvitesCol);
-      const sentMatch = sentInvitesSnap.docs.find(doc => doc.data().to === memberAddress);
-      if (sentMatch) await deleteDoc(sentMatch.ref);
-
-      const teamInvitesCol = collection(db, "users", memberAddress, "teamInvites");
-      const teamInvitesSnap = await getDocs(teamInvitesCol);
-      const teamMatch = teamInvitesSnap.docs.find(doc => doc.data().from === walletAddress);
-      if (teamMatch) await deleteDoc(teamMatch.ref);
+      await deleteDoc(doc(db, "users", walletAddress, "sentInvites", memberAddress));
+      await deleteDoc(doc(db, "users", memberAddress, "teamInvites", walletAddress));
 
       setTeamProfiles((prev) => prev.filter((m) => m.address !== memberAddress));
     } catch (err) {

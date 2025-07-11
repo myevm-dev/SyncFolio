@@ -176,37 +176,22 @@ export default function Questionaire({
 
       if (agentId !== "unknown-agent") {
         // ✅ Save to top-level /agents collection
-        const globalAgentRef = doc(db, "agents", agentId);
-        await setDoc(
-          globalAgentRef,
-          {
-            name: formData.agentName,
-            phone: formData.agentPhone,
-            email: formData.agentEmail,
-            timezone: formData.agentTimezone,
-            rating: formData.agentRating ?? 0,
-            zip,
-            updatedAt: new Date().toISOString(),
-          },
-          { merge: true }
-        );
-
-        // ✅ Also keep user-level agent collection in sync if needed
+        // ✅ Save to user-specific /agents subcollection only
         const userAgentRef = doc(db, `users/${walletAddress}/agents`, agentId);
-        await setDoc(
-          userAgentRef,
-          {
-            name: formData.agentName,
-            phone: formData.agentPhone,
-            email: formData.agentEmail,
-            timezone: formData.agentTimezone,
-            rating: formData.agentRating ?? 0,
-            zip,
-            updatedAt: serverTimestamp(),
-          },
-          { merge: true }
-        );
-      }
+          await setDoc(
+            userAgentRef,
+            {
+              name: formData.agentName,
+              phone: formData.agentPhone,
+              email: formData.agentEmail,
+              timezone: formData.agentTimezone,
+              rating: formData.agentRating ?? 0,
+              zip,
+              updatedAt: serverTimestamp(),
+            },
+            { merge: true }
+          );
+                }
 
       setSaveSuccess(true);
       onSaveSuccess?.();

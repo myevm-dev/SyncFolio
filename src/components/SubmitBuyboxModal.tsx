@@ -59,7 +59,10 @@ const SubmitBuyboxModal: React.FC<Props> = ({ onClose, onSubmit }) => {
           depositConfirmed,
           timestamp: Date.now(),
         };
-        return addDoc(collection(db, "buyboxes"), individualBuybox);
+        return addDoc(collection(db, "buyboxes"), {
+          ...individualBuybox,
+          ownerId: contact.email || contact.phone || "unknown",
+        });
       })
     );
 

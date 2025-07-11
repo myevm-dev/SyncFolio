@@ -1,7 +1,13 @@
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { useEffect } from "react";
 import { Deal } from "../types/deal";
-import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  updateDoc,
+  getDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "../lib/firebase";
 
 interface TeamMember {
@@ -138,27 +144,30 @@ export default function TeamShareModal({
                       if (!selectedDeal) return;
 
                       try {
-                        // Write deal to recipient
                         const ref = doc(
                           db,
                           `users/${member.address}/deals`,
                           selectedDeal.id
                         );
-                        await setDoc(ref, {
-                          ...selectedDeal,
-                          sharedBy: walletAddress,
-                          sharedAt: new Date(),
-                        });
 
-                        // Update sender's deal with sharedWith
+                        await setDoc(
+                          ref,
+                          {
+                            ...selectedDeal,
+                            sharedBy: walletAddress,
+                            sharedAt: serverTimestamp(),
+                          },
+                          { merge: true }
+                        );
+
                         const senderRef = doc(
                           db,
                           `users/${walletAddress}/deals`,
                           selectedDeal.id
                         );
                         const senderSnap = await getDoc(senderRef);
-                        const prevSharedWith = senderSnap.exists()
-                          ? senderSnap.data().sharedWith || []
+                        const prevSharedWith: string[] = senderSnap.exists()
+                          ? (senderSnap.data().sharedWith as string[]) ?? []
                           : [];
 
                         const updatedSharedWith = Array.from(
@@ -167,10 +176,9 @@ export default function TeamShareModal({
 
                         await updateDoc(senderRef, {
                           sharedWith: updatedSharedWith,
-                          sharedAt: new Date(),
+                          sharedAt: serverTimestamp(),
                         });
 
-                        // Reflect changes in local state
                         setDeals((prev) =>
                           prev.map((deal) =>
                             deal.id === selectedDeal.id
@@ -183,7 +191,6 @@ export default function TeamShareModal({
                           )
                         );
 
-                        // Update avatar list instantly
                         await fetchSharedUsers([
                           {
                             ...selectedDeal,

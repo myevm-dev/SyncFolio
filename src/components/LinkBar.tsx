@@ -43,10 +43,11 @@ export default function LinkBar({ walletAddress }: { walletAddress: string }) {
   const handleAddLink = async () => {
     if (!newLink.name || !newLink.url || links.length >= 7) return;
     try {
-      const docRef = await addDoc(
-        collection(db, `users/${walletAddress}/links`),
-        newLink
-      );
+    const docRef = await addDoc(
+      collection(db, `users/${walletAddress}/links`),
+      { ...newLink, ownerId: walletAddress }
+    );
+
       setLinks([...links, { ...newLink, id: docRef.id }]);
       setNewLink({ name: "", url: "" });
       setShowForm(false);

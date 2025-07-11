@@ -52,7 +52,9 @@ const MyOffersTable = () => {
       offerAmount: offer.offerAmount,
       content: offer.content,
       createdAt: serverTimestamp(),
+      ownerId: walletAddress,
     });
+
 
     const offerRef = doc(db, `users/${walletAddress}/offers/${offerId}`);
     await deleteDoc(offerRef);

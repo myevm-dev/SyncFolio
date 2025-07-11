@@ -61,7 +61,9 @@ export default function OfferModal({
       method: type,
       offerAmount: type === "cash" ? offerPrice : totalOffer,
       createdAt: serverTimestamp(),
+      ownerId: walletAddress,
     });
+
     if (onSave) onSave(content);
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 3000);
