@@ -6,6 +6,7 @@ import { ThirdwebProvider } from "thirdweb/react";
 import "./index.css";
 import { client } from "./client";
 
+import DebugDashboard from "./pages/DebugDashboard";
 import App from "./App";
 import ProfilePage from "./pages/ProfilePage";
 import UserProfilePage from "./pages/UserProfilePage";
@@ -40,6 +41,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/contracts/:id" element={<ContractStatusPage />} />
             <Route path="/yield" element={<YieldPage />} /> 
             <Route path="/profile/:id" element={<UserProfilePage />} />
+            <Route path="/debug-backfill" element={<DebugDashboard />} />
             <Route path="/features/:slug" element={<FeaturePage />} />
 
           </Route>

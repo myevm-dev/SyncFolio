@@ -7,6 +7,7 @@ export interface Agent {
   phone?: string;
   email?: string;
   region?: string;
+  zip?: string;
   rating: number;
   ratingCount: number;
 }
@@ -45,7 +46,7 @@ const AgentsTab: React.FC<Props> = ({ agents, loading }) => {
             <th className="px-4 py-2">Agent</th>
             <th className="px-4 py-2">Phone</th>
             <th className="px-4 py-2">Email</th>
-            <th className="px-4 py-2">Region</th>
+            <th className="px-4 py-2">ZIP</th>
             <th className="px-4 py-2 text-center">Avg ⭐</th>
             <th className="px-4 py-2 text-center"># Ratings</th>
           </tr>
@@ -71,7 +72,7 @@ const AgentsTab: React.FC<Props> = ({ agents, loading }) => {
                   {isLocked ? maskEmail(ag.email) : ag.email || "—"}
                 </td>
                 <td className="px-4 py-2 text-gray-400 whitespace-nowrap">
-                  {ag.region || "—"}
+                  {ag.zip || "—"}
                 </td>
                 <td className="px-4 py-2 text-center text-gray-200">
                   {ag.rating?.toFixed(1) || "—"}
