@@ -267,26 +267,7 @@ useEffect(() => {
   })();
 }, [remote, walletAddress]);
 
-  /* ------------------- remote Credits (Firestore) ---------------- */
-  useEffect(() => {
-    if (!remote || !walletAddress) return;
-
-    (async () => {
-      try {
-        const snap = await getDoc(doc(db, "users", walletAddress));
-        if (snap.exists()) {
-          const d = snap.data();
-          const credits = typeof d.credits === "number" ? d.credits : (
-            typeof d.platformCREDITS === "number" ? d.platformCREDITS : 0
-          );
-          setRemoteCredits(credits);
-
-        }
-      } catch (err) {
-        console.error("Remote credits fetch failed:", err);
-      }
-    })();
-  }, [remote, walletAddress]);
+ 
 
   /* ------------------- value selectors --------------------------- */
   const creditsVal = remote
