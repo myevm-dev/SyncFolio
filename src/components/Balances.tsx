@@ -1,3 +1,4 @@
+// src/components/Balances.tsx
 import React, { useEffect, useState } from "react";
 import PlatformDepositModal from "./PlatformDepositModal";
 import PlatformWithdrawModal from "./PlatformWithdrawModal";
@@ -5,21 +6,31 @@ import WalletDepositModal from "./WalletDepositModal";
 import WalletWithdrawModal from "./WalletWithdrawModal";
 import { usePlatformCredits } from "../hooks/usePlatformCredits";
 import { useWalletBalances } from "../hooks/useWalletBalances";
+import { ethers } from "ethers";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
+
+/* ------------------------------------------------------------------ */
+/* Chain + token constants                                            */
+/* ------------------------------------------------------------------ */
+const BASE_RPC      = import.meta.env.VITE_BASE_RPC || "https://mainnet.base.org";
+const BASE_USDC     = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"; // native USDC
+const USDC_DECIMALS = 6;
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                            */
 /* ------------------------------------------------------------------ */
-const smartFormat = (value: number, forceDecimals = 2) => {
-  const small = value !== 0 && value < 0.01;
-  return value.toLocaleString(undefined, {
-    minimumFractionDigits: small ? 6 : forceDecimals,
-    maximumFractionDigits: small ? 6 : forceDecimals,
+const smartFormat = (val: number, force = 2) => {
+  const tiny = val !== 0 && val < 0.01;
+  return val.toLocaleString(undefined, {
+    minimumFractionDigits: tiny ? 6 : force,
+    maximumFractionDigits: tiny ? 6 : force,
   });
 };
 const folioToOP = 0.02; // 1 FOLIO ≈ 0.02 OP
 
 /* ------------------------------------------------------------------ */
-/* BalanceCard                                                        */
+/* BalanceCard (presentational)                                       */
 /* ------------------------------------------------------------------ */
 interface BalanceCardProps {
   title: string;
@@ -73,10 +84,10 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
     {/* balances */}
     <div className="space-y-2 mb-4">
       {items.map((item) => {
-        const isFolio = item.label.includes("ꞘOLIO");
-        const isUSD = item.label === "USD";
-        const isUSDC = item.label === "USDC";
-        const isETH = item.label === "ETH";
+        const isFolio   = item.label.includes("ꞘOLIO");
+        const isUSD     = item.label === "USD";
+        const isUSDC    = item.label === "USDC";
+        const isETH     = item.label === "ETH";
         const isCredits = item.label === "Credits";
 
         const folioUsd =
@@ -90,19 +101,19 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
             : null;
 
         /* colours / prefixes */
-        let labelColor = "text-gray-400";
+        let labelColor    = "text-gray-400";
         let quantityColor = "text-green-400";
-        let prefix = "$";
+        let prefix        = "$";
 
         if (isUSD || isUSDC) labelColor = "text-blue-400";
         if (isETH || isCredits) labelColor = "text-white";
         if (isFolio) {
-          labelColor = "text-[#fd01f5]";
-          prefix = "Ꞙ";
+          labelColor    = "text-[#fd01f5]";
+          prefix        = "Ꞙ";
           quantityColor = "text-[#fd01f5]";
         }
         if (isETH) {
-          prefix = "Ξ";
+          prefix        = "Ξ";
           quantityColor = "text-white";
         }
 
@@ -166,7 +177,7 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
 interface BalancesProps {
   balances: {
     platform: { USD: number; FOLIO: number; CREDITS?: number };
-    wallet: { USDC: number; FOLIO: number; ETH: number };
+    wallet:   { USDC: number; FOLIO: number; ETH: number };
   };
   walletAddress?: string;
   hideActions?: boolean;
@@ -180,14 +191,20 @@ const Balances: React.FC<BalancesProps> = ({
   hideActions = false,
   remote = false,
 }) => {
-  /* live hooks (only when viewing your own account) */
-  const creditsHook = usePlatformCredits();
-  const { eth: ethHook, usdc: usdcHook } = useWalletBalances();
+  /* live hooks (only for self) */
+  const creditsHook                         = usePlatformCredits();
+  const { eth: ethHook, usdc: usdcHook }    = useWalletBalances();
+
+  /* remote states */
+  const [remoteEth,     setRemoteEth]     = useState<number>(0);
+  const [remoteUsdc,    setRemoteUsdc]    = useState<number>(0);
+  const [remoteCredits, setRemoteCredits] = useState<number>(0);
 
   /* price lookup */
-  const [opPrice, setOpPrice] = useState<number | null>(null);
+  const [opPrice,  setOpPrice]  = useState<number | null>(null);
   const [ethPrice, setEthPrice] = useState<number | null>(null);
 
+  /* ------------------- fetch Coingecko prices ------------------- */
   useEffect(() => {
     fetch(
       "https://api.coingecko.com/api/v3/simple/price?ids=optimism,ethereum&vs_currencies=usd"
@@ -200,27 +217,78 @@ const Balances: React.FC<BalancesProps> = ({
       .catch((e) => console.error("Price fetch failed:", e));
   }, []);
 
-  /* choose values (remote ≙ static / local ≙ hooks) */
+  /* ------------------- remote on-chain balances ------------------ */
+  useEffect(() => {
+    if (!remote || !walletAddress) return;
+
+    (async () => {
+      try {
+        const provider = new ethers.JsonRpcProvider(BASE_RPC);
+
+        // native ETH
+        const bal = await provider.getBalance(walletAddress);
+        setRemoteEth(Number(ethers.formatEther(bal)));
+
+        // USDC balance
+        const erc20 = new ethers.Contract(
+          BASE_USDC,
+          ["function balanceOf(address) view returns (uint256)"],
+          provider
+        );
+        const usdc = await erc20.balanceOf(walletAddress);
+        setRemoteUsdc(Number(ethers.formatUnits(usdc, USDC_DECIMALS)));
+      } catch (err) {
+        console.error("Remote on-chain fetch failed:", err);
+      }
+    })();
+  }, [remote, walletAddress]);
+
+  /* ------------------- remote Credits (Firestore) ---------------- */
+  useEffect(() => {
+    if (!remote || !walletAddress) return;
+
+    (async () => {
+      try {
+        const snap = await getDoc(doc(db, "users", walletAddress));
+        if (snap.exists()) {
+          const d = snap.data();
+          setRemoteCredits(
+            Number(d.platformCREDITS ?? d.credits ?? 0)
+          );
+        }
+      } catch (err) {
+        console.error("Remote credits fetch failed:", err);
+      }
+    })();
+  }, [remote, walletAddress]);
+
+  /* ------------------- value selectors --------------------------- */
   const creditsVal = remote
-    ? balances.platform.CREDITS ?? 0
-    : creditsHook ?? 0;
+    ? remoteCredits
+    : Number(creditsHook ?? 0);
 
-  const usdcVal = remote ? balances.wallet.USDC : usdcHook;
-  const ethVal = remote ? balances.wallet.ETH : ethHook;
+  const usdcVal = remote
+    ? remoteUsdc
+    : Number(usdcHook ?? 0);
 
-  /* assemble items */
+  const ethVal  = remote
+    ? remoteEth
+    : Number(ethHook ?? 0);
+
+  /* ------------------- item arrays ------------------------------- */
   const platformItems = [
-    { label: "USD", value: balances.platform.USD },
-    { label: "ꞘOLIO", value: balances.platform.FOLIO },
+    { label: "USD",    value: balances.platform.USD },
+    { label: "ꞘOLIO",  value: 100_000 },            // demo
     { label: "Credits", value: creditsVal },
   ];
 
   const walletItems = [
     { label: "USDC", value: usdcVal },
     { label: "ꞘOLIO", value: balances.wallet.FOLIO },
-    { label: "ETH", value: ethVal },
+    { label: "ETH",   value: ethVal },
   ];
 
+  /* ------------------- render ------------------------------------ */
   return (
     <>
       <div className="max-w-6xl mx-auto mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -246,30 +314,18 @@ const Balances: React.FC<BalancesProps> = ({
         />
       </div>
 
-      {/* live-account modals only render when remote == false */}
+      {/* Modals only for self (remote = false) */}
       {!remote && (
         <>
-          <PlatformDepositModal
-            open={false}
-            onClose={() => {}}
-            onSelect={() => {}}
-          />
-          <PlatformWithdrawModal
-            open={false}
-            onClose={() => {}}
-            onSelect={() => {}}
-          />
+          <PlatformDepositModal open={false} onClose={() => {}} onSelect={() => {}} />
+          <PlatformWithdrawModal open={false} onClose={() => {}} onSelect={() => {}} />
           <WalletDepositModal
             open={false}
             onClose={() => {}}
             onSelect={() => {}}
             walletAddress={walletAddress || ""}
           />
-          <WalletWithdrawModal
-            open={false}
-            onClose={() => {}}
-            onSelect={() => {}}
-          />
+          <WalletWithdrawModal open={false} onClose={() => {}} onSelect={() => {}} />
         </>
       )}
     </>

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import DashboardCards from "../components/DashboardCards";
 import Balances from "../components/Balances";
+import { useActiveAccount } from "thirdweb/react";   // ✅ v5 React hook
 
 const roleGradients: Record<string, string> = {
   Investor: "bg-gradient-to-r from-green-400 to-blue-600",
@@ -19,7 +20,10 @@ const roleGradients: Record<string, string> = {
 };
 
 export default function UserProfilePage() {
-  const { id } = useParams();            // displayName or 0x address
+  const { id } = useParams();
+  const activeAccount = useActiveAccount();                    // 👈
+  const viewerAddr    = activeAccount?.address || null;        // 👈
+
   const [profile, setProfile] = useState<any | null>(null);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -33,40 +37,36 @@ export default function UserProfilePage() {
 
       const usersRef = collection(db, "users");
 
-      // 1️⃣  Try displayName match
+      // 1) by displayName
       const q = query(usersRef, where("displayName", "==", id));
-      const snapshot = await getDocs(q);
+      const snap = await getDocs(q);
 
-      if (!snapshot.empty) {
-        const docSnap = snapshot.docs[0];
-        setProfile(docSnap.data());
-        setWalletAddress(docSnap.id);
+      if (!snap.empty) {
+        const doc = snap.docs[0];
+        setProfile(doc.data());
+        setWalletAddress(doc.id);
       } else {
-        // 2️⃣  Fallback to wallet-address match
-        const fallbackSnap = await getDocs(usersRef);
-        const fallbackDoc = fallbackSnap.docs.find(
-          (doc) => doc.id.toLowerCase() === id.toLowerCase()
+        // 2) by wallet address
+        const all = await getDocs(usersRef);
+        const hit = all.docs.find(
+          (d) => d.id.toLowerCase() === id.toLowerCase()
         );
-
-        if (fallbackDoc) {
-          setProfile(fallbackDoc.data());
-          setWalletAddress(fallbackDoc.id);
+        if (hit) {
+          setProfile(hit.data());
+          setWalletAddress(hit.id);
         } else {
-          // 3️⃣  Nothing in DB → show raw address view
+          // 3) nothing in DB → raw address view
           setProfile(null);
           setWalletAddress(id);
         }
       }
-
       setLoading(false);
     };
 
     fetchProfile();
   }, [id]);
 
-  /* ------------------------- *
-   *        UI states          *
-   * ------------------------- */
+  /* UI guards */
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
@@ -74,7 +74,6 @@ export default function UserProfilePage() {
       </div>
     );
   }
-
   if (!walletAddress) {
     return (
       <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
@@ -83,9 +82,22 @@ export default function UserProfilePage() {
     );
   }
 
-  /* ------------------------- *
-   *        Main render        *
-   * ------------------------- */
+  /* Are we looking at ourselves? */
+  const isCurrentUser =
+    viewerAddr &&
+    walletAddress &&
+    viewerAddr.toLowerCase() === walletAddress.toLowerCase();
+
+  /* Normalised balances (for remote view) */
+  const platformUSD     = Number(profile?.platformUSD     ?? 0);
+  const platformFOLIO   = Number(profile?.platformFOLIO   ?? 0);
+  const platformCREDITS = Number(profile?.platformCREDITS ?? profile?.credits ?? 0);
+
+  const walletUSDC  = Number(profile?.walletUSDC  ?? profile?.usdc  ?? 0);
+  const walletFOLIO = Number(profile?.walletFOLIO ?? profile?.folio ?? 0);
+  const walletETH   = Number(profile?.walletETH   ?? profile?.eth   ?? 0);
+
+  /* Render */
   const avatarSeed = `${profile?.displayName || walletAddress}-${walletAddress}`;
   const svg = window.multiavatar(avatarSeed);
 
@@ -97,7 +109,7 @@ export default function UserProfilePage() {
         dangerouslySetInnerHTML={{ __html: svg }}
       />
 
-      {/* Display name / wallet */}
+      {/* Name + wallet */}
       <h2 className="text-2xl font-bold mb-1">
         {profile?.displayName || "Unnamed Account"}
       </h2>
@@ -113,7 +125,7 @@ export default function UserProfilePage() {
         {walletAddress}
       </a>
 
-      {/* Zip code */}
+      {/* Zipcode */}
       {profile?.zipcode && (
         <>
           <p className="text-sm text-gray-400 mb-1">
@@ -123,7 +135,7 @@ export default function UserProfilePage() {
         </>
       )}
 
-      {/* Role badges */}
+      {/* Roles */}
       {profile?.roles?.length > 0 && (
         <div className="mt-4 flex flex-wrap justify-center gap-2">
           {profile.roles.map((role: string) => (
@@ -144,29 +156,28 @@ export default function UserProfilePage() {
         <DashboardCards walletAddress={walletAddress} />
       </div>
 
-      {/* Balances card – ✨ NO 'CREDITS' here (hook supplies it) */}
+      {/* Balances */}
       <div className="mt-10">
         <Balances
-          hideActions
-          remote
           walletAddress={walletAddress}
+          hideActions={!isCurrentUser}
+          remote={!isCurrentUser}
           balances={{
             platform: {
-              USD:   profile?.platformUSD    ?? 0,
-              FOLIO: profile?.platformFOLIO  ?? 0,
-              CREDITS: profile?.platformCREDITS ?? 0,   // ← now accepted
+              USD: platformUSD,
+              FOLIO: platformFOLIO,
+              CREDITS: platformCREDITS,
             },
             wallet: {
-              USDC: profile?.walletUSDC  ?? 0,
-              FOLIO: profile?.walletFOLIO ?? 0,
-              ETH:  profile?.walletETH   ?? 0,
+              USDC: walletUSDC,
+              FOLIO: walletFOLIO,
+              ETH: walletETH,
             },
           }}
         />
-
       </div>
 
-      {/* Closed deals (table) */}
+      {/* Closed Deals (demo) */}
       {profile && (
         <div className="mt-16 max-w-5xl mx-auto text-left">
           <div className="flex items-center justify-between mb-4">
@@ -186,9 +197,7 @@ export default function UserProfilePage() {
                   <th className="px-4 py-3">Method</th>
                 </tr>
               </thead>
-              <tbody>
-                {/* …demo rows … */}
-              </tbody>
+              <tbody>{/* demo rows */}</tbody>
             </table>
           </div>
         </div>
