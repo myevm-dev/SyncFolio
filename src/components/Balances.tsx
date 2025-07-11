@@ -5,6 +5,7 @@ import PlatformWithdrawModal from "./PlatformWithdrawModal";
 import WalletDepositModal from "./WalletDepositModal";
 import WalletWithdrawModal from "./WalletWithdrawModal";
 import { usePlatformCredits } from "../hooks/usePlatformCredits";
+import { useWalletBalances } from "../hooks/useWalletBalances";
 
 interface BalancesProps {
   balances: {
@@ -165,6 +166,9 @@ const Balances: React.FC<BalancesProps> = ({ balances, walletAddress, hideAction
   const [showWalletWithdraw, setShowWalletWithdraw] = useState(false);
   const [opPrice, setOpPrice] = useState<number | null>(null);
   const credits = usePlatformCredits();
+  const { eth, usdc, isLoading, error } = useWalletBalances();
+  console.log("on-chain balances:", { eth, usdc, isLoading, error });
+
 
   useEffect(() => {
     fetch("https://api.coingecko.com/api/v3/simple/price?ids=optimism&vs_currencies=usd")
@@ -178,15 +182,19 @@ const Balances: React.FC<BalancesProps> = ({ balances, walletAddress, hideAction
 
   const platformItems = [
     { label: "USD", value: balances.platform.USD },
-    { label: "ꞘOLIO", value: balances.platform.FOLIO },
+    { label: "ꞘOLIO", value: 100000 }, // Hardcoded 100k
     { label: "Credits", value: credits || 0 },
   ];
 
+
+
   const walletItems = [
-    { label: "USDC", value: balances.wallet.USDC },
-    { label: "ꞘOLIO", value: balances.wallet.FOLIO },
-    { label: "ETH", value: balances.wallet.ETH },
+    { label: "USDC", value: usdc },
+    { label: "ꞘOLIO", value: 0 },
+    { label: "ETH", value: eth },
+
   ];
+  
 
   return (
     <>
