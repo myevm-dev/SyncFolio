@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "./Dialog";
-import { CheckoutWidget, darkTheme } from "thirdweb/react";
+import { CheckoutWidget, darkTheme, useActiveAccount } from "thirdweb/react";
 import { client } from "../client";
 import { base } from "thirdweb/chains";
+import { doc, updateDoc, increment } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 interface PlatformDepositModalProps {
   open: boolean;
@@ -32,11 +34,18 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
   const [step, setStep] = useState<1 | 3 | 4>(1);
   const [selectedMethod, setSelectedMethod] = useState<"stripe" | "crypto" | null>(null);
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
+  const account = useActiveAccount();
 
   const tierUsdValue: Record<string, number> = {
     starter: 10,
     pro: 50,
     elite: 250,
+  };
+
+  const tierCredits: Record<string, number> = {
+    starter: 10000,
+    pro: 60000,
+    elite: 350000,
   };
 
   useEffect(() => {
@@ -173,7 +182,14 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
               name={`${selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1)} Credit Tier`}
               description={`Purchase ${selectedTier} credits`}
               paymentMethods={["crypto", "card"]}
-              onSuccess={() => {
+              onSuccess={async () => {
+                const uid = account?.address;
+                if (!uid) return;
+                const credits = tierCredits[selectedTier];
+                const userDocRef = doc(db, "users", uid);
+                await updateDoc(userDocRef, {
+                  "balances.platform.CREDITS": increment(credits),
+                });
                 onSelect("crypto", "CREDITS", selectedTier);
                 onClose();
               }}

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { Dialog, DialogContent } from "./Dialog";
 import PlatformDepositModal from "./PlatformDepositModal";
 import PlatformWithdrawModal from "./PlatformWithdrawModal";
 import WalletDepositModal from "./WalletDepositModal";
 import WalletWithdrawModal from "./WalletWithdrawModal";
+import { usePlatformCredits } from "../hooks/usePlatformCredits";
 
 interface BalancesProps {
   balances: {
-    platform: { USD: number; FOLIO: number; CREDITS: number };
+    platform: { USD: number; FOLIO: number };
     wallet: { USDC: number; FOLIO: number; ETH: number };
   };
   walletAddress?: string;
@@ -156,16 +158,13 @@ const BalanceCard = ({
   </div>
 );
 
-const Balances: React.FC<BalancesProps> = ({
-  balances,
-  walletAddress,
-  hideActions = false,
-}) => {
+const Balances: React.FC<BalancesProps> = ({ balances, walletAddress, hideActions = false }) => {
   const [showPlatformDeposit, setShowPlatformDeposit] = useState(false);
   const [showPlatformWithdraw, setShowPlatformWithdraw] = useState(false);
   const [showWalletDeposit, setShowWalletDeposit] = useState(false);
   const [showWalletWithdraw, setShowWalletWithdraw] = useState(false);
   const [opPrice, setOpPrice] = useState<number | null>(null);
+  const credits = usePlatformCredits();
 
   useEffect(() => {
     fetch("https://api.coingecko.com/api/v3/simple/price?ids=optimism&vs_currencies=usd")
@@ -179,8 +178,8 @@ const Balances: React.FC<BalancesProps> = ({
 
   const platformItems = [
     { label: "USD", value: balances.platform.USD },
-    { label: "ꞘOLIO", value: 100000 },
-    { label: "Credits", value: balances.platform.CREDITS },
+    { label: "ꞘOLIO", value: balances.platform.FOLIO },
+    { label: "Credits", value: credits || 0 },
   ];
 
   const walletItems = [
@@ -232,7 +231,6 @@ const Balances: React.FC<BalancesProps> = ({
         walletAddress={walletAddress || ""}
       />
 
-
       <WalletWithdrawModal
         open={showWalletWithdraw}
         onClose={() => setShowWalletWithdraw(false)}
@@ -243,3 +241,4 @@ const Balances: React.FC<BalancesProps> = ({
 };
 
 export default Balances;
+
