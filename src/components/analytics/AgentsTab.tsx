@@ -1,7 +1,8 @@
 import React from "react";
 import { useActiveAccount } from "thirdweb/react";
 
-interface Agent {
+export interface Agent {
+  id?: string;
   name: string;
   phone?: string;
   email?: string;
@@ -58,7 +59,7 @@ const AgentsTab: React.FC<Props> = ({ agents, loading }) => {
               return b.rating - a.rating;
             })
             .map((ag, i) => (
-              <tr key={i} className={i % 2 ? "bg-neutral-900" : "bg-neutral-950"}>
+              <tr key={ag.id || i} className={i % 2 ? "bg-neutral-900" : "bg-neutral-950"}>
                 <td className="px-4 py-2 whitespace-nowrap text-white">
                   {isLocked ? maskName(ag.name) : ag.name}
                   {isLocked && <span className="text-yellow-500 text-xs ml-1">🔒</span>}
@@ -73,10 +74,10 @@ const AgentsTab: React.FC<Props> = ({ agents, loading }) => {
                   {ag.region || "—"}
                 </td>
                 <td className="px-4 py-2 text-center text-gray-200">
-                  {ag.rating.toFixed(1)}
+                  {ag.rating?.toFixed(1) || "—"}
                 </td>
                 <td className="px-4 py-2 text-center text-gray-400">
-                  {ag.ratingCount}
+                  {ag.ratingCount || 0}
                 </td>
               </tr>
             ))}
