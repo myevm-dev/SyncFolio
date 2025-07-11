@@ -34,7 +34,7 @@
 		"react-router-dom": "^7.6.2",
 		"react-signature-canvas": "^1.1.0-alpha.2",
 		"recharts": "^2.15.3",
-		"thirdweb": "^5"
+		"thirdweb": "^5.105.15"
 	},
 	"devDependencies": {
 		"@types/chart.js": "^2.9.41",

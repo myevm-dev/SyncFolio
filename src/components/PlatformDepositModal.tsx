@@ -1,13 +1,8 @@
-// Modified version of PlatformDepositModal to add step 4 for chain & token selection with token cost calculation
-
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "./Dialog";
-import { CHAINS } from "../lib/chains";
-import { tokens as arbitrumTokens } from "../lib/tokens/arbitrumTokens";
-import { tokens as baseTokens } from "../lib/tokens/baseTokens";
-import { tokens as ethTokens } from "../lib/tokens/ethTokens";
-import { tokens as optimismTokens } from "../lib/tokens/optimismTokens";
-import { tokens as polygonTokens } from "../lib/tokens/polygonTokens";
+import { CheckoutWidget, darkTheme } from "thirdweb/react";
+import { client } from "../client";
+import { base } from "thirdweb/chains";
 
 interface PlatformDepositModalProps {
   open: boolean;
@@ -15,18 +10,28 @@ interface PlatformDepositModalProps {
   onSelect: (
     method: "stripe" | "crypto",
     receive: "CREDITS",
-    tier?: string,
-    chainId?: number,
-    tokenAddress?: string
+    tier?: string
   ) => void;
 }
 
-const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClose, onSelect }) => {
-  const [step, setStep] = useState<1 | 3 | 4 | 5>(1);
+const supportedTokens = {
+  [base.id]: [
+    {
+      address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      name: "USDC",
+      symbol: "USDC",
+    },
+  ],
+};
+
+const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({
+  open,
+  onClose,
+  onSelect,
+}) => {
+  const [step, setStep] = useState<1 | 3 | 4>(1);
   const [selectedMethod, setSelectedMethod] = useState<"stripe" | "crypto" | null>(null);
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
-  const [selectedChainId, setSelectedChainId] = useState<number | null>(null);
-  const [tokenPrices, setTokenPrices] = useState<Record<string, number>>({});
 
   const tierUsdValue: Record<string, number> = {
     starter: 10,
@@ -39,27 +44,8 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
       setStep(1);
       setSelectedMethod(null);
       setSelectedTier(null);
-      setSelectedChainId(null);
     }
   }, [open]);
-
-  useEffect(() => {
-    if (step === 5 && selectedChainId) {
-      const tokens = getTokensForChain(selectedChainId);
-      const ids = tokens.map(t => t.coingeckoId).join(',');
-      fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`)
-        .then(res => res.json())
-        .then(data => {
-          const prices: Record<string, number> = {};
-          tokens.forEach(t => {
-            if (t.coingeckoId && data[t.coingeckoId]?.usd) {
-              prices[t.address] = data[t.coingeckoId].usd;
-            }
-          });
-          setTokenPrices(prices);
-        });
-    }
-  }, [step, selectedChainId]);
 
   const handleMethodSelect = (method: "stripe" | "crypto") => {
     setSelectedMethod(method);
@@ -90,23 +76,6 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
     },
   ];
 
-  const getTokensForChain = (chainId: number) => {
-    switch (chainId) {
-      case 42161:
-        return arbitrumTokens;
-      case 8453:
-        return baseTokens;
-      case 1:
-        return ethTokens;
-      case 10:
-        return optimismTokens;
-      case 137:
-        return polygonTokens;
-      default:
-        return [];
-    }
-  };
-
   return (
     <Dialog
       open={open}
@@ -115,7 +84,6 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
           setStep(1);
           setSelectedMethod(null);
           setSelectedTier(null);
-          setSelectedChainId(null);
           onClose();
         }
       }}
@@ -126,9 +94,7 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
             ? "Choose Deposit Method"
             : step === 3
             ? "Choose a Credit Tier"
-            : step === 4
-            ? "Choose Chain"
-            : "Choose Token"}
+            : "Checkout"}
         </h2>
 
         {step === 1 && (
@@ -178,7 +144,7 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
                   <button
                     onClick={() => {
                       if (isStripe) {
-                        onSelect("stripe", "CREDITS");
+                        onSelect("stripe", "CREDITS", cryptoKey);
                         window.open(stripeUrl, "_blank");
                       } else {
                         setSelectedTier(cryptoKey);
@@ -196,48 +162,30 @@ const PlatformDepositModal: React.FC<PlatformDepositModalProps> = ({ open, onClo
         )}
 
         {step === 4 && selectedTier && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {Object.entries(CHAINS).map(([key, { name, chainId }]) => (
-              <div
-                key={key}
-                className="bg-neutral-900 border border-neutral-700 rounded-xl p-4 cursor-pointer hover:border-blue-500"
-                onClick={() => {
-                  setSelectedChainId(chainId);
-                  setStep(5);
-                }}
-              >
-                <p className="font-semibold text-white text-center">{name}</p>
-              </div>
-            ))}
+          <div className="w-full flex justify-center">
+            <CheckoutWidget
+              client={client}
+              chain={base}
+              supportedTokens={supportedTokens}
+              tokenAddress="0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+              amount={tierUsdValue[selectedTier].toString()}
+              seller="0xYourWalletAddress"
+              name={`${selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1)} Credit Tier`}
+              description={`Purchase ${selectedTier} credits`}
+              paymentMethods={["crypto", "card"]}
+              onSuccess={() => {
+                onSelect("crypto", "CREDITS", selectedTier);
+                onClose();
+              }}
+              onCancel={() => setStep(3)}
+              theme={darkTheme({
+                colors: {
+                  modalBg: "#0a0a0a",
+                },
+              })}
+            />
           </div>
         )}
-
-        {step === 5 && selectedTier && selectedChainId && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {getTokensForChain(selectedChainId).map((token: { name: string; address: string; coingeckoId?: string }) => {
-              const price = tokenPrices[token.address];
-              const cost =
-                selectedTier && price
-                  ? (tierUsdValue[selectedTier] / price).toFixed(6)
-                  : null;
-              return (
-                <div
-                  key={token.address}
-                  className="bg-neutral-900 border border-neutral-700 rounded-xl p-4 cursor-pointer hover:border-green-500"
-                  onClick={() => {
-                    onSelect("crypto", "CREDITS", selectedTier, selectedChainId, token.address);
-                  }}
-                >
-                  <p className="text-center font-semibold text-white">{token.name}</p>
-                  {cost && (
-                    <p className="text-center text-gray-400 text-sm">≈ {cost} {token.name}</p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-
       </DialogContent>
     </Dialog>
   );
