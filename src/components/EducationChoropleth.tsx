@@ -122,47 +122,7 @@ export const EducationChoropleth = () => {
         .attr("class", "states")
         .attr("d", path as any);
 
-      const defs = svg.append("defs");
-      for (let n = 0; n < 10; n++) {
-        defs
-          .append("linearGradient")
-          .attr("id", `svgGradient${n}`)
-          .attr("x1", "0%")
-          .attr("x2", "100%")
-          .selectAll("stop")
-          .data([0, 1])
-          .enter()
-          .append("stop")
-          .attr("offset", (d) => `${d * 100}%`)
-          .attr("stop-color", (d) =>
-            d3.interpolateRdYlBu(1 - (d + n) * 0.1)
-          );
-      }
-
-      const legend = svg.append("g").attr("class", "legend").attr("id", "legend");
-      const legendSize = 20;
-
-      for (let k = 0; k < 10; k++) {
-        legend
-          .append("rect")
-          .attr("x", 0.1 * fullwidth + k * (legendSize * 2 + 1))
-          .attr("y", fullheight - padding)
-          .attr("width", legendSize * 3 + 1)
-          .attr("height", legendSize / 2)
-          .style("fill", `url(#svgGradient${k})`)
-          .style("stroke", "black")
-          .style("stroke-width", 1.5);
-      }
-
-      for (let j = 0; j <= 10; j++) {
-        legend
-          .append("text")
-          .attr("x", 0.1 * fullwidth + j * (legendSize * 2 + 1))
-          .attr("y", fullheight - padding - legendSize * 0.5)
-          .text((minEd + j * step).toFixed(1))
-          .style("fill", "white")
-          .style("font-size", "10px");
-      }
+      
     };
 
     void load();
