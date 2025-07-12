@@ -9,7 +9,7 @@ interface Props {
 }
 
 const StepOneBuyBoxForm: React.FC<Props> = ({ form, setForm, onNext, onClose }) => {
-  const [citiesInput, setCitiesInput] = useState(form.cities?.join(", ") || "");
+  const [countiesInput, setCountiesInput] = useState(form.counties?.join(", ") || "");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -28,26 +28,18 @@ const StepOneBuyBoxForm: React.FC<Props> = ({ form, setForm, onNext, onClose }) 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <input
-        name="cities"
-        placeholder="Cities: Comma Separated (20-mile radius)*"
-        value={citiesInput}
-        onChange={(e) => setCitiesInput(e.target.value)}
+        name="counties"
+        placeholder="Counties: Comma Separated (nationwide)*"
+        value={countiesInput}
+        onChange={(e) => setCountiesInput(e.target.value)}
         onBlur={() => {
-          const parsed = citiesInput
+          const parsed = countiesInput
             .split(",")
             .map((c: string) => c.trim())
             .filter((c: string) => c.length > 0);
 
-          setForm((prev: BuyBox) => ({ ...prev, cities: parsed }));
+          setForm((prev: BuyBox) => ({ ...prev, counties: parsed }));
         }}
-        className="input"
-      />
-
-      <input
-        name="county"
-        placeholder="County (optional)"
-        value={form.county || ""}
-        onChange={handleChange}
         className="input"
       />
 
@@ -133,14 +125,6 @@ const StepOneBuyBoxForm: React.FC<Props> = ({ form, setForm, onNext, onClose }) 
         className="input"
       />
 
-      <input
-        name="foundation"
-        placeholder="Foundation Type"
-        value={form.foundation || ""}
-        onChange={handleChange}
-        className="input"
-      />
-
       <label className="flex items-center space-x-2">
         <input
           type="checkbox"
@@ -148,12 +132,9 @@ const StepOneBuyBoxForm: React.FC<Props> = ({ form, setForm, onNext, onClose }) 
           checked={form.hoa || false}
           onChange={handleChange}
         />
-        <span>HOA</span>
+        <span>HOA ok?</span>
       </label>
 
-      <div className="sm:col-span-2 text-sm text-gray-400 -mt-2">
-        $500 refundable deposit per city or unlock unlimited cities with a $2,500 deposit (Step 3)
-      </div>
 
       <div className="sm:col-span-2 flex justify-end gap-2 pt-4">
         <button

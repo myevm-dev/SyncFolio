@@ -12,13 +12,13 @@ const mockData = [
     id: "0x123...abcd",
     displayName: "agent-zero",
     avatar: window.multiavatar("agent-zero"),
-    quantity: "1,200 FIPS"
+    quantity: "4,200 FIPS"
   },
   {
     id: "0x456...efgh",
     displayName: "metro-max",
     avatar: window.multiavatar("metro-max"),
-    quantity: "830 FIPS"
+    quantity: "2830 FIPS"
   },
   {
     id: "0x789...wxyz",

@@ -1,6 +1,7 @@
 export interface BuyBox {
   cities?: string[]; // Submitted by users
   city?: string;     // Used when saving one per city
+  counties?: string[]; 
   county?: string;
   propertyType: string;
   bedMin?: number;

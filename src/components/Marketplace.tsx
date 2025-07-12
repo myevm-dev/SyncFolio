@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import DealCard from "./DealCard";
 import { Users } from "lucide-react";
-import SubmitBuyboxModal from "./SubmitBuyboxModal";
+import SubmitBuyboxModal from "./SubmitBuyboxFlow";
 import AnimatedButton from "./AnimatedButton";
+import MyBuyboxModal from "./MyBuyboxModal";
 
 const mockDeals = [
-  {
+  {     
     address: "123 Main St, El Paso, TX",
     daysLeft: 3,
     method: "Seller Finance",
@@ -82,7 +83,7 @@ const mockDeals = [
 
 const Marketplace: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
-
+  const [showMyBox, setShowMyBox] = useState(false);
   return (
     <div className="w-full">
       <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-2 mb-4 px-4">
@@ -109,15 +110,20 @@ const Marketplace: React.FC = () => {
 
         {/* Right: BuyBox Buttons */}
         <div className="flex gap-2 w-full sm:w-auto justify-center sm:justify-end">
-          <button className="bg-zinc-800 text-white font-medium px-4 py-2 rounded w-full sm:w-auto hover:bg-[#6e5690] hover:text-black transition min-h-[44px]">
+          <button
+            onClick={() => setShowMyBox(true)}
+            className="bg-zinc-800 text-white font-medium px-4 py-2 rounded w-full sm:w-auto hover:bg-[#6e5690] hover:text-black transition min-h-[44px]"
+          >
             My BuyBox
           </button>
-          <button
-            onClick={() => setShowModal(true)}
-            className="bg-gradient-to-r from-purple-400 to-cyan-400 text-black hover:text-white font-medium px-4 py-2 rounded w-full sm:w-auto transition min-h-[44px] shadow-md"
+
+          <Link
+            to="/dealflow"
+            className="bg-gradient-to-r from-purple-400 to-cyan-400 text-black hover:text-white font-medium px-4 py-2 rounded w-full sm:w-auto transition min-h-[44px] shadow-md text-center flex items-center justify-center"
           >
-            Submit BuyBox
-          </button>
+            DealFlow
+          </Link>
+
 
 
         </div>
@@ -132,13 +138,13 @@ const Marketplace: React.FC = () => {
 
       {/* Modal */}
       {showModal && (
-        <SubmitBuyboxModal
-          onClose={() => setShowModal(false)}
-          onSubmit={(data) => {
-            console.log("BuyBox submitted:", data);
-          }}
-        />
+        <SubmitBuyboxModal onComplete={() => setShowModal(false)} />
       )}
+
+      {showMyBox && (
+        <MyBuyboxModal onClose={() => setShowMyBox(false)} />
+      )}
+
     </div>
   );
 };

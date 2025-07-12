@@ -44,7 +44,6 @@ export default function ContactInfoSection({ formData, handleChange, setFormData
           ratingCount: increment(1),
           ratingTotal: increment(val),
           updatedAt: serverTimestamp(),
-          // createdAt: serverTimestamp(), // Optional: Only on new doc (needs extra logic)
         },
         { merge: true }
       );
@@ -82,9 +81,12 @@ export default function ContactInfoSection({ formData, handleChange, setFormData
             className="w-full bg-zinc-900 text-white border border-neutral-700 rounded px-3 py-2"
           >
             <option value="">Select Timezone</option>
-            {["Hawaii", "Pacific", "Mountain", "Central", "Eastern"].map((tz) => (
-              <option key={tz} value={tz}>{tz}</option>
-            ))}
+            <option value="Hawaii" className="text-purple-400">Hawaii</option>
+            <option value="Alaska" className="text-rose-400">Alaska</option>
+            <option value="Pacific" className="text-orange-400">Pacific</option>
+            <option value="Mountain" className="text-yellow-400">Mountain</option>
+            <option value="Central" className="text-green-400">Central</option>
+            <option value="Eastern" className="text-cyan-400">Eastern</option>
           </select>
         </div>
       </div>
