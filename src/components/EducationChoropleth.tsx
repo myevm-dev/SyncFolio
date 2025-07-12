@@ -3,6 +3,15 @@ import * as d3 from "d3";
 import * as topojson from "topojson-client";
 import { FeatureCollection, Geometry } from "geojson";
 
+const EDUCATION_URL =
+  "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json";
+const COUNTY_URL =
+  "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/counties.json";
+
+const fullwidth = 1000;
+const fullheight = 700;
+const padding = 25;
+
 interface EducationDatum {
   fips: number;
   state: string;
@@ -10,51 +19,33 @@ interface EducationDatum {
   bachelorsOrHigher: number;
 }
 
-interface CountyData {
-  type: "Topology";
-  objects: {
-    counties: any;
-    states: any;
-  };
-  arcs: any[];
-  transform: any;
-}
-
-export default function DebugDashboard() {
+export const EducationChoropleth = () => {
   useEffect(() => {
-    const EDUCATION_URL =
-      "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json";
-    const COUNTY_URL =
-      "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/counties.json";
-
-    const fullwidth = 1000;
-    const fullheight = 700;
-    const padding = 25;
-
     const load = async () => {
       const [countyRaw, educationRaw] = await Promise.all([
         d3.json(COUNTY_URL),
         d3.json(EDUCATION_URL),
       ]);
 
-      const countyData = countyRaw as CountyData;
+      const countyData = countyRaw as any;
       const educationData = educationRaw as EducationDatum[];
 
-      const counties = topojson.feature(
-        countyData,
-        countyData.objects.counties
-      ) as unknown as FeatureCollection<Geometry>;
+    const counties = topojson.feature(
+    countyData,
+    countyData.objects.counties
+    ) as unknown as FeatureCollection<Geometry>;
+
 
       const states = topojson.mesh(
         countyData,
-        countyData.objects.states,
-        (a: any, b: any) => a !== b
+        countyData.objects.states as any,
+        (a, b) => a !== b
       );
 
       const path = d3.geoPath();
 
-      const minEd = d3.min(educationData, (d) => d.bachelorsOrHigher)!;
-      const maxEd = d3.max(educationData, (d) => d.bachelorsOrHigher)!;
+      const minEd = d3.min(educationData, (d) => d.bachelorsOrHigher) ?? 0;
+      const maxEd = d3.max(educationData, (d) => d.bachelorsOrHigher) ?? 100;
       const step = (maxEd - minEd) / 10;
 
       d3.select("#graph").selectAll("*").remove();
@@ -79,7 +70,7 @@ export default function DebugDashboard() {
         .data(counties.features)
         .enter()
         .append("path")
-        .attr("d", path)
+        .attr("d", path as any)
         .attr("class", "county")
         .attr("data-fips", (d: any) => d.id?.toString() ?? "")
         .attr("data-education", (d: any) => {
@@ -107,13 +98,11 @@ export default function DebugDashboard() {
               `${target.area_name}, ${target.state}<br/>${target.bachelorsOrHigher}%`
             )
             .attr("data-education", target.bachelorsOrHigher)
-            .style("left", event.pageX + 15 + "px")
-            .style("top", event.pageY - 50 + "px")
+            .style("left", `${event.pageX + 15}px`)
+            .style("top", `${event.pageY - 50}px`)
             .style(
               "background",
-              d3.interpolateRdYlBu(
-                1 - target.bachelorsOrHigher / Math.round(maxEd)
-              )
+              d3.interpolateRdYlBu(1 - target.bachelorsOrHigher / maxEd)
             )
             .style("opacity", 0.9);
         })
@@ -131,7 +120,7 @@ export default function DebugDashboard() {
         .attr("stroke", "black")
         .attr("stroke-linejoin", "round")
         .attr("class", "states")
-        .attr("d", path);
+        .attr("d", path as any);
 
       const defs = svg.append("defs");
       for (let n = 0; n < 10; n++) {
@@ -180,9 +169,9 @@ export default function DebugDashboard() {
   }, []);
 
   return (
-    <div className="p-6 min-h-screen bg-black text-white">
+    <div className="flex justify-center mt-10">
       <div id="tooltip" className="absolute z-50 pointer-events-none" />
-      <div id="graph" className="flex justify-center items-center rounded-lg shadow-lg" />
+      <div id="graph" className="bg-black rounded-lg shadow-lg" />
     </div>
   );
-}
+};
