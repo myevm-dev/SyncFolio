@@ -85,12 +85,17 @@ const FAQSection: React.FC = () => {
         "Ꞙolio Token is a digital asset used within the SyncFolio platform to incentivize and reward users for their participation and contributions. Buyers may use Folio Tokens to buy and hold County specific Deal Flow tokens to amplify and get priority Deal Flow.",
     },
     {
+      question: "How to get Ꞙolio Token?",
+      answer:
+        "Ꞙolio Token can be obtained through various activities on the SyncFolio platform, such as participating in deals, referring new users, or purchasing them directly. We are offering discounted presale rounds with a vesting period. Keep Reading for more details.",
+    },
+    {
       question: "What are Deal Flow Tokens?",
       answer:
         "Deal Flow Tokens are a type of digital asset within the SyncFolio platform that represent a buyer's stake in specific US Counties and can be purchased on a bonding curve. By holding these tokens, buyers can gain priority access to deal flow and potentially earn performance of the underlying assets and how early they are to the region.",
     },
     {
-      question: "When is Ꞙolio Token Generation Event (TGE)?",
+      question: "When is the Ꞙolio Token Generation Event (TGE)?",
       answer: (
         <div>
           The Ꞙolio Token Generation Event (TGE) will occur once the platform reaches{" "}
@@ -108,6 +113,11 @@ const FAQSection: React.FC = () => {
       question: "What is ETH?",
       answer:
         "ETH is the native cryptocurrency of Ethereum based blockchains. It is used to pay for transactions and computational services on the network. If operating on-chain, please keep a few dollars of ETH to pay for transaction costs on the Base Chain Network.",
+    },
+        {
+      question: "What are smart contracts?",
+      answer:
+        "Smart contracts are self-executing contracts with the terms of the agreement directly written into code. They are transparent and audited for trust, as well as trustless because once published they cannot be altered.",
     },
 
     {
