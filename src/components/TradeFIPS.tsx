@@ -35,7 +35,7 @@ const TradeFips: React.FC<TradeFipsProps> = ({ fipsCode, countyName }) => {
         />
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 mb-2">
         <button
           onClick={() => handleTrade("buy")}
           className="flex-1 py-2 rounded-full text-black text-sm font-semibold bg-gradient-to-r from-green-500 to-lime-500 hover:from-green-600 hover:to-lime-600"
@@ -49,6 +49,13 @@ const TradeFips: React.FC<TradeFipsProps> = ({ fipsCode, countyName }) => {
           Sell
         </button>
       </div>
+
+    <div className="flex flex-col sm:flex-row sm:justify-between text-sm mt-2 gap-1 sm:gap-0">
+        <span className="text-[#fd01f5] font-medium">Folio Balance:</span>
+        <span className="text-white font-medium">{countyName} Balance:</span>
+    </div>
+
+
     </div>
   );
 };
