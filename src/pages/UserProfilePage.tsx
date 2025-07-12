@@ -102,7 +102,8 @@ export default function UserProfilePage() {
   const svg = window.multiavatar(avatarSeed);
 
   return (
-    <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
+    <div className="min-h-screen bg-[#0B1519] text-white text-center px-12 py-12">
+
       {/* Avatar */}
       <div
         className="w-28 h-28 mx-auto mb-4 block"
