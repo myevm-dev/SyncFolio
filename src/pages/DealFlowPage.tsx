@@ -108,7 +108,7 @@ export default function DealFlowPage() {
             .style("stroke-width", 0.9);
 
           tooltip
-            .html(`${target.area_name}, ${target.state}<br/>${target.bachelorsOrHigher}%`)
+            .html(`${target.area_name}, ${target.state}<br/>Price Ꞙ ${target.bachelorsOrHigher.toFixed(2)}`)
             .attr("data-education", target.bachelorsOrHigher)
             .style("left", event.pageX + 15 + "px")
             .style("top", event.pageY - 50 + "px")

@@ -34,6 +34,7 @@ const DealflowTable: React.FC<DealflowTableProps> = ({ fipsCode }) => {
       <table className="min-w-full bg-[#050505] border border-neutral-700 text-sm text-left text-white rounded-md overflow-hidden">
         <thead className="bg-[#0B1519] border-b border-neutral-700">
           <tr>
+            <th className="px-4 py-3">No.</th>
             <th className="px-4 py-3">Avatar</th>
             <th className="px-4 py-3">Name</th>
             <th className="px-4 py-3">Wallet</th>
@@ -41,8 +42,9 @@ const DealflowTable: React.FC<DealflowTableProps> = ({ fipsCode }) => {
           </tr>
         </thead>
         <tbody>
-          {mockData.map((user) => (
+          {mockData.map((user, index) => (
             <tr key={user.id} className="border-b border-zinc-700">
+              <td className="px-4 py-2">{index + 1}</td>
               <td className="px-4 py-2">
                 <Link to={`/profile/${user.displayName}`}>
                   <div
