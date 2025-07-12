@@ -20,7 +20,7 @@ interface CountyData {
   transform: any;
 }
 
-export default function DebugDashboard() {
+export default function DealFlowPage() {
   useEffect(() => {
     const EDUCATION_URL =
       "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json";

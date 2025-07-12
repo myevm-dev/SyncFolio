@@ -6,7 +6,7 @@ import { ThirdwebProvider } from "thirdweb/react";
 import "./index.css";
 import { AuthGate } from "./components/AuthGate"; // now exists
 
-import DebugDashboard from "./pages/DebugDashboard";
+import DealFlowPage from "./pages/DealFlowPage";
 import App from "./App";
 import ProfilePage from "./pages/ProfilePage";
 import UserProfilePage from "./pages/UserProfilePage";
@@ -42,7 +42,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/contracts/:id" element={<ContractStatusPage />} />
             <Route path="/yield" element={<YieldPage />} />
             <Route path="/profile/:id" element={<UserProfilePage />} />
-            <Route path="/debug-backfill" element={<DebugDashboard />} />
+            <Route path="/dealflow" element={<DealFlowPage />} />
             <Route path="/features/:slug" element={<FeaturePage />} />
           </Route>
         </Routes>
