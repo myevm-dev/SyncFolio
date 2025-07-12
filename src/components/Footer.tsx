@@ -19,14 +19,6 @@ export default function Footer() {
           by MyEVM
         </a>
       </p>
-
-      {/* Temporary DealFlow button */}
-      <Link
-        to="/dealflow"
-        className="inline-block px-4 py-2 mt-2 text-xs font-semibold text-white bg-cyan-600 rounded hover:bg-cyan-700 transition"
-      >
-        Open DealFlow Map
-      </Link>
     </footer>
   );
 }
