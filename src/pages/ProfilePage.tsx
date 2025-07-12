@@ -10,6 +10,7 @@ import TeamSection from "../components/TeamSection";
 import ReferralSection from "../components/ReferralSection";
 import IncomingInvites from "../components/IncomingInvites";
 import Balances from "../components/Balances";
+import DealflowCard from "../components/DealflowCard";
 
 
 const roleOptions = [
@@ -131,7 +132,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
+      <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-6">
         <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
         <p className="text-gray-400">Loading profile...</p>
       </div>
@@ -142,7 +143,7 @@ export default function ProfilePage() {
   const svg = window.multiavatar(avatarSeed);
 
   return (
-    <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-20">
+    <div className="min-h-screen bg-[#0B1519] text-white text-center px-4 py-6">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
       <div className="w-28 h-28 mx-auto mb-4" dangerouslySetInnerHTML={{ __html: svg }} />
@@ -290,6 +291,10 @@ export default function ProfilePage() {
           </div>
           <ReferralSection walletAddress={walletAddress} />
         </div>
+        <div className="max-w-6xl mx-auto mt-6">
+          <DealflowCard />
+        </div>
+
       </div>
 
     </div>
