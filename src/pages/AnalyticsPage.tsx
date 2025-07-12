@@ -13,7 +13,6 @@ import UsersTab from "../components/analytics/UsersTab";
 import AgentsTab from "../components/analytics/AgentsTab";
 import { normalizePhone } from "../utils/normalizePhone";
 
-
 declare global {
   interface Window {
     multiavatar: (id: string) => string;
@@ -33,9 +32,11 @@ export default function AnalyticsPage() {
   useEffect(() => {
     const normalizePhone = (phone = "") => phone.replace(/\D/g, "").slice(-10);
     const agentKey = (name = "", phone = "", email = "") =>
-      email ? email.trim().toLowerCase() :
-      name && phone ? `${name.trim().toLowerCase()}-${normalizePhone(phone)}` : "unknown";
-
+      email
+        ? email.trim().toLowerCase()
+        : name && phone
+        ? `${name.trim().toLowerCase()}-${normalizePhone(phone)}`
+        : "unknown";
 
     (async () => {
       const snap = await getDocs(collection(db, "users"));
@@ -58,7 +59,9 @@ export default function AnalyticsPage() {
         })
       );
       setUsers(
-        allUsers.sort((a, b) => (b.createdAt?.getTime?.() ?? 0) - (a.createdAt?.getTime?.() ?? 0))
+        allUsers.sort(
+          (a, b) => (b.createdAt?.getTime?.() ?? 0) - (a.createdAt?.getTime?.() ?? 0)
+        )
       );
 
       const agentMap: { [key: string]: any } = {};
@@ -103,7 +106,8 @@ export default function AnalyticsPage() {
   }, [wallet]);
 
   return (
-    <div className="min-h-screen w-full bg-[#0B1519] text-white px-6 py-20">
+    <div className="min-h-screen w-full bg-[#0B1519] text-white px-6 pt-8 pb-20">
+      {/* ↓ was py-20, now pt-8 pb-20 to tighten top spacing */}
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-10 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
           Analytics
