@@ -1,7 +1,10 @@
-import { useEffect } from "react";
+
+// --- Update DealFlowPage ---
+import { useEffect, useState } from "react";
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
 import { FeatureCollection, Geometry } from "geojson";
+import FIPSModal from "../components/FIPSModal";
 
 interface EducationDatum {
   fips: number;
@@ -21,6 +24,10 @@ interface CountyData {
 }
 
 export default function DealFlowPage() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedFips, setSelectedFips] = useState("");
+  const [selectedCounty, setSelectedCounty] = useState("");
+
   useEffect(() => {
     const EDUCATION_URL =
       "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json";
@@ -29,7 +36,6 @@ export default function DealFlowPage() {
 
     const fullwidth = 1000;
     const fullheight = 700;
-    const padding = 25;
 
     const load = async () => {
       const [countyRaw, educationRaw] = await Promise.all([
@@ -55,7 +61,6 @@ export default function DealFlowPage() {
 
       const minEd = d3.min(educationData, (d) => d.bachelorsOrHigher)!;
       const maxEd = d3.max(educationData, (d) => d.bachelorsOrHigher)!;
-      const step = (maxEd - minEd) / 10;
 
       d3.select("#graph").selectAll("*").remove();
 
@@ -103,18 +108,11 @@ export default function DealFlowPage() {
             .style("stroke-width", 0.9);
 
           tooltip
-            .html(
-              `${target.area_name}, ${target.state}<br/>${target.bachelorsOrHigher}%`
-            )
+            .html(`${target.area_name}, ${target.state}<br/>${target.bachelorsOrHigher}%`)
             .attr("data-education", target.bachelorsOrHigher)
             .style("left", event.pageX + 15 + "px")
             .style("top", event.pageY - 50 + "px")
-            .style(
-              "background",
-              d3.interpolateRdYlBu(
-                1 - target.bachelorsOrHigher / Math.round(maxEd)
-              )
-            )
+            .style("background", d3.interpolateRdYlBu(1 - target.bachelorsOrHigher / Math.round(maxEd)))
             .style("opacity", 0.9);
         })
         .on("mouseout", (event: MouseEvent) => {
@@ -122,6 +120,14 @@ export default function DealFlowPage() {
             .style("stroke", "grey")
             .style("stroke-width", 0.5);
           tooltip.style("opacity", 0);
+        })
+        .on("click", (event: MouseEvent, d: any) => {
+          const target = educationData.find((e) => e.fips === d.id);
+          if (target) {
+            setSelectedFips(d.id.toString());
+            setSelectedCounty(`${target.area_name}, ${target.state}`);
+            setModalOpen(true);
+          }
         });
 
       svg
@@ -132,8 +138,6 @@ export default function DealFlowPage() {
         .attr("stroke-linejoin", "round")
         .attr("class", "states")
         .attr("d", path);
-
-      
     };
 
     void load();
@@ -143,6 +147,12 @@ export default function DealFlowPage() {
     <div className="p-6 min-h-screen bg-black text-white">
       <div id="tooltip" className="absolute z-50 pointer-events-none" />
       <div id="graph" className="flex justify-center items-center rounded-lg shadow-lg" />
+      <FIPSModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        fipsCode={selectedFips}
+        countyName={selectedCounty}
+      />
     </div>
   );
 }
