@@ -37,7 +37,6 @@ const StakingCard: React.FC = () => {
 
       {/* Stake Action */}
       <div>
-        <p className="text-xs text-neutral-400 mb-1">EARN USD</p>
         <button className="w-full bg-cyan-400 hover:bg-cyan-300 text-black py-2 rounded-lg font-semibold">
           Stake
         </button>
