@@ -79,17 +79,22 @@ const FAQSection: React.FC = () => {
       answer:
         "The platform charges fees on a transactional basis when a deal is complete. In the future, you will also have the option to purchase credits if you want to use AI-powered assistance.",
     },
-        {
+    {
       question: "What is Ꞙolio Token?",
       answer:
-        "Ꞙolio Token is a digital asset used within the SyncFolio platform to incentivize and reward users for their participation and contributions. Buyers may lock up Folio Tokens for a period of time to amplify and get priority Deal Flow.",
+        "Ꞙolio Token is a digital asset used within the SyncFolio platform to incentivize and reward users for their participation and contributions. Buyers may use Folio Tokens to buy and hold County specific Deal Flow tokens to amplify and get priority Deal Flow.",
+    },
+    {
+      question: "What are Deal Flow Tokens?",
+      answer:
+        "Deal Flow Tokens are a type of digital asset within the SyncFolio platform that represent a buyer's stake in specific US Counties and can be purchased on a bonding curve. By holding these tokens, buyers can gain priority access to deal flow and potentially earn performance of the underlying assets and how early they are to the region.",
     },
     {
       question: "When is Ꞙolio Token Generation Event (TGE)?",
       answer: (
         <div>
           The Ꞙolio Token Generation Event (TGE) will occur once the platform reaches{" "}
-          <span className="text-pink-500 font-semibold">$50 million</span> in total real estate volume.
+          <span className="text-pink-500 font-semibold">$30 million</span> in total real estate volume.
           <TGEProgressBar currentVolume={1} />
         </div>
       ),

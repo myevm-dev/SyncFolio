@@ -4,7 +4,7 @@ interface TGEProgressBarProps {
   currentVolume: number;
 }
 
-const MAX_VOLUME = 50000000;
+const MAX_VOLUME = 30000000;
 
 const TGEProgressBar: React.FC<TGEProgressBarProps> = ({ currentVolume }) => {
   const percentage = Math.min((currentVolume / MAX_VOLUME) * 100, 100);
@@ -21,7 +21,7 @@ const TGEProgressBar: React.FC<TGEProgressBarProps> = ({ currentVolume }) => {
         />
       </div>
       <div className="text-xs text-right text-gray-400 pt-1">
-        ${currentVolume.toLocaleString()} / $50,000,000
+        ${currentVolume.toLocaleString()} / $30,000,000
       </div>
     </div>
   );
