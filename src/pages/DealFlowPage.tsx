@@ -1,5 +1,3 @@
-
-// --- Update DealFlowPage ---
 import { useEffect, useState } from "react";
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
@@ -108,7 +106,9 @@ export default function DealFlowPage() {
             .style("stroke-width", 0.9);
 
           tooltip
-            .html(`${target.area_name}, ${target.state}<br/>Price Ꞙ ${target.bachelorsOrHigher.toFixed(2)}`)
+            .html(
+              `${target.area_name}, ${target.state}<br/>Price Ꞙ ${target.bachelorsOrHigher.toFixed(2)}`
+            )
             .attr("data-education", target.bachelorsOrHigher)
             .style("left", event.pageX + 15 + "px")
             .style("top", event.pageY - 50 + "px")
