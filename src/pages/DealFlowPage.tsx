@@ -85,7 +85,7 @@ export default function DealFlowPage() {
         .append("svg")
         .attr("viewBox", `0 0 ${VIEWBOX_W} ${VIEWBOX_H}`)
         .attr("preserveAspectRatio", "xMidYMid meet")
-        .style("width", "820px")   // <<< adjust overall size here
+        .style("width", "840px")   // <<< adjust overall size here
         .style("height", "auto")
         .style("display", "block");
 
