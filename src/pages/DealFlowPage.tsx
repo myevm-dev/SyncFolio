@@ -1,5 +1,7 @@
+/* src/pages/DealFlowPage.tsx */
+
 import { useEffect, useLayoutEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
 import { FeatureCollection, Geometry } from "geojson";
@@ -19,28 +21,31 @@ interface CountyData {
   transform: any;
 }
 
-/* ---------- component ---------- */
 export default function DealFlowPage() {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen]       = useState(false);
   const [selectedFips, setSelectedFips] = useState("");
   const [selectedCounty, setSelectedCounty] = useState("");
-  const [isMobile, setIsMobile] = useState(false);
-  const navigate = useNavigate();
+  const [isMobile, setIsMobile]         = useState(false);
 
-  /* Ensure we start at the very top (runs before first paint) */
+  const navigate   = useNavigate();
+  const { pathname } = useLocation();
+
+  /* lock viewport & hide scroll while on page */
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [pathname]);
 
-  /* On mount — mobile guard + D3 map render */
+  /* mobile guard + map render */
   useEffect(() => {
-    /* ------------ mobile guard ------------ */
     if (window.innerWidth < 768) {
       setIsMobile(true);
       return;
     }
 
-    /* ------------ render map -------------- */
     (async () => {
       const EDUCATION_URL =
         "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json";
@@ -52,31 +57,37 @@ export default function DealFlowPage() {
         d3.json(EDUCATION_URL),
       ]);
 
-      const countyData = countyRaw as CountyData;
+      const countyData    = countyRaw    as CountyData;
       const educationData = educationRaw as EducationDatum[];
 
       const counties = topojson.feature(
         countyData,
         countyData.objects.counties
       ) as unknown as FeatureCollection<Geometry>;
-
       const states = topojson.mesh(
         countyData,
         countyData.objects.states,
         (a: any, b: any) => a !== b
       );
 
-      const path = d3.geoPath();
-      const maxEd = d3.max(educationData, (d) => d.bachelorsOrHigher)!;
+      /* keep original 975×610 projection, scale via CSS */
+      const VIEWBOX_W = 975;
+      const VIEWBOX_H = 610;
 
-      /* wipe & build svg */
+      const path  = d3.geoPath();
+      const maxEd = d3.max(educationData, d => d.bachelorsOrHigher)!;
+
+      /* wipe then build */
       d3.select("#graph").selectAll("*").remove();
 
       const svg = d3
         .select("#graph")
         .append("svg")
-        .attr("width", 1000)
-        .attr("height", 700);
+        .attr("viewBox", `0 0 ${VIEWBOX_W} ${VIEWBOX_H}`)
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .style("width", "820px")   // <<< adjust overall size here
+        .style("height", "auto")
+        .style("display", "block");
 
       const tooltip = d3
         .select("#tooltip")
@@ -99,41 +110,39 @@ export default function DealFlowPage() {
         .style("stroke", "grey")
         .style("stroke-width", "0.5px")
         .style("fill", (d: any) => {
-          const target = educationData.find((e) => e.fips === d.id);
-          return target
-            ? d3.interpolateRdYlBu(1 - target.bachelorsOrHigher / maxEd)
+          const t = educationData.find(e => e.fips === d.id);
+          return t
+            ? d3.interpolateRdYlBu(1 - t.bachelorsOrHigher / maxEd)
             : "beige";
         })
-        .on("mouseover", (event: MouseEvent, d: any) => {
-          const t = educationData.find((e) => e.fips === d.id);
+        .on("mouseover", (evt: MouseEvent, d: any) => {
+          const t = educationData.find(e => e.fips === d.id);
           if (!t) return;
-
-          d3.select(event.currentTarget as SVGPathElement)
+          d3.select(evt.currentTarget as SVGPathElement)
             .style("stroke", "black")
             .style("stroke-width", 0.9);
-
           tooltip
             .html(
               `${t.area_name}, ${t.state}<br/>Price Ꞙ ${t.bachelorsOrHigher.toFixed(
                 2
               )}`
             )
-            .style("left", `${event.pageX + 15}px`)
-            .style("top", `${event.pageY - 50}px`)
+            .style("left", `${evt.pageX + 15}px`)
+            .style("top", `${evt.pageY - 50}px`)
             .style(
               "background",
               d3.interpolateRdYlBu(1 - t.bachelorsOrHigher / maxEd)
             )
             .style("opacity", 0.9);
         })
-        .on("mouseout", (event: MouseEvent) => {
-          d3.select(event.currentTarget as SVGPathElement)
+        .on("mouseout", (evt: MouseEvent) => {
+          d3.select(evt.currentTarget as SVGPathElement)
             .style("stroke", "grey")
             .style("stroke-width", 0.5);
           tooltip.style("opacity", 0);
         })
         .on("click", (_evt: MouseEvent, d: any) => {
-          const t = educationData.find((e) => e.fips === d.id);
+          const t = educationData.find(e => e.fips === d.id);
           if (t) {
             setSelectedFips(d.id.toString());
             setSelectedCounty(`${t.area_name}, ${t.state}`);
@@ -171,16 +180,9 @@ export default function DealFlowPage() {
   }
 
   return (
-    <div className="bg-black text-white min-h-screen overflow-hidden">
-      {/* tooltip & map containers */}
+    <div className="bg-black text-white overflow-hidden">
       <div id="tooltip" className="absolute z-50 pointer-events-none" />
-      <div
-        id="graph"
-        className="flex justify-center items-center rounded-lg shadow-lg"
-        /* no extra top/bottom gap */
-      />
-
-      {/* modal */}
+      <div id="graph" className="flex justify-center mt-6" />
       <FIPSModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
