@@ -63,7 +63,7 @@ const SubmitBuyboxFlow: React.FC<Props> = ({ onComplete }) => {
     if (onComplete) onComplete();
   };
 
-  const stepTitles = ["Buy Box", "User Details", "Deposit"];
+  const stepTitles = ["Buy Box", "User Details", "Confirm"];
 
   return (
     <div className="bg-[#0B1519] text-white p-4 rounded-xl border border-cyan-400 w-full max-w-2xl space-y-6">

@@ -23,41 +23,19 @@ const StepThreeDeposit: React.FC<Props> = ({
     setConfirmed(!agreeChecked);
   };
 
-  const cityCount = form.cities?.length || 0;
-  const depositAmount = cityCount > 5 ? 2500 : cityCount * 500;
-
-  useEffect(() => {
-    if (depositAmount === 0) {
-      setConfirmed(false);
-      setAgreeChecked(false);
-    }
-  }, [depositAmount, setConfirmed]);
-
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-cyan-400">Refundable Deposit</h3>
+      <h3 className="text-lg font-semibold text-cyan-400">What’s Next</h3>
 
-      <p className="text-sm text-gray-300">
-        You selected <strong>{cityCount}</strong> {cityCount === 1 ? "city" : "cities"}.
-        Your required deposit is <strong>${depositAmount.toLocaleString()}</strong>.
-        {cityCount > 5 ? (
-          <> You qualify for unlimited city access at the flat rate of $2,500.</>
-        ) : (
-          <> ($500 per city)</>
-        )}
-      </p>
+      <ol className="list-decimal list-inside text-sm text-gray-300 space-y-2">
+        <li>When you press submit, it will be added to the buybox directory.</li>
+        <li>Boost your buybox on a county level in the deal flow dashboard.</li>
+        <li>
+          <span className="text-yellow-400 font-medium">Coming Soon:</span>{" "}
+          Deploy an AI deal analyzer to claim deals that match your buybox when away.
+        </li>
+      </ol>
 
-      <p className="text-sm text-gray-400">
-        Your deposit is <strong>fully refundable</strong>. You may withdraw your BuyBox and get your deposit back at any time.
-        This ensures that only serious buyers are prioritized for premium off-market opportunities.
-        <br /><br />
-        <strong>Bonus:</strong> After completing 10 verified deals, no deposit will be required for future BuyBoxes.
-      </p>
-
-      <label className="flex items-center space-x-2">
-        <input type="checkbox" checked={agreeChecked} onChange={handleToggle} />
-        <span>I agree to the deposit terms</span>
-      </label>
 
       <div className="flex justify-between pt-4">
         <button
@@ -67,10 +45,15 @@ const StepThreeDeposit: React.FC<Props> = ({
           Back
         </button>
         <button
-          disabled
-          className="px-4 py-2 font-semibold rounded bg-zinc-700 text-gray-400 cursor-not-allowed"
+          onClick={onSubmit}
+          disabled={!agreeChecked}
+          className={`px-4 py-2 font-semibold rounded ${
+            agreeChecked
+              ? "bg-cyan-600 hover:bg-cyan-500 text-white"
+              : "bg-zinc-700 text-gray-400 cursor-not-allowed"
+          }`}
         >
-          Coming Soon
+          Submit
         </button>
       </div>
     </div>
