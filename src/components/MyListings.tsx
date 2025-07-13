@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import SellerCard from "./SellerCard";
 import { Users } from "lucide-react";
 import CreateListingModal from "./CreateListingModal";
+import MyListingsModal from "./MyListingsModal";
 import AnimatedButton from "./AnimatedButton"; // ✅ Import animated button
 
 const mockListings = [
@@ -43,6 +44,7 @@ const mockListings = [
 
 const MyListings: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
+  const [showMyListings, setShowMyListings] = useState(false);
 
   return (
     <div className="w-full">
@@ -70,7 +72,10 @@ const MyListings: React.FC = () => {
 
         {/* Right: My Listings / Create Listing */}
         <div className="flex gap-2 w-full sm:w-auto justify-center sm:justify-end">
-          <button className="bg-zinc-800 text-white font-medium px-4 py-2 rounded w-full sm:w-auto hover:bg-[#6e5690] hover:text-black transition">
+          <button
+            onClick={() => setShowMyListings(true)}
+            className="bg-zinc-800 text-white font-medium px-4 py-2 rounded w-full sm:w-auto hover:bg-[#6e5690] hover:text-black transition"
+          >
             My Listings
           </button>
           <button
@@ -79,8 +84,6 @@ const MyListings: React.FC = () => {
           >
             Create Listing
           </button>
-
-
         </div>
       </div>
 
@@ -91,13 +94,19 @@ const MyListings: React.FC = () => {
         ))}
       </div>
 
-      {/* Modal */}
+      {/* Modals */}
       {showModal && (
         <CreateListingModal
           onClose={() => setShowModal(false)}
           onSubmit={(data) => {
             console.log("Listing submitted:", data);
           }}
+        />
+      )}
+
+      {showMyListings && (
+        <MyListingsModal
+          onClose={() => setShowMyListings(false)}
         />
       )}
     </div>

@@ -67,7 +67,9 @@ const SubmitBuyboxFlow: React.FC<Props> = ({ onComplete }) => {
 
   return (
     <div className="bg-[#0B1519] text-white p-4 rounded-xl border border-cyan-400 w-full max-w-2xl space-y-6">
-      <h2 className="text-xl font-bold text-cyan-400">Submit Your BuyBox</h2>
+      <h2 className="text-xl font-bold text-white text-center">
+        Submit Your BuyBox
+      </h2>
 
       <div className="flex justify-between text-xs sm:text-sm font-medium text-gray-300">
         {stepTitles.map((title, index) => (
@@ -91,7 +93,6 @@ const SubmitBuyboxFlow: React.FC<Props> = ({ onComplete }) => {
           onNext={next}
           onClose={onComplete || (() => {})}
         />
-
       )}
 
       {step === 2 && (

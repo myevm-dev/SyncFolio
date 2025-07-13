@@ -29,7 +29,7 @@ const StepOneBuyBoxForm: React.FC<Props> = ({ form, setForm, onNext, onClose }) 
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <input
         name="counties"
-        placeholder="Counties: Comma Separated (nationwide)*"
+        placeholder="Counties: Comma Separated*"
         value={countiesInput}
         onChange={(e) => setCountiesInput(e.target.value)}
         onBlur={() => {

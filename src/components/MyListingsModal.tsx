@@ -1,54 +1,45 @@
 import React, { useState } from "react";
 import { Dialog, DialogContent } from "./Dialog";
-import SubmitBuyboxFlow from "./SubmitBuyboxFlow";
-import MyBuyboxTable from "./MyBuyboxTable";
+import MyListingsTable from "./MyListingsTable";
 
-interface MyBuyboxModalProps {
+interface MyListingsModalProps {
   onClose: () => void;
 }
 
-const MyBuyboxModal: React.FC<MyBuyboxModalProps> = ({ onClose }) => {
+const MyListingsModal: React.FC<MyListingsModalProps> = ({ onClose }) => {
   const [mode, setMode] = useState<"live" | "submit">("live");
 
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="bg-zinc-900 text-white rounded-2xl p-6 w-full max-w-2xl mx-auto text-center">
-        <h2 className="text-xl font-bold mb-6">
-          <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-            My BuyBox
-          </span>
-        </h2>
+        <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent text-xl font-bold mb-4 block">
+          My Listings
+        </span>
 
         {/* Toggle Buttons */}
         <div className="flex justify-center gap-4 mb-6">
-          {["live", "submit"].map((m) => (
+          {["live"].map((m) => (
             <button
               key={m}
-              onClick={() => setMode(m as "live" | "submit")}
+              onClick={() => setMode(m as "live")}
               className={`w-32 py-2 rounded-full transition font-medium ${
                 mode === m
                   ? "bg-gradient-to-r from-purple-400 to-cyan-400 text-black shadow-md"
                   : "bg-transparent border border-zinc-600 text-white"
               }`}
             >
-              {m === "live" ? "Live" : "Submit"}
+              Live
             </button>
           ))}
         </div>
 
-        {/* Mode Content */}
-        <div className="text-left">
-          {mode === "live" ? (
-            <div className="space-y-4">
-              <MyBuyboxTable />
-            </div>
-          ) : (
-            <SubmitBuyboxFlow onComplete={onClose} />
-          )}
+        {/* Table */}
+        <div className="text-left mt-6">
+          <MyListingsTable />
         </div>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default MyBuyboxModal;
+export default MyListingsModal;
