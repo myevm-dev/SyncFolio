@@ -2,12 +2,13 @@ import React, { useState } from "react";
 
 interface Listing {
   address: string;
-  method: string;
+  methods: string[];
   price: string;
   buyNowPrice: string;
   currentBid: string;
   returnValue: string;
   monthlyCashflow: string;
+  mortgageOwed: string;
   daysLeft?: number;
   imageUrl: string;
 }
@@ -17,28 +18,45 @@ interface Props {
   onSubmit: (listing: Listing) => void;
 }
 
+const financingOptions = ["Seller Finance", "Mortgage Takeover", "Morby Method", "Cash"];
+
 const CreateListingModal: React.FC<Props> = ({ onClose, onSubmit }) => {
   const [form, setForm] = useState<Listing>({
     address: "",
-    method: "Seller Finance",
+    methods: [],
     price: "",
     buyNowPrice: "",
     currentBid: "",
     returnValue: "",
     monthlyCashflow: "",
+    mortgageOwed: "",
     daysLeft: undefined,
     imageUrl: "",
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
       [name]: name === "daysLeft" ? (value ? parseInt(value) : undefined) : value,
     }));
   };
+
+  const toggleMethod = (method: string) => {
+    setForm((prev) => ({
+      ...prev,
+      methods: prev.methods.includes(method)
+        ? prev.methods.filter((m) => m !== method)
+        : [...prev.methods, method],
+    }));
+  };
+
+  const loanToValuePercent = (() => {
+    const price = parseFloat(form.price.replace(/[^0-9.]/g, ""));
+    const owed = parseFloat(form.mortgageOwed.replace(/[^0-9.]/g, ""));
+    if (!price || price <= 0) return 0;
+    return Math.min(100, (owed / price) * 100);
+  })();
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
@@ -53,17 +71,23 @@ const CreateListingModal: React.FC<Props> = ({ onClose, onSubmit }) => {
           className="input w-full"
         />
 
-        <select
-          name="method"
-          value={form.method}
-          onChange={handleChange}
-          className="input w-full"
-        >
-          <option value="Seller Finance">Seller Finance</option>
-          <option value="Takeover">Mortgage Takeover</option>
-          <option value="Morby Method">Morby Method</option>
-          <option value="Cash">Cash</option>
-        </select>
+        {/* Financing Options */}
+        <div>
+          <label className="block mb-1 font-medium text-sm text-cyan-300">Open to these methods:</label>
+          <div className="grid grid-cols-2 gap-2">
+            {financingOptions.map((option) => (
+              <label key={option} className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={form.methods.includes(option)}
+                  onChange={() => toggleMethod(option)}
+                  className="accent-cyan-400"
+                />
+                {option}
+              </label>
+            ))}
+          </div>
+        </div>
 
         <input
           name="price"
@@ -72,6 +96,33 @@ const CreateListingModal: React.FC<Props> = ({ onClose, onSubmit }) => {
           onChange={handleChange}
           className="input w-full"
         />
+
+        <input
+          name="mortgageOwed"
+          placeholder="Amount Owed on Mortgage"
+          value={form.mortgageOwed}
+          onChange={handleChange}
+          className="input w-full"
+        />
+
+        {/* LTV Progress Bar */}
+        <div>
+          <label className="block text-sm font-medium mb-1 text-cyan-300">
+            Loan to Value: {isNaN(loanToValuePercent) ? "--" : `${loanToValuePercent.toFixed(1)}%`}
+          </label>
+          <div className="relative w-full bg-zinc-800 rounded-full h-2 mb-1">
+            <div
+              className="h-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 transition-all duration-300"
+              style={{ width: `${Math.min(100, loanToValuePercent)}%` }}
+            ></div>
+          </div>
+          <div className="flex justify-between text-xs text-zinc-400 px-1">
+            <span>$0</span>
+            <span>Mortgage</span>
+            <span>{form.price || "Price"}</span>
+          </div>
+        </div>
+
         <input
           name="buyNowPrice"
           placeholder="Buy Now Price"
