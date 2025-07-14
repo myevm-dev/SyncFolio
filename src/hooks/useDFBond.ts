@@ -5,6 +5,7 @@ import {
   getContract,
   prepareContractCall,
   sendTransaction,
+  waitForReceipt,
   readContract,
 } from "thirdweb";
 import { useActiveAccount } from "thirdweb/react";
@@ -23,6 +24,7 @@ export const DFBOND_ADDRESS =
   "0x2681D784e42AEA9eCe5fC3D5D6C05BE5199807F2" as const;
 const WETH_ADDRESS =
   "0x4200000000000000000000000000000000000006" as const; // canonical WETH on Base
+const MAX_UINT256 = (1n << 256n) - 1n;
 
 /* ------------------------------------------------------------------
    Contract handles (ABI casted to any – avoids deep generic gymnastics)
@@ -42,28 +44,44 @@ const weth = getContract({
 });
 
 /* ------------------------------------------------------------------
-   Helper – give DFBond permission to pull WETH
+   ERC‑20 helpers
    ------------------------------------------------------------------*/
-// helper – approve the DFBond contract to spend user's WETH
-const approveWeth = async (
-  account: any,
-  spender: string,
-  amount: bigint,
-) => {
-  const tx = prepareContractCall({
+const allowanceOf = (owner: string, spender: string) =>
+  readContract({
+    contract: weth,
+    method: "allowance",
+    params: [owner, spender],
+  }) as Promise<bigint>;
+
+const approveWethTx = (spender: string, amount: bigint) =>
+  prepareContractCall({
     contract: weth,
     method: "approve",
     params: [spender, amount],
   });
-  await sendTransaction({ account, transaction: tx });
-};
 
 /* ==================================================================
-   Public React hook (safe to call before wallet connects)
+   Public React hook (safe to call once wallet connects)
    ==================================================================*/
 export const useDFBond = () => {
-  const activeAccount = useActiveAccount();
-  const connected = !!activeAccount;
+  const account = useActiveAccount();
+  const connected = !!account;
+
+  /* ------------- explicit approve step exposed to UI ------------- */
+  const approveWeth = async (amount: bigint = MAX_UINT256) => {
+    if (!account) throw new Error("Connect wallet first");
+    const tx = approveWethTx(DFBOND_ADDRESS, amount);
+    const { transactionHash } = await sendTransaction({
+      account: account as any,
+      transaction: tx,
+    });
+    await waitForReceipt({ client, chain: BASE_CHAIN, transactionHash });
+  };
+
+  const currentAllowance = async (): Promise<bigint> => {
+    if (!account) return 0n;
+    return await allowanceOf(account.address, DFBOND_ADDRESS);
+  };
 
   /* ------------------------- writes ------------------------------ */
   const createAndBuy = async (
@@ -72,14 +90,19 @@ export const useDFBond = () => {
     maxSupply: bigint,
     reserveAmount: bigint,
   ) => {
-    if (!activeAccount) throw new Error("Connect wallet first");
-    await approveWeth(activeAccount, DFBOND_ADDRESS, reserveAmount);
+    if (!account) throw new Error("Connect wallet first");
+
+    // 💡 responsibility to have called approve beforehand; we just sanity‑check
+    const allowance = await currentAllowance();
+    if (allowance < reserveAmount)
+      throw new Error("Insufficient WETH allowance – please approve first");
+
     const tx = prepareContractCall({
       contract: dfBond,
       method: "createAndBuy",
       params: [name, symbol, maxSupply, reserveAmount],
     });
-    await sendTransaction({ account: activeAccount as any, transaction: tx });
+    await sendTransaction({ account: account as any, transaction: tx });
   };
 
   const buy = async (
@@ -87,14 +110,16 @@ export const useDFBond = () => {
     reserveAmt: bigint,
     minReward: bigint = 0n,
   ) => {
-    if (!activeAccount) throw new Error("Connect wallet first");
-    await approveWeth(activeAccount, DFBOND_ADDRESS, reserveAmt);
+    if (!account) throw new Error("Connect wallet first");
+    const allowance = await currentAllowance();
+    if (allowance < reserveAmt)
+      throw new Error("Insufficient WETH allowance – please approve first");
     const tx = prepareContractCall({
       contract: dfBond,
       method: "buy",
       params: [token, reserveAmt, minReward],
     });
-    await sendTransaction({ account: activeAccount as any, transaction: tx });
+    await sendTransaction({ account: account as any, transaction: tx });
   };
 
   const sell = async (
@@ -102,13 +127,13 @@ export const useDFBond = () => {
     amount: bigint,
     minRefund: bigint = 0n,
   ) => {
-    if (!activeAccount) throw new Error("Connect wallet first");
+    if (!account) throw new Error("Connect wallet first");
     const tx = prepareContractCall({
       contract: dfBond,
       method: "sell",
       params: [token, amount, minRefund],
     });
-    await sendTransaction({ account: activeAccount as any, transaction: tx });
+    await sendTransaction({ account: account as any, transaction: tx });
   };
 
   /* ------------------------- reads ------------------------------- */
@@ -135,11 +160,14 @@ export const useDFBond = () => {
 
   return {
     connected,
+    approveWeth,
+    currentAllowance,
     createAndBuy,
     buy,
     sell,
     getPrice,
     getMintPreview,
     getBurnPreview,
+    MAX_UINT256,
   };
 };

@@ -1,10 +1,14 @@
-/* src/components/FIPSModal.tsx – updated
-   – Fixes DialogTitle accessibility warning using VisuallyHidden
-   – Adds numeric field for initial WETH liquidity
-   – Calls createAndBuy(name,symbol,cap,reserveWei)
-*/
+// src/components/FIPSModal.tsx – two‑step WETH approve ➜ deploy (handles ∞ allowance)
+// -------------------------------------------------------------------------------------------------
+// * Detects existing allowance
+// * Shows an “Approve WETH” button when needed
+// * Lets the user seed with any amount (defaults to 0.1 WETH)
+// * Once allowance ≥ reserveAmount the “Deploy & Buy” button is enabled
+// * Gracefully handles “infinite” allowance so the UI doesn’t throw a RangeError
+// * Content box is horizontally centered via mx-auto + flex utilities
+// -------------------------------------------------------------------------------------------------
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Dialog, DialogContent } from "./Dialog";
 import DealflowTable from "./DealFlowTable";
 import TradeFIPS from "./TradeFIPS";
@@ -18,6 +22,16 @@ interface FIPSModalProps {
   countyName: string;
 }
 
+/** helper – human‑readable (protect against bigints > JS safe range) */
+const formatEth = (wei: bigint) => {
+  // treat any allowance ≥ ~1e30 wei (~1e12 ETH) as infinite for UI
+  const INF_THRESHOLD = 10n ** 30n;
+  if (wei >= INF_THRESHOLD) return "∞";
+  return (Number(wei) / 1e18).toLocaleString(undefined, {
+    maximumFractionDigits: 5,
+  });
+};
+
 export default function FIPSModal({
   open,
   onClose,
@@ -25,12 +39,22 @@ export default function FIPSModal({
   countyName,
 }: FIPSModalProps) {
   const [view, setView] = useState<"trade" | "dealflow">("trade");
+  const [seedWeth, setSeedWeth] = useState<string>("0.1");
   const [deploying, setDeploy] = useState(false);
   const [deployed, setDeployed] = useState(false);
-  const [seedWeth, setSeedWeth] = useState<string>("");
+  const [approving, setApproving] = useState(false);
+  const [allowance, setAllowance] = useState<bigint>(0n);
 
-  const { createAndBuy } = useDFBond();
+  /* ───────────────── thirdweb hook ───────────────── */
+  const {
+    connected,
+    approveWeth,
+    currentAllowance,
+    MAX_UINT256,
+    createAndBuy,
+  } = useDFBond();
 
+  /* ───────────────── wei helpers ─────────────────── */
   const toWei = (val: string): bigint => {
     if (!val || isNaN(Number(val))) return 0n;
     const [whole, frac = ""] = val.split(".");
@@ -38,6 +62,48 @@ export default function FIPSModal({
     return BigInt(weiStr || "0");
   };
 
+  const reserveWei = useMemo(() => toWei(seedWeth), [seedWeth]);
+  const hasAllowance = allowance >= reserveWei && reserveWei > 0n;
+
+  /* ───────────────── effects ──────────────────────── */
+  useEffect(() => {
+    if (!open || !connected) return;
+    (async () => {
+      const a = await currentAllowance();
+      setAllowance(a);
+    })();
+  }, [open, connected, currentAllowance]);
+
+  /* ───────────────── actions ──────────────────────── */
+  const handleApprove = async () => {
+    try {
+      setApproving(true);
+      await approveWeth(MAX_UINT256); // approve once, good forever
+      const fresh = await currentAllowance();
+      setAllowance(fresh);
+    } catch (err) {
+      console.error("Approve failed", err);
+      alert("WETH approval failed – see console");
+    } finally {
+      setApproving(false);
+    }
+  };
+
+  const handleDeploy = async () => {
+    try {
+      setDeploy(true);
+      const cap = 1_000_000n * 10n ** 18n; // 1M tokens (18 dec)
+      await createAndBuy(countyName, fipsCode, cap, reserveWei);
+      setDeployed(true);
+    } catch (err) {
+      console.error("Deployment failed", err);
+      alert("Token deployment failed – see console");
+    } finally {
+      setDeploy(false);
+    }
+  };
+
+  /* ───────────────── render ───────────────────────── */
   const heading =
     view === "dealflow"
       ? `${countyName} Leaderboard`
@@ -45,34 +111,16 @@ export default function FIPSModal({
       ? `Buy Deal Flow in ${countyName}`
       : `${countyName} is not yet active`;
 
-  const deployCounty = async () => {
-    try {
-      setDeploy(true);
-      const name = countyName;
-      const symbol = fipsCode;
-      const cap = 1_000_000n * 10n ** 18n;
-      const reserveWei = toWei(seedWeth);
-      await createAndBuy(name, symbol, cap, reserveWei);
-      setDeployed(true);
-    } catch (err) {
-      console.error("Deployment failed", err);
-      alert("Token deployment failed. See console.");
-    } finally {
-      setDeploy(false);
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent
-        className="bg-white dark:bg-black text-black dark:text-white rounded-xl p-6"
-      >
+      <DialogContent className="w-[90vw] max-w-lg mx-auto flex flex-col items-center bg-white dark:bg-black text-black dark:text-white rounded-xl p-6">
         <VisuallyHidden>
           <h2 id="df-heading">{heading}</h2>
         </VisuallyHidden>
         <h2 className="text-xl font-semibold mb-4 text-center">{heading}</h2>
 
-        <div className="flex justify-center gap-6 mb-6">
+        {/* Tabs */}
+        <div className="flex justify-center gap-6 mb-6 w-full">
           {( ["trade", "dealflow"] as const).map((t) => (
             <button
               key={t}
@@ -92,11 +140,11 @@ export default function FIPSModal({
           deployed ? (
             <TradeFIPS fipsCode={fipsCode} countyName={countyName} />
           ) : (
-            <div className="text-center space-y-5">
+            <div className="text-center space-y-5 w-full flex flex-col items-center">
               <p className="text-sm text-gray-400">
-                Seed this county with WETH to launch its Deal‑Flow token.
+                Provide WETH liquidity to launch this county.
               </p>
-              <div className="flex justify-center gap-2 items-center">
+              <div className="flex justify-center w-full gap-2 items-center">
                 <input
                   type="number"
                   min="0"
@@ -108,17 +156,33 @@ export default function FIPSModal({
                 />
                 <span className="text-sm text-gray-300">WETH</span>
               </div>
-              <button
-                onClick={deployCounty}
-                disabled={deploying || !seedWeth || Number(seedWeth) <= 0}
-                className="px-5 py-2 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 text-black font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {deploying ? "Deploying…" : "Deploy & Buy"}
-              </button>
-                <p className="text-xs text-gray-500">
-                  You’ll be asked to sign <b>two</b> transactions: 1) approve WETH, 2) deploy + buy.
-                </p>
+              {/* Allowance status */}
+              <p className="text-xs text-gray-500">
+                Current allowance: {formatEth(allowance)} WETH
+              </p>
 
+              {!hasAllowance ? (
+                <button
+                  onClick={handleApprove}
+                  disabled={approving || reserveWei === 0n || !connected}
+                  className="px-5 py-2 rounded-full bg-gradient-to-r from-green-400 to-teal-400 text-black font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {approving ? "Approving…" : "Approve WETH"}
+                </button>
+              ) : (
+                <button
+                  onClick={handleDeploy}
+                  disabled={deploying}
+                  className="px-5 py-2 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 text-black font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {deploying ? "Deploying…" : "Deploy & Buy"}
+                </button>
+              )}
+
+              <p className="text-xs text-gray-500">
+                You’ll sign {hasAllowance ? 1 : 2} transaction
+                {hasAllowance ? "" : "s"}.
+              </p>
             </div>
           )
         ) : (
