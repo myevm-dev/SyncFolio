@@ -115,6 +115,10 @@ export default function FIPSModal({
               >
                 {deploying ? "Deploying…" : "Deploy & Buy"}
               </button>
+                <p className="text-xs text-gray-500">
+                  You’ll be asked to sign <b>two</b> transactions: 1) approve WETH, 2) deploy + buy.
+                </p>
+
             </div>
           )
         ) : (
