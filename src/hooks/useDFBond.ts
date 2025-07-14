@@ -1,70 +1,143 @@
 // src/hooks/useDFBond.ts
-import { createThirdwebClient, defineChain, getContract } from "thirdweb";
+import {
+  createThirdwebClient,
+  defineChain,
+  getContract,
+  prepareContractCall,
+  sendTransaction,
+  readContract,
+} from "thirdweb";
+import { useActiveAccount } from "thirdweb/react";
 import { DFBondABI } from "../lib/DFBondABI";
+import { ERC20_ABI } from "../lib/ERC20_ABI";
 
+/* ------------------------------------------------------------------
+   Thirdweb client & chain setup
+   ------------------------------------------------------------------*/
 const client = createThirdwebClient({
-  clientId: import.meta.env.VITE_TEMPLATE_CLIENT_ID, // put your true client-id in .env
+  clientId: import.meta.env.VITE_TEMPLATE_CLIENT_ID,
 });
 
-const BASE_CHAIN = defineChain(8453);                       // Base mainnet
-const DFBOND_ADDRESS = "0x2681D784e42AEA9eCe5fC3D5D6C05BE5199807F2";
+const BASE_CHAIN = defineChain(8453); // Base main‑net
+export const DFBOND_ADDRESS =
+  "0x2681D784e42AEA9eCe5fC3D5D6C05BE5199807F2" as const;
+const WETH_ADDRESS =
+  "0x4200000000000000000000000000000000000006" as const; // canonical WETH on Base
 
-// ────────────────────────────────────────────────────────────
-//  Cast to any to avoid strict-ABI generics headaches
-// ────────────────────────────────────────────────────────────
+/* ------------------------------------------------------------------
+   Contract handles (ABI casted to any – avoids deep generic gymnastics)
+   ------------------------------------------------------------------*/
 const dfBond = getContract({
   client,
   chain: BASE_CHAIN,
   address: DFBOND_ADDRESS,
-  abi: DFBondABI,
-}) as any;
+  abi: DFBondABI as any,
+});
 
-/* =========================================================================
-   Hook
-   ========================================================================= */
+const weth = getContract({
+  client,
+  chain: BASE_CHAIN,
+  address: WETH_ADDRESS,
+  abi: ERC20_ABI as any,
+});
+
+/* ------------------------------------------------------------------
+   Helper – give DFBond permission to pull WETH
+   ------------------------------------------------------------------*/
+// helper – approve the DFBond contract to spend user's WETH
+const approveWeth = async (
+  account: any,
+  spender: string,
+  amount: bigint,
+) => {
+  const tx = prepareContractCall({
+    contract: weth,
+    method: "approve",
+    params: [spender, amount],
+  });
+  await sendTransaction({ account, transaction: tx });
+};
+
+/* ==================================================================
+   Public React hook (safe to call before wallet connects)
+   ==================================================================*/
 export const useDFBond = () => {
-  /* ---------------- write functions ---------------- */
+  const activeAccount = useActiveAccount();
+  const connected = !!activeAccount;
+
+  /* ------------------------- writes ------------------------------ */
   const createAndBuy = async (
     name: string,
     symbol: string,
     maxSupply: bigint,
-    reserveAmount: bigint
-  ) => dfBond.call("createAndBuy", [name, symbol, maxSupply, reserveAmount]);
+    reserveAmount: bigint,
+  ) => {
+    if (!activeAccount) throw new Error("Connect wallet first");
+    await approveWeth(activeAccount, DFBOND_ADDRESS, reserveAmount);
+    const tx = prepareContractCall({
+      contract: dfBond,
+      method: "createAndBuy",
+      params: [name, symbol, maxSupply, reserveAmount],
+    });
+    await sendTransaction({ account: activeAccount as any, transaction: tx });
+  };
 
   const buy = async (
     token: string,
     reserveAmt: bigint,
-    minReward: bigint = 0n
-  ) => dfBond.call("buy", [token, reserveAmt, minReward]);
+    minReward: bigint = 0n,
+  ) => {
+    if (!activeAccount) throw new Error("Connect wallet first");
+    await approveWeth(activeAccount, DFBOND_ADDRESS, reserveAmt);
+    const tx = prepareContractCall({
+      contract: dfBond,
+      method: "buy",
+      params: [token, reserveAmt, minReward],
+    });
+    await sendTransaction({ account: activeAccount as any, transaction: tx });
+  };
 
   const sell = async (
     token: string,
     amount: bigint,
-    minRefund: bigint = 0n
-  ) => dfBond.call("sell", [token, amount, minRefund]);
+    minRefund: bigint = 0n,
+  ) => {
+    if (!activeAccount) throw new Error("Connect wallet first");
+    const tx = prepareContractCall({
+      contract: dfBond,
+      method: "sell",
+      params: [token, amount, minRefund],
+    });
+    await sendTransaction({ account: activeAccount as any, transaction: tx });
+  };
 
-  /* ---------------- read helpers ---------------- */
-  const getPrice = async (token: string): Promise<bigint> =>
-    dfBond.read("currentPrice", [token]);
+  /* ------------------------- reads ------------------------------- */
+  const getPrice = (token: string) =>
+    readContract({
+      contract: dfBond,
+      method: "currentPrice",
+      params: [token],
+    }) as Promise<bigint>;
 
-  const getMintPreview = async (
-    token: string,
-    reserveAmt: bigint
-  ): Promise<[bigint, bigint]> =>
-    dfBond.read("getMintReward", [token, reserveAmt]);
+  const getMintPreview = (token: string, reserveAmt: bigint) =>
+    readContract({
+      contract: dfBond,
+      method: "getMintReward",
+      params: [token, reserveAmt],
+    }) as Promise<[bigint, bigint]>;
 
-  const getBurnPreview = async (
-    token: string,
-    amount: bigint
-  ): Promise<[bigint, bigint]> =>
-    dfBond.read("getBurnRefund", [token, amount]);
+  const getBurnPreview = (token: string, amount: bigint) =>
+    readContract({
+      contract: dfBond,
+      method: "getBurnRefund",
+      params: [token, amount],
+    }) as Promise<[bigint, bigint]>;
 
   return {
-    /* writes */
+    connected,
     createAndBuy,
     buy,
     sell,
-    /* reads */
     getPrice,
     getMintPreview,
     getBurnPreview,
