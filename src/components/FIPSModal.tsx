@@ -1,14 +1,5 @@
-// src/components/FIPSModal.tsx – two‑step WETH approve ➜ deploy (handles ∞ allowance)
-// -------------------------------------------------------------------------------------------------
-// * Detects existing allowance
-// * Shows an “Approve WETH” button when needed
-// * Lets the user seed with any amount (defaults to 0.1 WETH)
-// * Once allowance ≥ reserveAmount the “Deploy & Buy” button is enabled
-// * Gracefully handles “infinite” allowance so the UI doesn’t throw a RangeError
-// * Content box is horizontally centered via mx-auto + flex utilities
-// -------------------------------------------------------------------------------------------------
-
-import { useEffect, useMemo, useState } from "react";
+// src/components/FIPSModal.tsx
+import { useEffect, useState } from "react";
 import { Dialog, DialogContent } from "./Dialog";
 import DealflowTable from "./DealFlowTable";
 import TradeFIPS from "./TradeFIPS";
@@ -18,92 +9,93 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 interface FIPSModalProps {
   open: boolean;
   onClose: () => void;
-  fipsCode: string;
-  countyName: string;
+  fipsCode: string;   // symbol of the county token
+  countyName: string; // pretty label
 }
 
-/** helper – human‑readable (protect against bigints > JS safe range) */
-const formatEth = (wei: bigint) => {
-  // treat any allowance ≥ ~1e30 wei (~1e12 ETH) as infinite for UI
-  const INF_THRESHOLD = 10n ** 30n;
-  if (wei >= INF_THRESHOLD) return "∞";
-  return (Number(wei) / 1e18).toLocaleString(undefined, {
-    maximumFractionDigits: 5,
-  });
-};
-
+/**
+ * Modal that lets the user seed a county with WETH — or trade the token
+ * once it is live.  We deliberately separate the *allowance* step from the
+ * *launch/buy* step so the UX is crystal‑clear.
+ */
 export default function FIPSModal({
   open,
   onClose,
   fipsCode,
   countyName,
 }: FIPSModalProps) {
+  /* ------------- local ui state ------------- */
   const [view, setView] = useState<"trade" | "dealflow">("trade");
-  const [seedWeth, setSeedWeth] = useState<string>("0.1");
-  const [deploying, setDeploy] = useState(false);
+  const [seedWeth, setSeedWeth] = useState<string>("");           // user input
+  const [allowance, setAllowance] = useState<bigint>(0n);          // fetched
+  const [working, setWorking] = useState<"approve" | "deploy" | "">("");
   const [deployed, setDeployed] = useState(false);
-  const [approving, setApproving] = useState(false);
-  const [allowance, setAllowance] = useState<bigint>(0n);
 
-  /* ───────────────── thirdweb hook ───────────────── */
+  /* ------------- on‑chain helpers ------------- */
   const {
     connected,
-    approveWeth,
-    currentAllowance,
     MAX_UINT256,
-    createAndBuy,
+    currentAllowance,
+    approveWeth,
+    launchOrBuy,
   } = useDFBond();
 
-  /* ───────────────── wei helpers ─────────────────── */
+  /* fetch allowance every time modal opens or tx completes */
+  const refreshAllowance = async () => {
+    try {
+      const a = await currentAllowance();
+      setAllowance(a);
+    } catch {
+      setAllowance(0n); // silent fail (wallet may not be connected yet)
+    }
+  };
+
+  useEffect(() => {
+    if (open) refreshAllowance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, connected]);
+
+  /* bigint helpers ---------------------------------------------------------------- */
   const toWei = (val: string): bigint => {
     if (!val || isNaN(Number(val))) return 0n;
     const [whole, frac = ""] = val.split(".");
-    const weiStr = whole + frac.padEnd(18, "0").slice(0, 18);
-    return BigInt(weiStr || "0");
+    return BigInt((whole + frac.padEnd(18, "0").slice(0, 18)) || "0");
   };
+  const fmt = (wei: bigint) => (wei === MAX_UINT256 ? "∞" : Number(wei) / 1e18);
 
-  const reserveWei = useMemo(() => toWei(seedWeth), [seedWeth]);
-  const hasAllowance = allowance >= reserveWei && reserveWei > 0n;
-
-  /* ───────────────── effects ──────────────────────── */
-  useEffect(() => {
-    if (!open || !connected) return;
-    (async () => {
-      const a = await currentAllowance();
-      setAllowance(a);
-    })();
-  }, [open, connected, currentAllowance]);
-
-  /* ───────────────── actions ──────────────────────── */
+  /* approve step ------------------------------------------------------------------- */
   const handleApprove = async () => {
     try {
-      setApproving(true);
-      await approveWeth(MAX_UINT256); // approve once, good forever
-      const fresh = await currentAllowance();
-      setAllowance(fresh);
+      setWorking("approve");
+      const need = toWei(seedWeth || "0.0");
+      await approveWeth(need);
+      await refreshAllowance();
     } catch (err) {
-      console.error("Approve failed", err);
-      alert("WETH approval failed – see console");
+      console.error("WETH approval failed", err);
+      alert("WETH approval failed – see console");
     } finally {
-      setApproving(false);
+      setWorking("");
     }
   };
 
+  /* deploy+buy step ---------------------------------------------------------------- */
   const handleDeploy = async () => {
     try {
-      setDeploy(true);
-      const cap = 1_000_000n * 10n ** 18n; // 1M tokens (18 dec)
-      await createAndBuy(countyName, fipsCode, cap, reserveWei);
+      setWorking("deploy");
+      const reserveWei = toWei(seedWeth);
+      await launchOrBuy(countyName, fipsCode, reserveWei);
       setDeployed(true);
     } catch (err) {
-      console.error("Deployment failed", err);
-      alert("Token deployment failed – see console");
+      console.error("Token deployment failed", err);
+      alert("Token deployment failed – see console");
     } finally {
-      setDeploy(false);
+      setWorking("");
     }
   };
 
-  /* ───────────────── render ───────────────────────── */
+  /* dynamic ui bits --------------------------------------------------------------- */
+  const hasAllowance = allowance === MAX_UINT256 || allowance >= toWei(seedWeth || "0");
+
   const heading =
     view === "dealflow"
       ? `${countyName} Leaderboard`
@@ -111,16 +103,17 @@ export default function FIPSModal({
       ? `Buy Deal Flow in ${countyName}`
       : `${countyName} is not yet active`;
 
+  /* -------------------------------------------------------------------------------- */
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="w-[90vw] max-w-lg mx-auto flex flex-col items-center bg-white dark:bg-black text-black dark:text-white rounded-xl p-6">
+      <DialogContent className="bg-black text-white rounded-xl p-6 max-w-md w-[90vw]">
         <VisuallyHidden>
           <h2 id="df-heading">{heading}</h2>
         </VisuallyHidden>
-        <h2 className="text-xl font-semibold mb-4 text-center">{heading}</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-center">{heading}</h2>
 
-        {/* Tabs */}
-        <div className="flex justify-center gap-6 mb-6 w-full">
+        {/* switcher */}
+        <div className="flex justify-center gap-6 mb-6">
           {( ["trade", "dealflow"] as const).map((t) => (
             <button
               key={t}
@@ -136,15 +129,18 @@ export default function FIPSModal({
           ))}
         </div>
 
+        {/* main body */}
         {view === "trade" ? (
           deployed ? (
             <TradeFIPS fipsCode={fipsCode} countyName={countyName} />
           ) : (
-            <div className="text-center space-y-5 w-full flex flex-col items-center">
+            <div className="text-center space-y-4">
               <p className="text-sm text-gray-400">
                 Provide WETH liquidity to launch this county.
               </p>
-              <div className="flex justify-center w-full gap-2 items-center">
+
+              {/* input */}
+              <div className="flex justify-center gap-2 items-center">
                 <input
                   type="number"
                   min="0"
@@ -156,32 +152,33 @@ export default function FIPSModal({
                 />
                 <span className="text-sm text-gray-300">WETH</span>
               </div>
-              {/* Allowance status */}
-              <p className="text-xs text-gray-500">
-                Current allowance: {formatEth(allowance)} WETH
+
+              {/* allowance readout */}
+              <p className="text-sm text-gray-400">
+                Current allowance: {fmt(allowance)} WETH
               </p>
 
-              {!hasAllowance ? (
+              {/* action button */}
+              {hasAllowance ? (
                 <button
-                  onClick={handleApprove}
-                  disabled={approving || reserveWei === 0n || !connected}
-                  className="px-5 py-2 rounded-full bg-gradient-to-r from-green-400 to-teal-400 text-black font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+                  onClick={handleDeploy}
+                  disabled={working === "deploy" || !seedWeth}
+                  className="px-6 py-2 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 text-black font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {approving ? "Approving…" : "Approve WETH"}
+                  {working === "deploy" ? "Deploying…" : "Deploy & Buy"}
                 </button>
               ) : (
                 <button
-                  onClick={handleDeploy}
-                  disabled={deploying}
-                  className="px-5 py-2 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 text-black font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+                  onClick={handleApprove}
+                  disabled={working === "approve" || !seedWeth}
+                  className="px-6 py-2 rounded-full bg-green-600 hover:bg-green-500 font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  {deploying ? "Deploying…" : "Deploy & Buy"}
+                  {working === "approve" ? "Approving…" : "Approve WETH"}
                 </button>
               )}
 
               <p className="text-xs text-gray-500">
-                You’ll sign {hasAllowance ? 1 : 2} transaction
-                {hasAllowance ? "" : "s"}.
+                You’ll sign {hasAllowance ? 1 : 2} transaction{hasAllowance ? "" : "s"}.
               </p>
             </div>
           )
