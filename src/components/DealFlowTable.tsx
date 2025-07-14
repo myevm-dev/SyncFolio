@@ -6,29 +6,36 @@ interface DealflowTableProps {
   fipsCode: string;
 }
 
-// Temporary mock data
+/* ------------------------------------------------------------------
+   Temporary mock data – now includes “analyze” status
+   ------------------------------------------------------------------*/
 const mockData = [
   {
     id: "0x123...abcd",
     displayName: "agent-zero",
     avatar: window.multiavatar("agent-zero"),
-    quantity: "4,200 FIPS"
+    quantity: "4,200 FIPS",
+    analyze: true,          // ✅ NEW
   },
   {
     id: "0x456...efgh",
     displayName: "metro-max",
     avatar: window.multiavatar("metro-max"),
-    quantity: "2830 FIPS"
+    quantity: "2,830 FIPS",
+    analyze: false,         // ✅ NEW
   },
   {
     id: "0x789...wxyz",
     displayName: "txwhale",
     avatar: window.multiavatar("txwhale"),
-    quantity: "2,300 FIPS"
-  }
+    quantity: "2,300 FIPS",
+    analyze: true,          // ✅ NEW
+  },
 ];
 
-const DealflowTable: React.FC<DealflowTableProps> = ({ fipsCode }) => {
+/* ------------------------------------------------------------------ */
+
+const DealflowTable: React.FC<DealflowTableProps> = () => {
   return (
     <div className="overflow-x-auto mt-6">
       <table className="min-w-full bg-[#050505] border border-neutral-700 text-sm text-left text-white rounded-md overflow-hidden">
@@ -39,12 +46,15 @@ const DealflowTable: React.FC<DealflowTableProps> = ({ fipsCode }) => {
             <th className="px-4 py-3">Name</th>
             <th className="px-4 py-3">Wallet</th>
             <th className="px-4 py-3">Quantity</th>
+            <th className="px-4 py-3">Analyze</th> {/* NEW column */}
           </tr>
         </thead>
+
         <tbody>
           {mockData.map((user, index) => (
             <tr key={user.id} className="border-b border-zinc-700">
               <td className="px-4 py-2">{index + 1}</td>
+
               <td className="px-4 py-2">
                 <Link to={`/profile/${user.displayName}`}>
                   <div
@@ -53,6 +63,7 @@ const DealflowTable: React.FC<DealflowTableProps> = ({ fipsCode }) => {
                   />
                 </Link>
               </td>
+
               <td className="px-4 py-2">
                 <Link
                   to={`/profile/${user.displayName}`}
@@ -61,8 +72,24 @@ const DealflowTable: React.FC<DealflowTableProps> = ({ fipsCode }) => {
                   {user.displayName}
                 </Link>
               </td>
+
               <td className="px-4 py-2 break-all text-accent">{user.id}</td>
-              <td className="px-4 py-2 text-green-400 font-medium">{user.quantity}</td>
+              <td className="px-4 py-2 text-green-400 font-medium">
+                {user.quantity}
+              </td>
+
+              {/* ------------ Analyze badge ------------ */}
+              <td className="px-4 py-2">
+                {user.analyze ? (
+                  <span className="inline-block px-3 py-0.5 rounded-full text-xs font-semibold bg-green-500/20 text-green-300">
+                    On
+                  </span>
+                ) : (
+                  <span className="inline-block px-3 py-0.5 rounded-full text-xs font-semibold bg-red-500/20 text-red-300">
+                    Off
+                  </span>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
