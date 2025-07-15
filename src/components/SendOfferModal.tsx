@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { DealInput } from "../types/DealInput";
 
@@ -17,13 +17,23 @@ interface Props {
 }
 
 export default function SendOfferModal({ formData, onClose }: Props) {
+  const [certified, setCertified] = useState(false);
+  const [hasNotified, setHasNotified] = useState(false);
+
   const getAvatarSvg = () => {
     return window.multiavatar(`${ADMIN_NAME}-${ADMIN_ADDRESS}`);
   };
 
-  const handleSend = () => {
+  const handleNotify = () => {
     console.log("Sending offer data to admin:", formData);
     alert("Offer sent to admin!");
+    setHasNotified(true);
+  };
+
+  const handleDownload = () => {
+    if (!certified || !hasNotified) return;
+    // Replace with real download logic later
+    alert("Download started.");
     onClose();
   };
 
@@ -41,14 +51,14 @@ export default function SendOfferModal({ formData, onClose }: Props) {
         </button>
 
         <h2 className="text-2xl font-bold text-center mb-6 text-white">
-            Notify{" "}
-            <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                0xNateZ
-            </span>{" "}
-            and Download Offer
-            </h2>
+          Notify{" "}
+          <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            0xNateZ
+          </span>{" "}
+          and Download Offer
+        </h2>
 
-        <div className="mb-4 border border-neutral-700 rounded-md p-4 bg-[#050505]">
+        <div className="mb-6 border border-neutral-700 rounded-md p-4 bg-[#050505] flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-full overflow-hidden"
@@ -63,11 +73,36 @@ export default function SendOfferModal({ formData, onClose }: Props) {
               </p>
             </div>
           </div>
+
+          <button
+            onClick={handleNotify}
+            className="text-xs px-3 py-1 rounded text-white bg-gradient-to-r from-purple-500 to-cyan-500 hover:opacity-90"
+          >
+            Notify
+          </button>
+        </div>
+
+        <div className="flex items-start gap-2 text-sm text-gray-300 mb-4">
+          <input
+            type="checkbox"
+            id="certify"
+            checked={certified}
+            onChange={(e) => setCertified(e.target.checked)}
+            className="mt-1"
+          />
+          <label htmlFor="certify">
+            I certify that this information is accurate to the best of my knowledge.
+          </label>
         </div>
 
         <button
-          onClick={handleSend}
-          className="w-full mt-4 px-4 py-2 bg-gradient-to-r from-purple-400 to-cyan-400 text-black font-semibold rounded shadow-md"
+          disabled={!certified || !hasNotified}
+          onClick={handleDownload}
+          className={`w-full px-4 py-2 font-semibold rounded shadow-md transition ${
+            certified && hasNotified
+              ? "bg-gradient-to-r from-purple-400 to-cyan-400 text-black"
+              : "bg-gray-700 text-gray-400 cursor-not-allowed"
+          }`}
         >
           Download
         </button>
