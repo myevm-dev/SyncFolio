@@ -48,6 +48,9 @@ export default function InstantOfferPage() {
       <h1 className="text-2xl font-bold text-center mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
         Instant Offer Form
       </h1>
+      <p className="text-center text-gray-400 mb-6">
+        No Sign Up Required. Fill out the form below to get your instant offer.
+      </p>
 
       <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <input
