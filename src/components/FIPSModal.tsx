@@ -3,11 +3,10 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "./Dialog";
 import DealflowTable from "./DealFlowTable";
 import TradeFips from "./TradeFIPS";
- "./TradeFips"; "./TradeFips";
 import { useDFBond } from "../hooks/useDFBond";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { useActiveAccount } from "thirdweb/react";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import { useActiveAccount } from "thirdweb/react";
 
 interface FIPSModalProps {
   open: boolean;
@@ -17,28 +16,16 @@ interface FIPSModalProps {
 }
 
 export default function FIPSModal({ open, onClose, fipsCode, countyName }: FIPSModalProps) {
-  // Firestore setup
   const db = getFirestore();
+  const account = useActiveAccount(); // ensure wallet is connected
 
-  /* ------------- local ui state ------------- */
   const [view, setView] = useState<"trade" | "dealflow">("trade");
-  const [seedWeth, setSeedWeth] = useState<string>("");
-  const [allowance, setAllowance] = useState<bigint>(0n);
-  const [working, setWorking] = useState<"approve" | "create" | "buy" | "">("");
+  const [working, setWorking] = useState<"create" | "buy" | "">("");
   const [created, setCreated] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
 
-  /* ------------- on‑chain helpers ------------- */
-  const {
-    connected,
-    MAX_UINT256,
-    currentAllowance,
-    approveWeth,
-    createToken,
-    buy,
-  } = useDFBond();
+  const { createToken } = useDFBond();
 
-  // check Firestore for existing token
   useEffect(() => {
     if (!open || !fipsCode) return;
     (async () => {
@@ -48,44 +35,12 @@ export default function FIPSModal({ open, onClose, fipsCode, countyName }: FIPSM
     })();
   }, [open, fipsCode]);
 
-  // refresh allowance when modal opens or wallet changes
-  useEffect(() => {
-    if (open) refreshAllowance();
-  }, [open, connected]);
-
-  const refreshAllowance = async () => {
-    try {
-      const a = await currentAllowance();
-      setAllowance(a);
-    } catch {
-      setAllowance(0n);
-    }
-  };
-
-  const toWei = (val: string): bigint => {
-    if (!val || isNaN(Number(val))) return 0n;
-    const [whole, frac = ""] = val.split(".");
-    return BigInt((whole + frac.padEnd(18, "0").slice(0, 18)) || "0");
-  };
-  const fmt = (wei: bigint) => (wei === MAX_UINT256 ? "∞" : Number(wei) / 1e18);
-
-  /* approve WETH */
-  const handleApprove = async () => {
-    try {
-      setWorking("approve");
-      const need = toWei(seedWeth || "0.0");
-      await approveWeth(need);
-      await refreshAllowance();
-    } catch (err) {
-      console.error("WETH approval failed", err);
-      alert("WETH approval failed – see console");
-    } finally {
-      setWorking("");
-    }
-  };
-
-  /* create token on-chain + save Firestore */
   const handleCreate = async () => {
+    if (!account) {
+      alert("Connect wallet first");
+      return;
+    }
+
     try {
       setWorking("create");
       const receipt = await createToken(countyName, fipsCode, 1_000_000n);
@@ -103,23 +58,6 @@ export default function FIPSModal({ open, onClose, fipsCode, countyName }: FIPSM
     }
   };
 
-  /* buy tokens on-chain */
-  const handleBuy = async () => {
-    try {
-      setWorking("buy");
-      const reserveWei = toWei(seedWeth);
-      const receipt = await buy(fipsCode, reserveWei, 0n);
-      if (receipt?.transactionHash) setTxHash(receipt.transactionHash);
-    } catch (err) {
-      console.error("Token purchase failed", err);
-      alert("Token purchase failed – see console");
-    } finally {
-      setWorking("");
-    }
-  };
-
-  /* UI logic */
-  const hasAllowance = allowance === MAX_UINT256 || allowance >= toWei(seedWeth || "0");
   const heading =
     view === "dealflow"
       ? `${countyName} Leaderboard`
@@ -172,36 +110,14 @@ export default function FIPSModal({ open, onClose, fipsCode, countyName }: FIPSM
             </div>
           ) : (
             <div className="text-center space-y-4">
-              <p className="text-sm text-gray-400">Provide WETH liquidity to create this county token.</p>
-              <div className="flex justify-center gap-2 items-center">
-                <input
-                  type="number"
-                  min="0"
-                  step="0.0001"
-                  placeholder="WETH to seed"
-                  value={seedWeth}
-                  onChange={(e) => setSeedWeth(e.target.value)}
-                  className="w-40 px-3 py-2 rounded bg-zinc-800 text-white text-sm text-center border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                />
-                <span className="text-sm text-gray-300">WETH</span>
-              </div>
-              <p className="text-sm text-gray-400">Current allowance: {fmt(allowance)} WETH</p>
-              <div className="flex flex-col gap-2">
-                <button
-                  onClick={handleApprove}
-                  disabled={working === "approve" || !seedWeth}
-                  className="px-6 py-2 rounded-full bg-green-600 hover:bg-green-500 font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {working === "approve" ? "Approving…" : "Approve WETH"}
-                </button>
-                <button
-                  onClick={handleCreate}
-                  disabled={working === "create" || !hasAllowance || !seedWeth}
-                  className="px-6 py-2 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 text-black font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {working === "create" ? "Creating…" : "Create Token"}
-                </button>
-              </div>
+              <p className="text-sm text-gray-400">Click below to activate this county token.</p>
+              <button
+                onClick={handleCreate}
+                disabled={working === "create" || !account}
+                className="px-6 py-2 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 text-black font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {working === "create" ? "Creating…" : "Create Token"}
+              </button>
             </div>
           )
         ) : (
