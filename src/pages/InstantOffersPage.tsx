@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { DealInput } from "../types/DealInput";
+import SendOfferModal from "../components/SendOfferModal"; // ✅ New custom modal
 
 const emptyForm: DealInput = {
   address: "",
@@ -20,6 +21,7 @@ const emptyForm: DealInput = {
 export default function InstantOfferPage() {
   const [formData, setFormData] = useState<DealInput>(emptyForm);
   const [submitted, setSubmitted] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -46,9 +48,6 @@ export default function InstantOfferPage() {
       <h1 className="text-2xl font-bold text-center mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
         Instant Offer Form
       </h1>
-      <p className="text-center text-gray-400 mb-6">
-        No Sign Up Required. Fill out the form below to get your instant offer.
-      </p>
 
       <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <input
@@ -117,12 +116,19 @@ export default function InstantOfferPage() {
             <button
               type="button"
               className="px-6 py-2 text-black bg-gradient-to-r from-purple-400 to-cyan-400 rounded font-semibold shadow-md"
-              onClick={() => alert("Send logic coming soon")}
+              onClick={() => setShowModal(true)}
             >
-              Send and Download
+              Get Offer Now
             </button>
           </div>
         </>
+      )}
+
+      {showModal && (
+        <SendOfferModal
+          formData={formData}
+          onClose={() => setShowModal(false)}
+        />
       )}
     </div>
   );
