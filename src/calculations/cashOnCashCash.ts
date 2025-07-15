@@ -9,7 +9,7 @@ export default function cashOnCashCash(input: DealInput): CashOnCashResult {
   const insurance = parseFloat(input.insurance || "0");
   const hoa = parseFloat(input.hoa || "0");
 
-  const offerPrice = (arv * 0.73) - rehab;
+  const offerPrice = (arv * 0.75) - rehab;
   const down = offerPrice * 0.2;
   const financed = offerPrice * 0.8;
 

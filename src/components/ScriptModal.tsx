@@ -343,7 +343,8 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
                           )}
 
                           {(() => {
-                            const offerAmount = ((listing * 0.72) - rehab).toFixed(0);
+                            const offerAmount = ((listing - rehab) * 0.75).toFixed(0);
+
 
 
                             return (
