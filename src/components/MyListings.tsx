@@ -62,12 +62,12 @@ const MyListings: React.FC = () => {
             <div className="text-white text-base font-bold leading-none">2112</div>
           </Link>
 
-          <AnimatedButton
-            onClick={() => alert("Instant Offer Coming Soon")}
-            className="w-full sm:w-auto min-h-[44px] px-4 py-2 flex items-center justify-center"
-          >
-            InstantOffer
-          </AnimatedButton>
+          <Link to="/instant-offer" className="w-full sm:w-auto">
+            <AnimatedButton className="w-full sm:w-auto min-h-[44px] px-4 py-2 flex items-center justify-center">
+              InstantOffer
+            </AnimatedButton>
+          </Link>
+
         </div>
 
         {/* Right: My Listings / Create Listing */}
