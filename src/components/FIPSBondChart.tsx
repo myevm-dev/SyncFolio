@@ -17,7 +17,7 @@ const FIPSBondChart: React.FC = () => {
   }));
 
   return (
-    <div className="w-full h-64 bg-black border border-neutral-700 rounded-md">
+    <div className="w-[420px] h-64 bg-black border border-neutral-700 rounded-md">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 20, right: 30, left: 10, bottom: 10 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#444" />

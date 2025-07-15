@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "./Dialog";
 import DealflowTable from "./DealFlowTable";
 import TradeFips from "./TradeFIPS";
-
+ "./TradeFips"; "./TradeFips";
 import { useDFBond } from "../hooks/useDFBond";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useActiveAccount } from "thirdweb/react";
@@ -129,7 +129,7 @@ export default function FIPSModal({ open, onClose, fipsCode, countyName }: FIPSM
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-black text-white rounded-xl p-6 w-full max-w-[620px] mx-auto my-auto flex flex-col justify-center items-center">
+      <DialogContent className="bg-black text-white rounded-xl p-6 w-full max-w-[860px] mx-auto my-auto flex flex-col justify-center items-center">
         <DialogTitle>
           <VisuallyHidden>
             <h2 id="df-heading">{heading}</h2>
