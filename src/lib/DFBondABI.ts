@@ -67,4 +67,27 @@ export const DFBondABI = [
       { name: "", type: "uint256" },
     ],
   },
+    {
+    name: "createToken",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "name", type: "string" },
+      { name: "symbol", type: "string" },
+      { name: "maxTokenSupply", type: "uint256" },
+    ],
+    outputs: [{ name: "", type: "address" }],
+  },
+  {
+    name: "createAndBuy",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "name", type: "string" },
+      { name: "symbol", type: "string" },
+      { name: "maxTokenSupply", type: "uint256" },
+      { name: "reserveAmount", type: "uint256" },
+    ],
+    outputs: [],
+  },
 ] as const;

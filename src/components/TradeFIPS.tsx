@@ -10,17 +10,13 @@ interface TradeFipsProps {
 const TradeFips: React.FC<TradeFipsProps> = ({ fipsCode, countyName }) => {
   const [quantity, setQuantity] = useState<string>("");
 
-  const handleTrade = (type: "buy" | "sell") => {
-    const amount = parseFloat(quantity);
-    if (amount > 0) {
-      console.log(`Executing ${type} of ${amount} for FIPS ${fipsCode}`);
-    }
-  };
-
   return (
-    <div className="bg-black border border-neutral-700 rounded-xl p-6 text-white shadow-lg w-full max-w-2xl mx-auto">
+    <div className="bg-black border border-neutral-700 rounded-xl p-6 text-white shadow-lg w-full max-w-4xl mx-auto">
       <div className="mb-6">
-        <FIPSBondChart />
+        {/* Chart container given full available width */}
+        <div className="w-full h-64">
+          <FIPSBondChart />
+        </div>
       </div>
 
       <div className="mb-4">
@@ -36,26 +32,25 @@ const TradeFips: React.FC<TradeFipsProps> = ({ fipsCode, countyName }) => {
       </div>
 
       <div className="flex gap-4 mb-2">
+        {/* Disabled Buy button */}
         <button
-          onClick={() => handleTrade("buy")}
-          className="flex-1 py-2 rounded-full text-black text-sm font-semibold bg-gradient-to-r from-green-500 to-lime-500 hover:from-green-600 hover:to-lime-600"
+          disabled
+          className="flex-1 py-2 rounded-full text-black text-sm font-semibold bg-gradient-to-r from-green-500 to-lime-500 opacity-50 cursor-not-allowed"
         >
           Buy
         </button>
         <button
-          onClick={() => handleTrade("sell")}
+          onClick={() => console.log(`Sell not implemented`)}
           className="flex-1 py-2 rounded-full text-black text-sm font-semibold bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600"
         >
           Sell
         </button>
       </div>
 
-    <div className="flex flex-col sm:flex-row sm:justify-between text-sm mt-2 gap-1 sm:gap-0">
+      <div className="flex flex-col sm:flex-row sm:justify-between text-sm mt-2 gap-1 sm:gap-0">
         <span className="text-[#fd01f5] font-medium">Folio Balance:</span>
         <span className="text-white font-medium">{countyName} Balance:</span>
-    </div>
-
-
+      </div>
     </div>
   );
 };
