@@ -10,6 +10,7 @@ const features = [
   { slug: "creative-offer-generator", title: "✨ Creative Offer Generator", description: "Create offers that are sure to sell to our buyer list." },
   { slug: "customizable-call-scripts", title: "📜 Customizable Call Scripts", description: "Dynamic call script using the checkmate pitch." },
   { slug: "referral-program", title: "💸 Referral Program", description: "Earn $300 every time a person you invite closes a deal." },
+  { slug: "instant-offers", title: "⚡ Instant Offers", description: "Get instant offers on your properties with just a few clicks." },
   { slug: "top-ranked-agents", title: "🏆 Top Ranked Real Estate Agents", description: "View America's best and worst agents based on user rankings." },
 ];
 
@@ -21,18 +22,7 @@ export default function FeaturesSection() {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Full Width Card */}
-        <Link
-          to="/features/full-platform-walkthrough"
-          className="sm:col-span-2 lg:col-span-3 border border-zinc-700 bg-black p-6 rounded-2xl shadow-md hover:shadow-xl transition hover:border-cyan-500 block text-center"
-        >
-          <h3 className="text-lg font-semibold mb-2 text-[#068989]">
-            🧭 Platform Walkthrough Coming Soon
-          </h3>
-          <p className="text-sm text-gray-300">
-            A step-by-step demo of how SyncFolio works from sign up to offer submission.
-          </p>
-        </Link>
+        
 
         {features.map((feature, index) => (
           <Link
