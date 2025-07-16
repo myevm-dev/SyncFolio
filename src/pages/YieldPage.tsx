@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import BasicYieldGroup from "../components/BasicYieldGroup";
 import AdvancedYieldGroup from "../components/AdvancedYieldGroup";
+import Web3Notice from "../components/Web3Notice"; // ✅ Import notice
 
 export default function YieldPage() {
   const [mode, setMode] = useState<"basic" | "advanced" | "swap">("basic");
@@ -12,7 +13,9 @@ export default function YieldPage() {
         Passively Earn with USD or Hedge Ꞙolio
       </h1>
 
-      <div className="flex justify-center gap-6 mb-4">
+      <Web3Notice /> {/* ✅ Notice bar inserted */}
+
+      <div className="flex justify-center gap-6 mb-4 mt-6">
         {["basic", "advanced", "swap"].map((m) => (
           <button
             key={m}

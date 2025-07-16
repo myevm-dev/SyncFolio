@@ -7,6 +7,7 @@ import AnimatedButton from "../components/AnimatedButton";
 import MyBuyboxModal from "../components/MyBuyboxModal";
 import Flowboard from "../components/Flowboard";
 import { Dialog, DialogContent } from "../components/Dialog";
+import Web3Notice from "../components/Web3Notice"; 
 
 export default function BuyPage() {
   const [mode, setMode] = useState<"dealflow" | "marketplace">("dealflow");
@@ -19,7 +20,7 @@ export default function BuyPage() {
         <h1 className="text-3xl font-bold text-center mb-4">
           Submit your Buybox or Search our Deal Marketplace.
         </h1>
-
+        <Web3Notice />
 
         {/* Button Row */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
