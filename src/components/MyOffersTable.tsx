@@ -105,7 +105,7 @@ const MyOffersTable = () => {
                   onClick={() => markAsAccepted(offer.id, offer)}
                   className="px-4 py-1 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 text-black font-semibold text-sm hover:brightness-110"
                 >
-                  Accept
+                  They Accept
                 </button>
 
                 <button

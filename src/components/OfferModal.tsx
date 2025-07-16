@@ -247,7 +247,7 @@ export default function OfferModal({
               }}
               className="px-6 py-2 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-full hover:opacity-90 transition"
             >
-              Download All
+              Download
             </button>
           </div>
 
