@@ -115,7 +115,7 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
               <InformationCircleIcon className="w-4 h-4 text-blue-400 cursor-pointer" />
               <div className="absolute z-50 hidden group-hover:block w-[min(90vw,18rem)] p-3 bg-zinc-900 text-sm text-white border border-neutral-700 rounded-lg shadow-lg mt-2 left-1/2 -translate-x-1/2">
                 100k <span className="text-[#fd01f5] font-semibold">Ꞙolio</span>{" "}
-                unlockable over your first 5 deals. Tokens to be delivered at TGE or
+                unlockable over your first 4 deals. Tokens to be delivered at TGE or
                 on completion if after the event. This does not replace any rewards
                 earned elsewhere in the app.
               </div>

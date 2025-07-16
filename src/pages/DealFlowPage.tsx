@@ -32,7 +32,6 @@ export default function DealFlowPage() {
 
   const isStandalone = pathname === "/dealflow";
 
-  // Disable scroll if standalone page
   useLayoutEffect(() => {
     if (isStandalone) {
       window.scrollTo(0, 0);
@@ -43,7 +42,6 @@ export default function DealFlowPage() {
     }
   }, [isStandalone]);
 
-  // Mobile guard + map render
   useEffect(() => {
     if (window.innerWidth < 768) {
       setIsMobile(true);
@@ -179,13 +177,12 @@ export default function DealFlowPage() {
   }
 
   return (
-    <div
-      className={`bg-[#0B1519] text-white flex flex-col items-center ${
-        isStandalone ? "h-screen overflow-hidden" : ""
-      }`}
-    >
+    <div className="bg-[#0B1519] text-white flex flex-col items-center">
       <div id="tooltip" className="absolute z-50 pointer-events-none" />
-      <div id="graph" className="mt-6 w-full flex justify-center items-center" />
+      <div
+        id="graph"
+        className="flex justify-center items-center mt-18 mb-12 w-full max-w-[1000px] mx-auto"
+      />
       <FIPSModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
