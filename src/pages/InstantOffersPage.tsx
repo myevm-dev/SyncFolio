@@ -108,9 +108,8 @@ export default function InstantOfferPage() {
 
       {submitted && (
         <>
-          <p className="text-sm text-gray-400 mt-6 mb-2">
-            Select the offer types you'd like to receive below. These options will
-            generate your personalized offer to send and download.
+          <p className="text-sm text-gray-100 mt-6 mb-4 px-4 py-3 bg-gradient-to-r from-purple-900 to-cyan-900 border border-purple-600 rounded text-center font-semibold">
+            Select the offer types you'd like to receive below.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
