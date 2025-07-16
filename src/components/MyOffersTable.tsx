@@ -19,6 +19,7 @@ interface Offer {
   content: string;
   createdAt?: any;
   accepted?: boolean;
+  source?: string; // external if submitted by another user
 }
 
 const MyOffersTable = () => {
@@ -55,10 +56,8 @@ const MyOffersTable = () => {
       ownerId: walletAddress,
     });
 
-
     const offerRef = doc(db, `users/${walletAddress}/offers/${offerId}`);
     await deleteDoc(offerRef);
-
     setOffers((prev) => prev.filter((o) => o.id !== offerId));
   };
 
@@ -89,7 +88,16 @@ const MyOffersTable = () => {
           {offers.map((offer) => (
             <tr key={offer.id} className="hover:bg-neutral-800">
               <td className="px-4 py-3 border-b border-neutral-700">{offer.propertyAddress}</td>
-              <td className="px-4 py-3 border-b border-neutral-700 capitalize">{offer.method}</td>
+              <td className="px-4 py-3 border-b border-neutral-700 capitalize">
+                <div className="flex items-center gap-2">
+                  {offer.method}
+                  {offer.source === "external" && (
+                    <span className="text-xs font-semibold text-white bg-pink-600 px-2 py-0.5 rounded-full">
+                      External
+                    </span>
+                  )}
+                </div>
+              </td>
               <td className="px-4 py-3 border-b border-neutral-700">${offer.offerAmount}</td>
               <td className="px-4 py-3 border-b border-neutral-700">
                 {offer.createdAt?.toDate?.().toLocaleDateString() || "—"}

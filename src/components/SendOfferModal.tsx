@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { DealInput } from "../types/DealInput";
 import html2pdf from "html2pdf.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const ADMIN_NAME = "0xNateZ";
 const ADMIN_ADDRESS = "0x91706ECbA7af59616D4005F37979528226532E6B";
@@ -25,19 +26,39 @@ interface Props {
   onClose: () => void;
 }
 
-export default function SendOfferModal({ formData, offerTypes, cashOffer, sellerFinance, onClose }: Props) {
+export default function SendOfferModal({
+  formData,
+  offerTypes,
+  cashOffer,
+  sellerFinance,
+  onClose,
+}: Props) {
   const [certified, setCertified] = useState(false);
   const [hasNotified, setHasNotified] = useState(false);
   const hiddenContentRef = useRef<HTMLDivElement>(null);
+  const db = getFirestore();
 
-  const getAvatarSvg = () => {
-    return window.multiavatar(`${ADMIN_NAME}-${ADMIN_ADDRESS}`);
-  };
+  const getAvatarSvg = () => window.multiavatar(`${ADMIN_NAME}-${ADMIN_ADDRESS}`);
 
-  const handleNotify = () => {
-    console.log("Sending offer data to admin:", formData);
-    alert("Offer sent to admin!");
-    setHasNotified(true);
+  const handleNotify = async () => {
+    try {
+      const offersRef = collection(db, `users/${ADMIN_ADDRESS}/offers`);
+      const offerDoc = {
+        propertyAddress: formData.address,
+        method: offerTypes.includes("seller") ? "seller finance" : "cash",
+        offerAmount: offerTypes.includes("seller") ? sellerFinance.price : cashOffer,
+        content: renderOffers(),
+        createdAt: serverTimestamp(),
+        accepted: false,
+        source: "external", // ✅ Tag the offer as external
+      };
+      await addDoc(offersRef, offerDoc);
+      setHasNotified(true);
+      alert("Offer sent to admin!");
+    } catch (err) {
+      console.error("Error sending offer:", err);
+      alert("Failed to send offer. Please try again.");
+    }
   };
 
   const handleDownload = () => {
@@ -80,28 +101,24 @@ export default function SendOfferModal({ formData, offerTypes, cashOffer, seller
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
-      <div
-        id="send-offer-modal-content"
-        className="bg-[#0B1519] border border-neutral-700 text-white rounded-xl shadow-2xl p-6 max-w-2xl w-full relative"
-      >
-        <button
-          onClick={onClose}
-          className="absolute left-4 top-4 text-gray-500 hover:text-red-600"
-        >
+      <div className="bg-[#0B1519] border border-neutral-700 text-white rounded-xl shadow-2xl p-6 max-w-2xl w-full relative">
+        <button onClick={onClose} className="absolute left-4 top-4 text-gray-500 hover:text-red-600">
           <XCircleIcon className="h-6 w-6" />
         </button>
 
         <h2 className="text-2xl font-bold text-center mb-6 text-white">
-          Notify <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">0xNateZ</span> and Download Offer
+          Notify{" "}
+          <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            0xNateZ
+          </span>{" "}
+          and Download Offer
         </h2>
 
         <div className="mb-6 border border-neutral-700 rounded-md p-4 bg-[#050505] flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-full overflow-hidden"
-              dangerouslySetInnerHTML={{
-                __html: getAvatarSvg(),
-              }}
+              dangerouslySetInnerHTML={{ __html: getAvatarSvg() }}
             />
             <div>
               <p className="text-sm font-semibold text-white">{ADMIN_NAME}</p>
@@ -110,7 +127,6 @@ export default function SendOfferModal({ formData, offerTypes, cashOffer, seller
               </p>
             </div>
           </div>
-
           <button
             onClick={handleNotify}
             className="text-xs px-3 py-1 rounded text-white bg-gradient-to-r from-purple-500 to-cyan-500 hover:opacity-90"
@@ -144,7 +160,7 @@ export default function SendOfferModal({ formData, offerTypes, cashOffer, seller
           Download
         </button>
 
-        {/* Hidden content for PDF generation */}
+        {/* Hidden PDF content */}
         <div style={{ position: "absolute", left: "-9999px", top: 0 }}>
           <div
             ref={hiddenContentRef}
@@ -155,26 +171,40 @@ export default function SendOfferModal({ formData, offerTypes, cashOffer, seller
               maxWidth: "650px",
               fontFamily: "Arial, sans-serif",
               fontSize: "14px",
-              lineHeight: "1.6"
+              lineHeight: "1.6",
             }}
           >
             <p>Hi {formData.agentName},</p>
-
-            <p>Thanks for sharing details on this property. Based on the current information provided, here’s a preliminary offer:</p>
+            <p>
+              Thanks for sharing details on this property. Based on the current information
+              provided, here’s a preliminary offer:
+            </p>
 
             {offerTypes.length > 0 && (
               <>
                 <br />
                 <div dangerouslySetInnerHTML={{ __html: renderOffers() }} />
-                <br /><br />
+                <br />
+                <br />
               </>
             )}
 
-            <p>This offer is based on the information currently available. We’ll follow up to confirm key details (condition, rentability, access, title, etc.). If everything checks out, we’re prepared to move quickly and finalize a contract.</p>
+            <p>
+              This offer is based on the information currently available. We’ll follow up to
+              confirm key details (condition, rentability, access, title, etc.). If everything
+              checks out, we’re prepared to move quickly and finalize a contract.
+            </p>
 
             <p>Let me know how best to proceed, and thanks again.</p>
 
-            <p>—<br />Your Name<br />Nate Z<br />909-667-0805</p>
+            <p>
+              —<br />
+              Your Name
+              <br />
+              Nate Z
+              <br />
+              909-667-0805
+            </p>
           </div>
         </div>
       </div>
