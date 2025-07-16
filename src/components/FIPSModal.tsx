@@ -1,7 +1,7 @@
 // src/components/FIPSModal.tsx
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "./Dialog";
-import DealflowTable from "./DealFlowTable";
+import CountyDealflowTable from "./CountyDealFlowTable";
 import TradeFips from "./TradeFIPS";
 import { useDFBond } from "../hooks/useDFBond";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -87,7 +87,7 @@ export default function FIPSModal({ open, onClose, fipsCode, countyName }: FIPSM
                   : "bg-transparent border border-zinc-600 text-white"
               }`}
             >
-              {t === "trade" ? "Trade" : "Deal Flow"}
+              {t === "trade" ? "Trade" : "Flowboard"}
             </button>
           ))}
         </div>
@@ -121,7 +121,7 @@ export default function FIPSModal({ open, onClose, fipsCode, countyName }: FIPSM
             </div>
           )
         ) : (
-          <DealflowTable fipsCode={fipsCode} />
+          <CountyDealflowTable fipsCode={fipsCode} />
         )}
       </DialogContent>
     </Dialog>

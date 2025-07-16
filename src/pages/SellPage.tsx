@@ -6,7 +6,7 @@ export default function SellPage() {
       <h1 className="text-3xl font-bold mb-2 text-center">
         Submit your Property Listing or Browse Active Buyers.
       </h1>
-      <p className="text-cyan-400 text-lg mb-10">Coming soon</p>
+
       <MyListings />
     </div>
   );

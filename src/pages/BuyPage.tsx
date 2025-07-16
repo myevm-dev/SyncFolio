@@ -20,7 +20,6 @@ export default function BuyPage() {
           Submit your Buybox or Search our Deal Marketplace.
         </h1>
 
-        <p className="text-center text-cyan-400 text-sm mb-4">Coming soon</p>
 
         {/* Button Row */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
