@@ -32,18 +32,27 @@ const FAQSection: React.FC = () => {
       question: "How to use SyncFolio as a Buyer?",
       answer: (
         <ol className="list-decimal list-inside space-y-1">
-          <li>Coming Soon.</li>
+          <li>🏷️ Submit your Buybox criteria to get matched with ideal deals.</li>
+          <li>🧠 Launch your personalized AI Deal Analyzer to filter and review live properties.</li>
+          <li>💰 Deposit funds into escrow to let AI claim deals on your behalf in real-time.</li>
+          <li>📈 Buy County Deal Flow Tokens to get first access to priority listings.</li>
+          <li>🏅 Complete deals give you social proof on your public profile.</li>
         </ol>
       ),
     },
-        {
-      question: "How to use SyncFolio as a Agent or Seller?",
+    {
+      question: "How to use SyncFolio as an Agent or Seller?",
       answer: (
         <ol className="list-decimal list-inside space-y-1">
-          <li>Coming Soon.</li>
+          <li>⚡ Get an instant offer from SyncFolio’s Dispo.</li>
+          <li>📝 List your property on the Creative Deal Marketplace in a few minutes.</li>
+          <li>📣 Instantly show your deal to 2,000+ active investors and buyers.</li>
+          <li>📊 Track interest, buyer activity, and offers from your dashboard.</li>
+          <li>💼 Finalize the deal and get full commission + additional referral rewards.</li>
         </ol>
       ),
     },
+
     {
       question: "What are Credits in the App?",
       answer: (
