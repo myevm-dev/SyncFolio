@@ -16,12 +16,13 @@ interface Contract {
 }
 
 const defaultSteps = [
-  "Contract Signed by You",
-  "Contract Signed by Seller",
-  "JV Agreement Signed Between You and Syncfolio",
-  "Searching for Buyer (Inspection Period)",
-  "Buyer Identified and Committed",
-  "Closed, Payment Credited to Account",
+  "You Sign",
+  "Seller Signs",
+  "Dispo Options",
+  "JV Agreement",
+  "Searching for Buyer",
+  "Buyer Committed",
+  "Closed & Credited",
 ];
 
 const MyContractsTable: React.FC = () => {
@@ -105,7 +106,7 @@ const MyContractsTable: React.FC = () => {
                   onClick={() => navigate(`/contracts/${contract.id}`)}
                   className="px-4 py-1 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 text-black font-semibold text-sm hover:brightness-110"
                 >
-                  See Status
+                  Status
                 </button>
                 <button
                   onClick={() => handleCancel(contract.id)}
