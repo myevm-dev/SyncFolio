@@ -1,3 +1,4 @@
+// src/components/MyOffersTable.tsx
 import React, { useEffect, useState } from "react";
 import {
   collection,
@@ -137,21 +138,21 @@ const MyOffersTable = () => {
         </tbody>
       </table>
 
-      {/* Modal viewer */}
+      {/* Dark Modal Viewer */}
       {viewingContent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 p-4">
-          <div className="bg-white text-black p-6 rounded-md max-w-2xl w-full overflow-auto shadow-lg">
+          <div className="bg-zinc-900 text-white p-6 rounded-lg max-w-2xl w-full shadow-xl border border-neutral-700">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Offer Preview</h2>
               <button
                 onClick={() => setViewingContent(null)}
-                className="text-red-500 hover:underline font-semibold"
+                className="text-sm font-semibold text-red-400 hover:underline"
               >
                 Close
               </button>
             </div>
             <div
-              className="prose max-w-none"
+              className="prose prose-invert max-w-none"
               dangerouslySetInnerHTML={{ __html: viewingContent }}
             />
           </div>

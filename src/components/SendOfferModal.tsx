@@ -7,7 +7,7 @@ import {
   collection,
   addDoc,
   serverTimestamp,
-  updateDoc, 
+  updateDoc,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -47,51 +47,67 @@ export default function SendOfferModal({
 }: Props) {
   const [certified, setCertified] = useState(false);
   const [hasNotified, setHasNotified] = useState(false);
+  const [isNotifying, setIsNotifying] = useState(false);
   const hiddenContentRef = useRef<HTMLDivElement>(null);
   const db = getFirestore();
   const storage = getStorage();
 
-  const getAvatarSvg = () => window.multiavatar(`${ADMIN_NAME}-${ADMIN_ADDRESS}`);
+  const getAvatarSvg = () =>
+    window.multiavatar(`${ADMIN_NAME}-${ADMIN_ADDRESS}`);
 
   const handleNotify = async () => {
     try {
+      setIsNotifying(true);
+
       const offerData = {
         propertyAddress: formData.address,
         method: offerTypes.includes("seller") ? "seller finance" : "cash",
-        offerAmount: offerTypes.includes("seller") ? sellerFinance.price : cashOffer,
+        offerAmount: offerTypes.includes("seller")
+          ? sellerFinance.price
+          : cashOffer,
         content: renderOffers(),
         createdAt: serverTimestamp(),
         accepted: false,
         source: "external",
-        pdfUrl: "", // will be added after upload
+        pdfUrl: "",
       };
 
       const offersRef = collection(db, `users/${ADMIN_ADDRESS}/offers`);
       const docRef = await addDoc(offersRef, offerData);
 
-      // Upload PDF (optional but non-blocking)
-      if (hiddenContentRef.current) {
-        const pdfBlob = await html2pdf().from(hiddenContentRef.current).outputPdf("blob");
-        const safeAddress = formData.address?.replaceAll(" ", "_") || "unknown_address";
-        const filename = `offers/${ADMIN_ADDRESS}/${Date.now()}_${safeAddress}.pdf`;
-        const pdfStorageRef = storageRef(storage, filename);
-        await uploadBytes(pdfStorageRef, pdfBlob);
-        const pdfUrl = await getDownloadURL(pdfStorageRef);
-        await updateDoc(docRef, { pdfUrl }); // update Firestore
-      }
+      setHasNotified(true); // Set immediately after saving to Firestore
 
-      setHasNotified(true);
-      alert("Offer sent to admin with optional PDF.");
+      // Continue with optional PDF upload
+      if (hiddenContentRef.current) {
+        try {
+          const pdfBlob = await html2pdf()
+            .from(hiddenContentRef.current)
+            .outputPdf("blob");
+          const safeAddress =
+            formData.address?.replaceAll(" ", "_") || "unknown_address";
+          const filename = `offers/${ADMIN_ADDRESS}/${Date.now()}_${safeAddress}.pdf`;
+          const pdfStorageRef = storageRef(storage, filename);
+          await uploadBytes(pdfStorageRef, pdfBlob);
+          const pdfUrl = await getDownloadURL(pdfStorageRef);
+          await updateDoc(docRef, { pdfUrl });
+        } catch (pdfErr) {
+          console.warn("PDF upload failed:", pdfErr);
+        }
+      }
     } catch (err) {
       console.error("Notify error:", err);
       alert("Offer failed. Try again.");
+    } finally {
+      setIsNotifying(false);
     }
   };
 
   const handleDownload = () => {
     if (!certified || !hasNotified) return;
     if (hiddenContentRef.current) {
-      html2pdf().from(hiddenContentRef.current).save(`${formData.address || "offer"}.pdf`);
+      html2pdf()
+        .from(hiddenContentRef.current)
+        .save(`${formData.address || "offer"}.pdf`);
     }
     onClose();
   };
@@ -127,7 +143,10 @@ export default function SendOfferModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
       <div className="bg-[#0B1519] border border-neutral-700 text-white rounded-xl shadow-2xl p-6 max-w-2xl w-full relative">
-        <button onClick={onClose} className="absolute left-4 top-4 text-gray-500 hover:text-red-600">
+        <button
+          onClick={onClose}
+          className="absolute left-4 top-4 text-gray-500 hover:text-red-600"
+        >
           <XCircleIcon className="h-6 w-6" />
         </button>
 
@@ -154,9 +173,14 @@ export default function SendOfferModal({
           </div>
           <button
             onClick={handleNotify}
-            className="text-xs px-3 py-1 rounded text-white bg-gradient-to-r from-purple-500 to-cyan-500 hover:opacity-90"
+            disabled={hasNotified}
+            className={`text-xs px-3 py-1 rounded ${
+              hasNotified
+                ? "bg-gray-600 text-gray-300 cursor-not-allowed"
+                : "text-white bg-gradient-to-r from-purple-500 to-cyan-500 hover:opacity-90"
+            }`}
           >
-            Notify
+            {hasNotified ? "Notified" : "Notify"}
           </button>
         </div>
 
@@ -169,7 +193,8 @@ export default function SendOfferModal({
             className="mt-1"
           />
           <label htmlFor="certify">
-            I certify that this information is accurate to the best of my knowledge.
+            I certify that this information is accurate to the best of my
+            knowledge.
           </label>
         </div>
 
@@ -201,30 +226,32 @@ export default function SendOfferModal({
           >
             <p>Hi {formData.agentName},</p>
             <p>
-              Thanks for sharing details on this property. Based on the current information
-              provided, here’s a preliminary offer:
+              Thanks for sharing details on this property. Based on the current
+              information provided, here’s a preliminary offer:
             </p>
 
             {offerTypes.length > 0 && (
               <>
                 <br />
-                <div dangerouslySetInnerHTML={{ __html: renderOffers() }} />
+                <div
+                  dangerouslySetInnerHTML={{ __html: renderOffers() }}
+                />
                 <br />
                 <br />
               </>
             )}
 
             <p>
-              This offer is based on the information currently available. We’ll follow up to
-              confirm key details (condition, rentability, access, title, etc.). If everything
-              checks out, we’re prepared to move quickly and finalize a contract.
+              This offer is based on the information currently available. We’ll
+              follow up to confirm key details (condition, rentability, access,
+              title, etc.). If everything checks out, we’re prepared to move
+              quickly and finalize a contract.
             </p>
 
             <p>Let me know how best to proceed, and thanks again.</p>
 
             <p>
-              —<br />
-              Your Name
+
               <br />
               Nate Z
               <br />
