@@ -32,19 +32,24 @@ export default function SignYourContractStep({
     "WI", "WY"
   ];
 
+  if (index > currentStep) return null;
+
   return (
     <>
-      <button
-        onClick={() => setShowForm(true)}
-        disabled={index !== currentStep}
-        className={`text-xs px-4 py-1 rounded font-semibold w-max ${
-          index === currentStep
-            ? "bg-cyan-500 text-black"
-            : "bg-neutral-700 text-white opacity-60 cursor-not-allowed"
-        }`}
-      >
-        Sign and Download
-      </button>
+      <div className="w-full flex justify-start">
+        <button
+          onClick={() => {
+            if (!hasSignature) {
+              setShowSignaturePad(true);
+            } else {
+              setShowForm(true);
+            }
+          }}
+          className="w-full max-w-[320px] px-6 py-4 rounded bg-neutral-800 border border-cyan-500 hover:bg-cyan-600 hover:text-black text-white text-center font-semibold transition"
+        >
+          {hasSignature ? "Sign and Download" : "Create Signature to Proceed"}
+        </button>
+      </div>
 
       {showForm && index === currentStep && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
@@ -61,7 +66,7 @@ export default function SignYourContractStep({
 
                 if (key === "closingDate") {
                   return (
-                    <div key={key} className="relative">
+                    <div key={key} className="relative col-span-2">
                       <input
                         type="date"
                         value={value}
@@ -81,7 +86,7 @@ export default function SignYourContractStep({
                   return (
                     <React.Fragment key={key}>
                       <select
-                        className="p-2 rounded bg-neutral-800 text-white text-sm w-full"
+                        className="p-2 rounded bg-neutral-800 text-white text-sm w-full col-span-2"
                         value={value}
                         onChange={(e) =>
                           setFormData((prev: any) => ({ ...prev, state: e.target.value }))
@@ -94,19 +99,6 @@ export default function SignYourContractStep({
                           </option>
                         ))}
                       </select>
-                      <button
-                        className="bg-white text-black px-4 py-2 rounded text-sm font-semibold w-full"
-                        type="button"
-                        onClick={() => {
-                          if (hasSignature) {
-                            alert("Signature already saved. Proceeding...");
-                          } else {
-                            setShowSignaturePad(true);
-                          }
-                        }}
-                      >
-                        {hasSignature ? "Sign" : "Create Signature"}
-                      </button>
                     </React.Fragment>
                   );
                 }
@@ -126,12 +118,15 @@ export default function SignYourContractStep({
               })}
             </div>
             <div className="mt-6 flex justify-end gap-2">
-              <button onClick={() => setShowForm(false)} className="text-white px-4 py-1">
+              <button
+                onClick={() => setShowForm(false)}
+                className="text-white px-4 py-1 hover:underline"
+              >
                 Cancel
               </button>
               <button
                 onClick={handleDownload}
-                className="bg-green-500 text-black font-bold px-6 py-2 rounded"
+                className="w-full max-w-[320px] px-6 py-3 rounded bg-neutral-800 border border-cyan-500 hover:bg-cyan-600 hover:text-black text-white text-center font-semibold transition"
               >
                 Download PDF
               </button>

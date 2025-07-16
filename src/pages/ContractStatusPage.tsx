@@ -13,20 +13,20 @@ import { generateContractPdf } from "../lib/generateContractPdf";
 
 const DispoOptionsStep = () => {
   const options = [
-    "Have Syncfolio Sell it for you",
-    "Investor Deal Flow with fixed fee",
-    "Finder Fee Auction Marketplace",
+    "Syncfolio Sells It",
+    "Deal Flow for Fixed Fee",
+    "Fee Auction Market",
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <div className="flex flex-wrap gap-4">
       {options.map((label) => (
-        <button
+        <div
           key={label}
-          className="w-full p-4 rounded bg-neutral-800 border border-cyan-500 hover:bg-cyan-600 hover:text-black text-white text-center font-semibold transition"
+          className="cursor-pointer hover:bg-cyan-600 hover:text-black transition-all duration-200 w-full max-w-[320px] px-6 py-4 rounded bg-neutral-800 border border-cyan-500 text-white font-semibold text-center"
         >
           {label}
-        </button>
+        </div>
       ))}
     </div>
   );
@@ -116,7 +116,6 @@ export default function ContractStatusPage() {
   };
 
   const handleJvDownload = async () => {
-    alert("Generating JV Agreement...");
     await generateContractPdf({
       ...formData,
       purchasePrice: "0",
@@ -210,7 +209,6 @@ export default function ContractStatusPage() {
           onClose={() => setShowJvModal(false)}
           onConfirm={() => {
             setShowJvModal(false);
-            alert("Generating JV Agreement...");
           }}
         />
       )}
