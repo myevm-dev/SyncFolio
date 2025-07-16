@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { DealInput } from "../types/DealInput";
+import html2pdf from "html2pdf.js";
 
 const ADMIN_NAME = "0xNateZ";
 const ADMIN_ADDRESS = "0x91706ECbA7af59616D4005F37979528226532E6B";
@@ -13,12 +14,21 @@ declare global {
 
 interface Props {
   formData: DealInput;
+  offerTypes: string[];
+  cashOffer: string;
+  sellerFinance: {
+    price: string;
+    down: string;
+    monthly: string;
+    balloon: string;
+  };
   onClose: () => void;
 }
 
-export default function SendOfferModal({ formData, onClose }: Props) {
+export default function SendOfferModal({ formData, offerTypes, cashOffer, sellerFinance, onClose }: Props) {
   const [certified, setCertified] = useState(false);
   const [hasNotified, setHasNotified] = useState(false);
+  const hiddenContentRef = useRef<HTMLDivElement>(null);
 
   const getAvatarSvg = () => {
     return window.multiavatar(`${ADMIN_NAME}-${ADMIN_ADDRESS}`);
@@ -32,9 +42,40 @@ export default function SendOfferModal({ formData, onClose }: Props) {
 
   const handleDownload = () => {
     if (!certified || !hasNotified) return;
-    // Replace with real download logic later
-    alert("Download started.");
+    if (hiddenContentRef.current) {
+      html2pdf().from(hiddenContentRef.current).save(`${formData.address || "offer"}.pdf`);
+    }
     onClose();
+  };
+
+  const renderOffers = () => {
+    const sections = [];
+    if (offerTypes.includes("cash")) {
+      sections.push(
+        `<p><strong>💵 Cash Offer</strong><br />
+        Property Address: ${formData.address}<br />
+        After Repair Value (ARV): $${formData.arv}<br />
+        Estimated Rehab: $${formData.rehabCost}<br />
+        Offer Price Estimate: $${cashOffer}<br /><br />
+        Terms:<br />
+        - Standard 30 day close<br />
+        - 7-day inspection period<br />
+        - Buyer may utilize financing or private capital<br />
+        - Property to be purchased as-is<br />
+        - Buyer may cover standard closing costs</p>`
+      );
+    }
+    if (offerTypes.includes("seller")) {
+      sections.push(
+        `<p><strong>🤝 Seller Finance Offer</strong><br />
+        Property Address: ${formData.address}<br />
+        Price: $${sellerFinance.price}<br />
+        Down Payment: $${sellerFinance.down}<br />
+        Monthly: $${sellerFinance.monthly}<br />
+        Balloon Payment (8 yrs): $${sellerFinance.balloon}</p>`
+      );
+    }
+    return sections.join("<br /><br />");
   };
 
   return (
@@ -51,11 +92,7 @@ export default function SendOfferModal({ formData, onClose }: Props) {
         </button>
 
         <h2 className="text-2xl font-bold text-center mb-6 text-white">
-          Notify{" "}
-          <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
-            0xNateZ
-          </span>{" "}
-          and Download Offer
+          Notify <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">0xNateZ</span> and Download Offer
         </h2>
 
         <div className="mb-6 border border-neutral-700 rounded-md p-4 bg-[#050505] flex justify-between items-center">
@@ -106,6 +143,40 @@ export default function SendOfferModal({ formData, onClose }: Props) {
         >
           Download
         </button>
+
+        {/* Hidden content for PDF generation */}
+        <div style={{ position: "absolute", left: "-9999px", top: 0 }}>
+          <div
+            ref={hiddenContentRef}
+            style={{
+              padding: "24px",
+              backgroundColor: "white",
+              color: "black",
+              maxWidth: "650px",
+              fontFamily: "Arial, sans-serif",
+              fontSize: "14px",
+              lineHeight: "1.6"
+            }}
+          >
+            <p>Hi {formData.agentName},</p>
+
+            <p>Thanks for sharing details on this property. Based on the current information provided, here’s a preliminary offer:</p>
+
+            {offerTypes.length > 0 && (
+              <>
+                <br />
+                <div dangerouslySetInnerHTML={{ __html: renderOffers() }} />
+                <br /><br />
+              </>
+            )}
+
+            <p>This offer is based on the information currently available. We’ll follow up to confirm key details (condition, rentability, access, title, etc.). If everything checks out, we’re prepared to move quickly and finalize a contract.</p>
+
+            <p>Let me know how best to proceed, and thanks again.</p>
+
+            <p>—<br />Your Name<br />Nate Z<br />909-667-0805</p>
+          </div>
+        </div>
       </div>
     </div>
   );

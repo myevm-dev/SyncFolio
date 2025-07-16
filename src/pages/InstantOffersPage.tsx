@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DealInput } from "../types/DealInput";
-import SendOfferModal from "../components/SendOfferModal"; // ✅ New custom modal
+import SendOfferModal from "../components/SendOfferModal";
 
 const emptyForm: DealInput = {
   address: "",
@@ -22,12 +22,21 @@ export default function InstantOfferPage() {
   const [formData, setFormData] = useState<DealInput>(emptyForm);
   const [submitted, setSubmitted] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [selectedOffers, setSelectedOffers] = useState<string[]>([]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const toggleOfferSelection = (offerType: string) => {
+    setSelectedOffers((prev) =>
+      prev.includes(offerType)
+        ? prev.filter((t) => t !== offerType)
+        : [...prev, offerType]
+    );
   };
 
   const parseNum = (value: string | undefined) => parseFloat(value || "0");
@@ -37,20 +46,20 @@ export default function InstantOfferPage() {
   const rent = parseNum(formData.rentalValue);
 
   const cashOffer = ((arv - rehab) * 0.75).toFixed(0);
-  const sellerPriceNum = (arv - rehab) * 1.1;
+  const sellerBasePrice = arv - rehab;
+  const sellerPriceNum = sellerBasePrice * 1.1;
   const sellerPrice = sellerPriceNum.toFixed(0);
-  const sellerDown = (sellerPriceNum * 0.1).toFixed(0);
-  const sellerMonthly = (rent * 0.38).toFixed(0);
-  const balloon = (sellerPriceNum - parseFloat(sellerDown)).toFixed(0);
+  const sellerDownNum = sellerPriceNum * 0.1;
+  const sellerDown = sellerDownNum.toFixed(0);
+  const sellerMonthlyNum = rent * 0.38;
+  const sellerMonthly = sellerMonthlyNum.toFixed(0);
+  const balloon = (sellerPriceNum - sellerDownNum - (sellerMonthlyNum * 84)).toFixed(0);
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold text-center mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
         Instant Offer Form
       </h1>
-      <p className="text-center text-gray-400 mb-6">
-        No Sign Up Required. Fill out the form below to get your instant offer.
-      </p>
 
       <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <input
@@ -99,13 +108,28 @@ export default function InstantOfferPage() {
 
       {submitted && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-            <div className="border border-neutral-700 p-4 rounded bg-zinc-800">
+          <p className="text-sm text-gray-400 mt-6 mb-2">
+            Select the offer types you'd like to receive below. These options will
+            generate your personalized offer to send and download.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+            <div
+              className={`border border-neutral-700 p-4 rounded bg-zinc-800 cursor-pointer transition ${
+                selectedOffers.includes("cash") ? "ring-2 ring-green-400" : ""
+              }`}
+              onClick={() => toggleOfferSelection("cash")}
+            >
               <h2 className="text-lg font-bold text-green-400 mb-2">Cash Offer</h2>
               <p className="text-white">Offer Price: ${cashOffer}</p>
             </div>
 
-            <div className="border border-neutral-700 p-4 rounded bg-zinc-800">
+            <div
+              className={`border border-neutral-700 p-4 rounded bg-zinc-800 cursor-pointer transition ${
+                selectedOffers.includes("seller") ? "ring-2 ring-blue-400" : ""
+              }`}
+              onClick={() => toggleOfferSelection("seller")}
+            >
               <h2 className="text-lg font-bold text-blue-400 mb-2">Seller Finance</h2>
               <p className="text-white">Price: ${sellerPrice}</p>
               <p className="text-white">Down Payment: ${sellerDown}</p>
@@ -121,7 +145,7 @@ export default function InstantOfferPage() {
               className="px-6 py-2 text-black bg-gradient-to-r from-purple-400 to-cyan-400 rounded font-semibold shadow-md"
               onClick={() => setShowModal(true)}
             >
-              Get Offer Now
+              Send and Download
             </button>
           </div>
         </>
@@ -130,6 +154,14 @@ export default function InstantOfferPage() {
       {showModal && (
         <SendOfferModal
           formData={formData}
+          offerTypes={selectedOffers}
+          cashOffer={cashOffer}
+          sellerFinance={{
+            price: sellerPrice,
+            down: sellerDown,
+            monthly: sellerMonthly,
+            balloon,
+          }}
           onClose={() => setShowModal(false)}
         />
       )}
