@@ -16,7 +16,7 @@ export default function JVAgreementStep({
   if (index > currentStep) return null;
 
   return (
-    <div className="w-[320px]">
+    <div className="w-[250px] md:w-[440px]">
       <button
         onClick={() => {
           setShowJvModal(true);
@@ -24,7 +24,7 @@ export default function JVAgreementStep({
         }}
         className="w-full px-6 py-4 rounded bg-neutral-800 border border-cyan-500 hover:bg-cyan-600 hover:text-black text-white text-center font-semibold transition"
       >
-        Sign and Download JV Agreement
+        Sign and Download<br />JV Agreement
       </button>
     </div>
   );

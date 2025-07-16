@@ -36,7 +36,7 @@ export default function SignYourContractStep({
 
   return (
     <>
-      <div className="w-full flex justify-start">
+      <div className="w-[250px] md:w-[440px]">
         <button
           onClick={() => {
             if (!hasSignature) {
@@ -45,7 +45,7 @@ export default function SignYourContractStep({
               setShowForm(true);
             }
           }}
-          className="w-full max-w-[320px] px-6 py-4 rounded bg-neutral-800 border border-cyan-500 hover:bg-cyan-600 hover:text-black text-white text-center font-semibold transition"
+          className="w-full px-6 py-4 rounded bg-neutral-800 border border-cyan-500 hover:bg-cyan-600 hover:text-black text-white text-center font-semibold transition"
         >
           {hasSignature ? "Sign and Download" : "Create Signature to Proceed"}
         </button>
@@ -124,12 +124,14 @@ export default function SignYourContractStep({
               >
                 Cancel
               </button>
-              <button
-                onClick={handleDownload}
-                className="w-full max-w-[320px] px-6 py-3 rounded bg-neutral-800 border border-cyan-500 hover:bg-cyan-600 hover:text-black text-white text-center font-semibold transition"
-              >
-                Download PDF
-              </button>
+              <div className="w-[250px] md:w-[320px]">
+                <button
+                  onClick={handleDownload}
+                  className="w-full px-6 py-3 rounded bg-neutral-800 border border-cyan-500 hover:bg-cyan-600 hover:text-black text-white text-center font-semibold transition"
+                >
+                  Download PDF
+                </button>
+              </div>
             </div>
           </div>
         </div>

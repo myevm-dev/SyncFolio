@@ -1,4 +1,3 @@
-// ContractStatusPage.tsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
@@ -13,19 +12,32 @@ import { generateContractPdf } from "../lib/generateContractPdf";
 
 const DispoOptionsStep = () => {
   const options = [
-    "Syncfolio Sells It",
-    "Deal Flow for Fixed Fee",
-    "Fee Auction Market",
+    {
+      title: "Syncfolio Sells It",
+      description:
+        "Our team finds a buyer & handles the contract as a JV.",
+    },
+    {
+      title: "Deal Flow for Fixed Fee",
+      description:
+        "List it in our internal deal flow network for flat finders fee.",
+    },
+    {
+      title: "Fee Auction Market",
+      description:
+        "Open your deal to auction bidding on our marketplace.",
+    },
   ];
 
   return (
-    <div className="flex flex-wrap gap-4">
-      {options.map((label) => (
+    <div className="flex flex-col gap-4">
+      {options.map(({ title, description }) => (
         <div
-          key={label}
-          className="cursor-pointer hover:bg-cyan-600 hover:text-black transition-all duration-200 w-full max-w-[320px] px-6 py-4 rounded bg-neutral-800 border border-cyan-500 text-white font-semibold text-center"
+          key={title}
+          className="w-[250px] md:w-[440px] px-6 py-4 rounded bg-neutral-800 border border-cyan-500 text-white transition-all hover:bg-cyan-600 hover:text-black"
         >
-          {label}
+          <div className="font-semibold text-center mb-2">{title}</div>
+          <p className="text-sm text-center leading-snug">{description}</p>
         </div>
       ))}
     </div>

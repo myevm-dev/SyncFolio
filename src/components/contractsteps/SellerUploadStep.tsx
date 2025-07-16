@@ -5,10 +5,10 @@ interface Props {
 }
 
 export default function SellerUploadStep({ index }: Props) {
-  if (index < 1) return null; // Optional: restrict button until prior step is done
+  if (index < 1) return null;
 
   return (
-    <div className="w-[320px]">
+    <div className="w-[250px] md:w-[440px]">
       <button
         type="button"
         onClick={() => {
