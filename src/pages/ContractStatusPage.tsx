@@ -44,9 +44,9 @@ const DispoOptionsStep = () => {
 };
 
 const defaultSteps = [
-  "Contract Signed by You",
-  "Contract Signed by Seller",
-  "Dispo Options",
+  "SIgn and Generate Contract",
+  "Seller Signs then Upload Contract",
+  "Choose how to Sell Contract",
   "JV Agreement Signed Between You and Syncfolio",
   "Searching for Buyer (Inspection Period)",
   "Buyer Identified and Committed",

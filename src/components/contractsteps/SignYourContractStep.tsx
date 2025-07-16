@@ -38,7 +38,6 @@ export default function SignYourContractStep({
   const [hasSignature, setHasSignature] = useState(false);
   const [checkingSig, setCheckingSig] = useState(true);
 
-  // Fetch signature on load
   useEffect(() => {
     const checkSignature = async () => {
       if (!walletAddress) return;
@@ -52,6 +51,11 @@ export default function SignYourContractStep({
   }, [walletAddress]);
 
   if (index > currentStep) return null;
+
+  const labelOverride: Record<string, string> = {
+    buyerName: "Your Name",
+    buyerAddress: "Your Address",
+  };
 
   return (
     <>
@@ -67,7 +71,7 @@ export default function SignYourContractStep({
       {showForm && index === currentStep && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
           <div className="bg-neutral-900 p-6 rounded w-full max-w-lg">
-            <h2 className="text-xl font-bold mb-4 text-white text-center">Sign Your Contract</h2>
+            <h2 className="text-xl font-bold mb-4 text-white text-center">Sign & Generate Contract</h2>
             <div className="grid grid-cols-2 gap-4">
               {Object.entries(formData).map(([key, value]) => {
                 if (
@@ -83,7 +87,7 @@ export default function SignYourContractStep({
                   return null;
                 }
 
-                const label = key
+                const label = labelOverride[key] || key
                   .replace(/([A-Z])/g, " $1")
                   .replace(/^./, (str) => str.toUpperCase());
 
@@ -106,7 +110,7 @@ export default function SignYourContractStep({
               <input
                 key="earnestMoney"
                 className="p-2 rounded bg-neutral-800 text-white text-sm"
-                placeholder="Earnest Money"
+                placeholder="Earnest Money ($1500?)"
                 value={formData.earnestMoney}
                 onChange={(e) =>
                   setFormData((prev: any) => ({
