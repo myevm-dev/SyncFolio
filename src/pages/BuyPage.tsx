@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import Marketplace from "../components/Marketplace";
 import DealFlowPage from "./DealFlowPage";
 import { Users } from "lucide-react";
@@ -25,15 +26,18 @@ export default function BuyPage() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
           {/* Left: Total Buyers + Deploy */}
           <div className="flex gap-2 w-full md:w-auto justify-center md:justify-start items-center">
-            <div className="flex flex-col justify-center text-cyan-300 border border-cyan-400 hover:bg-cyan-400 hover:text-black font-semibold px-4 py-2 rounded w-full md:w-auto min-h-[44px] cursor-pointer">
-              <div className="flex items-center gap-1 text-xs md:text-sm justify-center">
+            <Link
+              to="/buybox-directory"
+              className="flex flex-col items-center justify-center text-cyan-300 border border-cyan-400 hover:bg-cyan-400 hover:text-black font-semibold px-4 py-2 rounded transition w-full md:w-auto min-h-[44px]"
+            >
+              <div className="flex items-center gap-1 text-xs md:text-sm">
                 <Users size={16} />
-                <span>Total Buyers</span>
+                <span>Active Buyers</span>
               </div>
-              <div className="text-white text-base font-bold leading-none text-center">
+              <div className="text-white text-base font-bold leading-none">
                 2112
               </div>
-            </div>
+            </Link>
 
             <AnimatedButton
               onClick={() => alert("Coming Soon")}
@@ -85,8 +89,7 @@ export default function BuyPage() {
 
       {/* Modals */}
       {showMyBox && <MyBuyboxModal onClose={() => setShowMyBox(false)} />}
-        <Flowboard open={showFlowboard} onClose={() => setShowFlowboard(false)} />
-          
+      <Flowboard open={showFlowboard} onClose={() => setShowFlowboard(false)} />
     </div>
   );
 }
