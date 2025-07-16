@@ -253,7 +253,7 @@ export default function ProfilePage() {
             </div>
           </div>
         ) : (
-          <div className="mt-2 flex flex-wrap justify-center gap-2">
+          <div className="mt-2 flex flex-wrap justify-center gap-2 max-w-4xl mx-auto">
             {selectedRoles.map((role) => (
               <span
                 key={role}
@@ -265,6 +265,7 @@ export default function ProfilePage() {
               </span>
             ))}
           </div>
+
         )}
       </div>
 
