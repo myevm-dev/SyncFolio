@@ -63,7 +63,7 @@ export default function FIPSModal({ open, onClose, fipsCode, countyName }: FIPSM
       ? `${countyName} Leaderboard`
       : created
       ? `Buy Deal Flow in ${countyName}`
-      : `${countyName} is not yet active`;
+      : `Be the first to buy ${countyName}`;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
