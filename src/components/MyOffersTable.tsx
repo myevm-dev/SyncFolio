@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import {
   collection,
   getDocs,
-  updateDoc,
-  doc,
   deleteDoc,
   addDoc,
+  doc,
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../lib/firebase";
@@ -17,13 +16,15 @@ interface Offer {
   method: string;
   offerAmount: string;
   content: string;
+  pdfUrl?: string;
   createdAt?: any;
   accepted?: boolean;
-  source?: string; // external if submitted by another user
+  source?: string;
 }
 
 const MyOffersTable = () => {
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [viewingContent, setViewingContent] = useState<string | null>(null);
   const account = useActiveAccount();
   const walletAddress = account?.address || "";
 
@@ -68,10 +69,6 @@ const MyOffersTable = () => {
     setOffers((prev) => prev.filter((offer) => offer.id !== offerId));
   };
 
-  const handleEdit = (offerId: string) => {
-    alert(`Edit offer not yet implemented: ${offerId}`);
-  };
-
   return (
     <div className="w-full overflow-x-auto">
       <table className="w-full text-left text-white border-collapse border border-neutral-700">
@@ -109,12 +106,25 @@ const MyOffersTable = () => {
                 >
                   Accept
                 </button>
+
                 <button
-                  onClick={() => handleEdit(offer.id)}
-                  className="px-4 py-1 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 text-black font-semibold text-sm hover:brightness-110"
+                  onClick={() => setViewingContent(offer.content)}
+                  className="px-4 py-1 rounded-full bg-gradient-to-r from-yellow-500 to-amber-400 text-black font-semibold text-sm hover:brightness-110"
                 >
-                  Edit
+                  View
                 </button>
+
+                {offer.pdfUrl && offer.pdfUrl.trim() !== "" && (
+                  <a
+                    href={offer.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold text-sm hover:brightness-110"
+                  >
+                    Preview
+                  </a>
+                )}
+
                 <button
                   onClick={() => deleteOffer(offer.id)}
                   className="px-4 py-1 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold text-sm hover:brightness-110"
@@ -126,6 +136,27 @@ const MyOffersTable = () => {
           ))}
         </tbody>
       </table>
+
+      {/* Modal viewer */}
+      {viewingContent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 p-4">
+          <div className="bg-white text-black p-6 rounded-md max-w-2xl w-full overflow-auto shadow-lg">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Offer Preview</h2>
+              <button
+                onClick={() => setViewingContent(null)}
+                className="text-red-500 hover:underline font-semibold"
+              >
+                Close
+              </button>
+            </div>
+            <div
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: viewingContent }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

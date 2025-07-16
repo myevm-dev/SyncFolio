@@ -2,7 +2,19 @@ import React, { useState, useRef } from "react";
 import { XCircleIcon } from "@heroicons/react/24/solid";
 import { DealInput } from "../types/DealInput";
 import html2pdf from "html2pdf.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp,
+  updateDoc, 
+} from "firebase/firestore";
+import {
+  getStorage,
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
 
 const ADMIN_NAME = "0xNateZ";
 const ADMIN_ADDRESS = "0x91706ECbA7af59616D4005F37979528226532E6B";
@@ -37,27 +49,42 @@ export default function SendOfferModal({
   const [hasNotified, setHasNotified] = useState(false);
   const hiddenContentRef = useRef<HTMLDivElement>(null);
   const db = getFirestore();
+  const storage = getStorage();
 
   const getAvatarSvg = () => window.multiavatar(`${ADMIN_NAME}-${ADMIN_ADDRESS}`);
 
   const handleNotify = async () => {
     try {
-      const offersRef = collection(db, `users/${ADMIN_ADDRESS}/offers`);
-      const offerDoc = {
+      const offerData = {
         propertyAddress: formData.address,
         method: offerTypes.includes("seller") ? "seller finance" : "cash",
         offerAmount: offerTypes.includes("seller") ? sellerFinance.price : cashOffer,
         content: renderOffers(),
         createdAt: serverTimestamp(),
         accepted: false,
-        source: "external", // ✅ Tag the offer as external
+        source: "external",
+        pdfUrl: "", // will be added after upload
       };
-      await addDoc(offersRef, offerDoc);
+
+      const offersRef = collection(db, `users/${ADMIN_ADDRESS}/offers`);
+      const docRef = await addDoc(offersRef, offerData);
+
+      // Upload PDF (optional but non-blocking)
+      if (hiddenContentRef.current) {
+        const pdfBlob = await html2pdf().from(hiddenContentRef.current).outputPdf("blob");
+        const safeAddress = formData.address?.replaceAll(" ", "_") || "unknown_address";
+        const filename = `offers/${ADMIN_ADDRESS}/${Date.now()}_${safeAddress}.pdf`;
+        const pdfStorageRef = storageRef(storage, filename);
+        await uploadBytes(pdfStorageRef, pdfBlob);
+        const pdfUrl = await getDownloadURL(pdfStorageRef);
+        await updateDoc(docRef, { pdfUrl }); // update Firestore
+      }
+
       setHasNotified(true);
-      alert("Offer sent to admin!");
+      alert("Offer sent to admin with optional PDF.");
     } catch (err) {
-      console.error("Error sending offer:", err);
-      alert("Failed to send offer. Please try again.");
+      console.error("Notify error:", err);
+      alert("Offer failed. Try again.");
     }
   };
 
@@ -72,8 +99,8 @@ export default function SendOfferModal({
   const renderOffers = () => {
     const sections = [];
     if (offerTypes.includes("cash")) {
-      sections.push(
-        `<p><strong>💵 Cash Offer</strong><br />
+      sections.push(`
+        <p><strong>💵 Cash Offer</strong><br />
         Property Address: ${formData.address}<br />
         After Repair Value (ARV): $${formData.arv}<br />
         Estimated Rehab: $${formData.rehabCost}<br />
@@ -83,18 +110,16 @@ export default function SendOfferModal({
         - 7-day inspection period<br />
         - Buyer may utilize financing or private capital<br />
         - Property to be purchased as-is<br />
-        - Buyer may cover standard closing costs</p>`
-      );
+        - Buyer may cover standard closing costs</p>`);
     }
     if (offerTypes.includes("seller")) {
-      sections.push(
-        `<p><strong>🤝 Seller Finance Offer</strong><br />
+      sections.push(`
+        <p><strong>🤝 Seller Finance Offer</strong><br />
         Property Address: ${formData.address}<br />
         Price: $${sellerFinance.price}<br />
         Down Payment: $${sellerFinance.down}<br />
         Monthly: $${sellerFinance.monthly}<br />
-        Balloon Payment (8 yrs): $${sellerFinance.balloon}</p>`
-      );
+        Balloon Payment (8 yrs): $${sellerFinance.balloon}</p>`);
     }
     return sections.join("<br /><br />");
   };
