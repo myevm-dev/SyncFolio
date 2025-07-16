@@ -11,36 +11,36 @@ export default function SellingPage() {
     <div className="max-w-6xl mx-auto p-6 text-white">
       <h1 className="text-2xl font-bold text-center text-cyan-400 mb-10">My Selling Center</h1>
 
-      <div className="flex justify-center mb-10 gap-4">
+      <div className="flex flex-wrap md:flex-nowrap justify-center mb-10 gap-3">
         <button
-          className={`px-6 py-2 rounded-full transition font-medium text-sm min-w-[150px] text-center ${
+          className={`px-6 py-2 rounded-full transition font-medium text-sm min-w-[120px] text-center ${
             activeTab === "received"
               ? "bg-gradient-to-r from-purple-400 to-cyan-400 text-black shadow-md"
               : "bg-transparent border border-zinc-600 text-white"
           }`}
           onClick={() => setActiveTab("received")}
         >
-          Offers Received
+          Offers In
         </button>
         <button
-          className={`px-6 py-2 rounded-full transition font-medium text-sm min-w-[150px] text-center ${
+          className={`px-6 py-2 rounded-full transition font-medium text-sm min-w-[120px] text-center ${
             activeTab === "closing"
               ? "bg-gradient-to-r from-purple-400 to-cyan-400 text-black shadow-md"
               : "bg-transparent border border-zinc-600 text-white"
           }`}
           onClick={() => setActiveTab("closing")}
         >
-          Deals Closing
+          Closing
         </button>
         <button
-          className={`px-6 py-2 rounded-full transition font-medium text-sm min-w-[150px] text-center ${
+          className={`px-6 py-2 rounded-full transition font-medium text-sm min-w-[120px] text-center ${
             activeTab === "completed"
               ? "bg-gradient-to-r from-purple-400 to-cyan-400 text-black shadow-md"
               : "bg-transparent border border-zinc-600 text-white"
           }`}
           onClick={() => setActiveTab("completed")}
         >
-          Deals Completed
+          Completed
         </button>
       </div>
 
