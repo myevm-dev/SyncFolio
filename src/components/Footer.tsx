@@ -1,6 +1,5 @@
 // components/Footer.tsx
 import React from "react";
-import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -9,14 +8,13 @@ export default function Footer() {
       style={{ backgroundColor: "#0B1519" }}
     >
       <p className="text-gray-400 mb-2">
-        Version 0.7.8 {" "}
         <a
           href="https://myevm.org"
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-400 hover:underline"
         >
-          MyEVM
+          SyncFolio Version 0.7.8
         </a>
       </p>
     </footer>
