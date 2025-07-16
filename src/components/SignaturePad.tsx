@@ -1,6 +1,4 @@
-// src/components/SignaturePad.tsx
-import React, { useRef, useState } from "react";
-import SignatureCanvas from "react-signature-canvas";
+import React, { useState } from "react";
 
 interface Props {
   onSave: (dataUrl: string) => void;
@@ -8,16 +6,7 @@ interface Props {
 }
 
 const SignaturePad: React.FC<Props> = ({ onSave, disabled = false }) => {
-  const sigPadRef = useRef<SignatureCanvas>(null);
-  const [typed, setTyped] = useState(false);
   const [typedValue, setTypedValue] = useState("");
-
-  const handleClear = () => sigPadRef.current?.clear();
-
-  const handleDrawSave = () => {
-    const dataURL = sigPadRef.current?.getTrimmedCanvas().toDataURL("image/png");
-    if (dataURL) onSave(dataURL);
-  };
 
   const handleTypedSave = () => {
     const canvas = document.createElement("canvas");
@@ -26,7 +15,7 @@ const SignaturePad: React.FC<Props> = ({ onSave, disabled = false }) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    ctx.fillStyle = "#1e293b"; // bg-slate-800
+    ctx.fillStyle = "#1e293b"; // dark background
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#ffffff";
     ctx.font = "36px cursive";
@@ -35,71 +24,31 @@ const SignaturePad: React.FC<Props> = ({ onSave, disabled = false }) => {
     ctx.fillText(typedValue, canvas.width / 2, canvas.height / 2);
 
     const dataUrl = canvas.toDataURL("image/png");
+    console.log("✍️ Typed signature saved:", dataUrl.length);
     onSave(dataUrl);
   };
 
   return (
     <>
       <h2 className="text-lg font-bold mb-4 text-center text-blue-400">
-        {typed ? "Type Your Signature" : "Draw Your Signature"}
+        Type Your Signature
       </h2>
 
-      <label className="flex items-center gap-2 mb-4">
-        <input
-          type="checkbox"
-          checked={typed}
-          onChange={(e) => setTyped(e.target.checked)}
-        />
-        <span className="text-sm">Type instead</span>
-      </label>
+      <input
+        type="text"
+        className="w-full p-2 rounded bg-slate-800 text-white mb-4"
+        placeholder="Type your name..."
+        value={typedValue}
+        onChange={(e) => setTypedValue(e.target.value)}
+      />
 
-      {typed ? (
-        <>
-          <input
-            type="text"
-            className="w-full p-2 rounded bg-slate-800 text-white mb-4"
-            placeholder="Type your name..."
-            value={typedValue}
-            onChange={(e) => setTypedValue(e.target.value)}
-          />
-          <button
-            onClick={handleTypedSave}
-            disabled={disabled || !typedValue}
-            className="px-4 py-2 bg-green-500 rounded text-black w-full font-semibold disabled:opacity-50"
-          >
-            Save
-          </button>
-        </>
-      ) : (
-        <div className="flex flex-col items-center">
-          <SignatureCanvas
-            ref={sigPadRef}
-            penColor="white"
-            backgroundColor="#1e293b"
-            canvasProps={{
-              width: 400,
-              height: 200,
-              className: "border border-gray-300 rounded mb-2",
-            }}
-          />
-          <div className="flex gap-4">
-            <button
-              onClick={handleClear}
-              disabled={disabled}
-              className="px-4 py-2 bg-red-500 text-white rounded disabled:opacity-50"
-            >
-              Clear
-            </button>
-            <button
-              onClick={handleDrawSave}
-              disabled={disabled}
-              className="px-4 py-2 bg-green-500 text-white rounded disabled:opacity-50"
-            >
-              Save
-            </button>
-          </div>
-        </div>
-      )}
+      <button
+        onClick={handleTypedSave}
+        disabled={disabled || !typedValue}
+        className="px-4 py-2 bg-green-500 rounded text-black w-full font-semibold disabled:opacity-50"
+      >
+        Save
+      </button>
     </>
   );
 };

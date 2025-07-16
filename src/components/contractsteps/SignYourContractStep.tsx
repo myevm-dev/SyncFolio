@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import SignatureModal from "../SignatureModal";
+import { useActiveAccount } from "thirdweb/react";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 interface Props {
   index: number;
   currentStep: number;
   showForm: boolean;
   setShowForm: (value: boolean) => void;
-  hasSignature: boolean;
-  setShowSignaturePad: (value: boolean) => void;
   formData: {
     [key: string]: string;
   };
@@ -19,8 +20,6 @@ export default function SignYourContractStep({
   currentStep,
   showForm,
   setShowForm,
-  hasSignature,
-  setShowSignaturePad,
   formData,
   setFormData,
   handleDownload,
@@ -31,6 +30,26 @@ export default function SignYourContractStep({
     "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV",
     "WI", "WY",
   ];
+
+  const account = useActiveAccount();
+  const walletAddress = account?.address || "";
+
+  const [showSignatureModal, setShowSignatureModal] = useState(false);
+  const [hasSignature, setHasSignature] = useState(false);
+  const [checkingSig, setCheckingSig] = useState(true);
+
+  // Fetch signature on load
+  useEffect(() => {
+    const checkSignature = async () => {
+      if (!walletAddress) return;
+      const db = getFirestore();
+      const ref = doc(db, `users/${walletAddress}/signatures/default`);
+      const snap = await getDoc(ref);
+      setHasSignature(snap.exists());
+      setCheckingSig(false);
+    };
+    checkSignature();
+  }, [walletAddress]);
 
   if (index > currentStep) return null;
 
@@ -51,7 +70,16 @@ export default function SignYourContractStep({
             <h2 className="text-xl font-bold mb-4 text-white text-center">Sign Your Contract</h2>
             <div className="grid grid-cols-2 gap-4">
               {Object.entries(formData).map(([key, value]) => {
-                if (["earnestMoney", "balanceDue", "closingDate", "dueDiligenceDays", "state", "daysToClose"].includes(key)) {
+                if (
+                  [
+                    "earnestMoney",
+                    "balanceDue",
+                    "closingDate",
+                    "dueDiligenceDays",
+                    "state",
+                    "daysToClose",
+                  ].includes(key)
+                ) {
                   return null;
                 }
 
@@ -75,7 +103,6 @@ export default function SignYourContractStep({
                 );
               })}
 
-              {/* Earnest Money and Balance Due */}
               <input
                 key="earnestMoney"
                 className="p-2 rounded bg-neutral-800 text-white text-sm"
@@ -99,7 +126,6 @@ export default function SignYourContractStep({
                 <div className="pointer-events-none absolute right-2 top-2 text-white text-sm">🔒</div>
               </div>
 
-              {/* Closing Date and Days to Close */}
               <div className="relative">
                 <input
                   type="date"
@@ -126,8 +152,6 @@ export default function SignYourContractStep({
                   }))
                 }
               />
-
-              {/* Due Diligence and State */}
               <input
                 key="dueDiligenceDays"
                 className="p-2 rounded bg-neutral-800 text-white text-sm"
@@ -151,25 +175,27 @@ export default function SignYourContractStep({
                   }))
                 }
               >
-                <option value="" disabled>
-                  Select State
-                </option>
+                <option value="" disabled>Select State</option>
                 {states.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
+                  <option key={s} value={s}>{s}</option>
                 ))}
               </select>
             </div>
 
-            {!hasSignature && (
+            {!checkingSig && (
               <div className="mt-4 col-span-2">
                 <button
                   type="button"
-                  onClick={() => setShowSignaturePad(true)}
+                  onClick={() => {
+                    if (hasSignature) {
+                      setHasSignature(true);
+                    } else {
+                      setShowSignatureModal(true);
+                    }
+                  }}
                   className="w-full px-4 py-2 rounded bg-white text-black font-semibold hover:bg-gray-200 transition"
                 >
-                  Create Signature
+                  {hasSignature ? "Sign Contract" : "Create Signature"}
                 </button>
               </div>
             )}
@@ -193,6 +219,17 @@ export default function SignYourContractStep({
             </div>
           </div>
         </div>
+      )}
+
+      {showSignatureModal && (
+        <SignatureModal
+          walletAddress={walletAddress}
+          onClose={() => setShowSignatureModal(false)}
+          onSigned={() => {
+            setHasSignature(true);
+            setShowSignatureModal(false);
+          }}
+        />
       )}
     </>
   );

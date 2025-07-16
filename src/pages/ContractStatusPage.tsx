@@ -161,12 +161,11 @@ export default function ContractStatusPage() {
                     currentStep={index}
                     showForm={showForm}
                     setShowForm={setShowForm}
-                    hasSignature={hasSignature}
-                    setShowSignaturePad={setShowSignaturePad}
                     formData={formData}
                     setFormData={setFormData}
                     handleDownload={handleDownload}
                   />
+
                 );
                 break;
               case 1:
