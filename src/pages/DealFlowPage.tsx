@@ -1,4 +1,4 @@
-/* src/pages/DealFlowPage.tsx */
+// src/pages/DealFlowPage.tsx
 
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -22,24 +22,28 @@ interface CountyData {
 }
 
 export default function DealFlowPage() {
-  const [modalOpen, setModalOpen]       = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [selectedFips, setSelectedFips] = useState("");
   const [selectedCounty, setSelectedCounty] = useState("");
-  const [isMobile, setIsMobile]         = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const navigate   = useNavigate();
+  const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  /* lock viewport & hide scroll while on page */
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [pathname]);
+  const isStandalone = pathname === "/dealflow";
 
-  /* mobile guard + map render */
+  // Disable scroll if standalone page
+  useLayoutEffect(() => {
+    if (isStandalone) {
+      window.scrollTo(0, 0);
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = "";
+      };
+    }
+  }, [isStandalone]);
+
+  // Mobile guard + map render
   useEffect(() => {
     if (window.innerWidth < 768) {
       setIsMobile(true);
@@ -57,27 +61,25 @@ export default function DealFlowPage() {
         d3.json(EDUCATION_URL),
       ]);
 
-      const countyData    = countyRaw    as CountyData;
+      const countyData = countyRaw as CountyData;
       const educationData = educationRaw as EducationDatum[];
 
       const counties = topojson.feature(
         countyData,
         countyData.objects.counties
       ) as unknown as FeatureCollection<Geometry>;
+
       const states = topojson.mesh(
         countyData,
         countyData.objects.states,
         (a: any, b: any) => a !== b
       );
 
-      /* keep original 975×610 projection, scale via CSS */
       const VIEWBOX_W = 975;
       const VIEWBOX_H = 610;
+      const path = d3.geoPath();
+      const maxEd = d3.max(educationData, (d) => d.bachelorsOrHigher)!;
 
-      const path  = d3.geoPath();
-      const maxEd = d3.max(educationData, d => d.bachelorsOrHigher)!;
-
-      /* wipe then build */
       d3.select("#graph").selectAll("*").remove();
 
       const svg = d3
@@ -85,7 +87,7 @@ export default function DealFlowPage() {
         .append("svg")
         .attr("viewBox", `0 0 ${VIEWBOX_W} ${VIEWBOX_H}`)
         .attr("preserveAspectRatio", "xMidYMid meet")
-        .style("width", "840px")   // <<< adjust overall size here
+        .style("width", "840px")
         .style("height", "auto")
         .style("display", "block");
 
@@ -98,7 +100,6 @@ export default function DealFlowPage() {
         .style("padding", "6px")
         .style("border-radius", "4px");
 
-      /* counties */
       svg
         .selectAll("path.county")
         .data(counties.features)
@@ -110,13 +111,13 @@ export default function DealFlowPage() {
         .style("stroke", "grey")
         .style("stroke-width", "0.5px")
         .style("fill", (d: any) => {
-          const t = educationData.find(e => e.fips === d.id);
+          const t = educationData.find((e) => e.fips === d.id);
           return t
             ? d3.interpolateRdYlBu(1 - t.bachelorsOrHigher / maxEd)
             : "beige";
         })
         .on("mouseover", (evt: MouseEvent, d: any) => {
-          const t = educationData.find(e => e.fips === d.id);
+          const t = educationData.find((e) => e.fips === d.id);
           if (!t) return;
           d3.select(evt.currentTarget as SVGPathElement)
             .style("stroke", "black")
@@ -142,7 +143,7 @@ export default function DealFlowPage() {
           tooltip.style("opacity", 0);
         })
         .on("click", (_evt: MouseEvent, d: any) => {
-          const t = educationData.find(e => e.fips === d.id);
+          const t = educationData.find((e) => e.fips === d.id);
           if (t) {
             setSelectedFips(d.id.toString());
             setSelectedCounty(`${t.area_name}, ${t.state}`);
@@ -150,7 +151,6 @@ export default function DealFlowPage() {
           }
         });
 
-      /* state borders */
       svg
         .append("path")
         .datum(states)
@@ -161,7 +161,6 @@ export default function DealFlowPage() {
     })();
   }, []);
 
-  /* ---------- render ---------- */
   if (isMobile) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white text-center px-4 py-10">
@@ -180,9 +179,13 @@ export default function DealFlowPage() {
   }
 
   return (
-    <div className="bg-[#0B1519] text-white overflow-hidden">
+    <div
+      className={`bg-[#0B1519] text-white flex flex-col items-center ${
+        isStandalone ? "h-screen overflow-hidden" : ""
+      }`}
+    >
       <div id="tooltip" className="absolute z-50 pointer-events-none" />
-      <div id="graph" className="flex justify-center mt-6" />
+      <div id="graph" className="mt-6 w-full flex justify-center items-center" />
       <FIPSModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}

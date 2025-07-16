@@ -7,7 +7,7 @@ import AnimatedButton from "./AnimatedButton";
 import MyBuyboxModal from "./MyBuyboxModal";
 
 const mockDeals = [
-  {     
+  {
     address: "123 Main St, El Paso, TX",
     daysLeft: 3,
     method: "Seller Finance",
@@ -39,44 +39,8 @@ const mockDeals = [
     monthlyCashflow: "$480",
     price: "$9,130",
     imageUrl: "https://via.placeholder.com/400x200",
-    buyNowPrice: "$9,500",
+    buyNowPrice: "$9,000",
     currentBid: "$5,000",
-    bonus: "100k Ꞙolio Tokens",
-  },
-  {
-    address: "101 River Rd, Orlando, FL",
-    daysLeft: 4,
-    method: "Morby Method",
-    returnValue: "19.8%",
-    monthlyCashflow: "$1,050",
-    price: "$13,200",
-    imageUrl: "https://via.placeholder.com/400x200",
-    buyNowPrice: "$10,500",
-    currentBid: "$7,000",
-    bonus: "100k Ꞙolio Tokens",
-  },
-  {
-    address: "202 Market St, Austin, TX",
-    daysLeft: 6,
-    method: "Takeover",
-    returnValue: "25.0%",
-    monthlyCashflow: "$1,250",
-    price: "$17,110",
-    imageUrl: "https://via.placeholder.com/400x200",
-    buyNowPrice: "$12,000",
-    currentBid: "$3,000",
-    bonus: "100k Ꞙolio Tokens",
-  },
-  {
-    address: "303 Ocean Blvd, San Diego, CA",
-    daysLeft: 1,
-    method: "Seller Finance",
-    returnValue: "28.2%",
-    monthlyCashflow: "$970",
-    price: "$34,000",
-    imageUrl: "https://via.placeholder.com/400x200",
-    buyNowPrice: "$13,000",
-    currentBid: "$9,000",
     bonus: "100k Ꞙolio Tokens",
   },
 ];
@@ -84,9 +48,11 @@ const mockDeals = [
 const Marketplace: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [showMyBox, setShowMyBox] = useState(false);
+
   return (
-    <div className="w-full">
-      <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-2 mb-4 px-4">
+    <div className="w-full px-4">
+      {/* Top Controls */}
+      <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-2 mb-6">
         {/* Left: Total Buyers + Deploy */}
         <div className="flex gap-2 w-full sm:w-auto justify-center sm:justify-start items-center">
           <Link
@@ -97,7 +63,9 @@ const Marketplace: React.FC = () => {
               <Users size={16} />
               <span>Total Buyers</span>
             </div>
-            <div className="text-white text-base font-bold leading-none text-center">2112</div>
+            <div className="text-white text-base font-bold leading-none text-center">
+              2112
+            </div>
           </Link>
 
           <AnimatedButton
@@ -123,28 +91,21 @@ const Marketplace: React.FC = () => {
           >
             DealFlow
           </Link>
-
-
-
         </div>
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {mockDeals.map((deal, idx) => (
           <DealCard key={idx} {...deal} />
         ))}
       </div>
 
-      {/* Modal */}
+      {/* Modals */}
       {showModal && (
         <SubmitBuyboxModal onComplete={() => setShowModal(false)} />
       )}
-
-      {showMyBox && (
-        <MyBuyboxModal onClose={() => setShowMyBox(false)} />
-      )}
-
+      {showMyBox && <MyBuyboxModal onClose={() => setShowMyBox(false)} />}
     </div>
   );
 };
