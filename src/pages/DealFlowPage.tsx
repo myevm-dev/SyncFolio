@@ -180,7 +180,7 @@ export default function DealFlowPage() {
   }
 
   return (
-    <div className="bg-black text-white overflow-hidden">
+    <div className="bg-[#0B1519] text-white overflow-hidden">
       <div id="tooltip" className="absolute z-50 pointer-events-none" />
       <div id="graph" className="flex justify-center mt-6" />
       <FIPSModal
