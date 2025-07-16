@@ -108,6 +108,7 @@ export default function Groups() {
             </div>
             <h4 className="text-white text-lg font-medium">{g.name}</h4>
             <p className="text-gray-400 text-sm">{g.members} members</p>
+
           </div>
         ))}
       </div>

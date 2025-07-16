@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogTitle } from "./Dialog";
 import OfferHeader from "./OfferHeader";
 import OfferOptionCard from "./OfferOptionCard";
 import SellerProtectionClause from "./SellerProtectionClause";
-import SupportingLogicList from "./SupportingLogicList";
+
 import { Pencil } from "lucide-react";
 import { db } from "../lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
@@ -159,15 +159,7 @@ export default function OfferModal({
             </>
           )}
 
-          <SupportingLogicList
-            bullets={[
-              "Point One",
-              "Point Two",
-              "Point Three",
-              "Point Four",
-              "Point Five",
-            ]}
-          />
+    
 
           <div className="mt-6 text-white text-sm">
             <>
@@ -205,7 +197,7 @@ export default function OfferModal({
                 paragraphs.push(`I’m submitting an offer for ${address}.`);
 
                 if (type === "cash") {
-                  paragraphs.push(`Cash Offer\n\nOffer Price: $${offerPrice}\nTerms: Cash, as-is\n${inspectionDays} business days\nEMD: $1,500 non-refundable, submitted after inspection period`);
+                  paragraphs.push(`Cash Offer\n\nOffer Price: $${offerPrice}\nTerms: As-is\n${inspectionDays} business days\nEMD: $1,500 non-refundable, submitted after inspection period`);
                 } else if (type === "sellerFinance") {
                   paragraphs.push(
                     `Seller Finance\n\nOffer Price: $${totalOffer}\nDown: $${down}\nMonthly: $${monthly}\nTerm: ${term} months\nBalloon: $${balloon} due in final month\nCommission: Seller’s agent fee paid from down payment\nSubject to a ${inspectionDays} business day inspection period\nEMD: $1,500 non-refundable, submitted after inspection period`

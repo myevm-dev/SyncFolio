@@ -16,6 +16,7 @@ export default function Footer() {
         >
           SyncFolio Version 0.7.8
         </a>
+
       </p>
     </footer>
   );
