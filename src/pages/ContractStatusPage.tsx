@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useActiveAccount } from "thirdweb/react";
-import SignatureModal from "../components/SignatureModal";
 import JVAgreementModal from "../components/JVAgreementModal";
 import SignYourContractStep from "../components/contractsteps/SignYourContractStep";
 import SellerUploadStep from "../components/contractsteps/SellerUploadStep";
@@ -205,17 +204,7 @@ export default function ContractStatusPage() {
         </ul>
       </div>
 
-      {showSignaturePad && (
-        <SignatureModal
-          walletAddress={walletAddress}
-          onClose={() => setShowSignaturePad(false)}
-          onSigned={() => {
-            setHasSignature(true);
-            setShowSignaturePad(false);
-          }}
-        />
-      )}
-
+      
       {showJvModal && (
         <JVAgreementModal
           onClose={() => setShowJvModal(false)}

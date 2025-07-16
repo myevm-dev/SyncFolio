@@ -29,7 +29,7 @@ export default function SignYourContractStep({
     "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS",
     "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY",
     "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV",
-    "WI", "WY"
+    "WI", "WY",
   ];
 
   if (index > currentStep) return null;
@@ -38,16 +38,10 @@ export default function SignYourContractStep({
     <>
       <div className="w-[250px] md:w-[440px]">
         <button
-          onClick={() => {
-            if (!hasSignature) {
-              setShowSignaturePad(true);
-            } else {
-              setShowForm(true);
-            }
-          }}
+          onClick={() => setShowForm(true)}
           className="w-full px-6 py-4 rounded bg-neutral-800 border border-cyan-500 hover:bg-cyan-600 hover:text-black text-white text-center font-semibold transition"
         >
-          {hasSignature ? "Sign and Download" : "Create Signature to Proceed"}
+          Sign and Download
         </button>
       </div>
 
@@ -57,51 +51,13 @@ export default function SignYourContractStep({
             <h2 className="text-xl font-bold mb-4 text-white text-center">Sign Your Contract</h2>
             <div className="grid grid-cols-2 gap-4">
               {Object.entries(formData).map(([key, value]) => {
-                const label =
-                  key === "dueDiligenceDays"
-                    ? "Inspection Period"
-                    : key === "closingDate"
-                    ? "Closing Date"
-                    : key.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
-
-                if (key === "closingDate") {
-                  return (
-                    <div key={key} className="relative col-span-2">
-                      <input
-                        type="date"
-                        value={value}
-                        onChange={(e) =>
-                          setFormData((prev: any) => ({ ...prev, closingDate: e.target.value }))
-                        }
-                        className="p-2 w-full rounded bg-neutral-800 text-white text-sm appearance-none"
-                      />
-                      <div className="pointer-events-none absolute right-3 top-2.5 text-white text-sm">
-                        📅
-                      </div>
-                    </div>
-                  );
+                if (["earnestMoney", "balanceDue", "closingDate", "dueDiligenceDays", "state", "daysToClose"].includes(key)) {
+                  return null;
                 }
 
-                if (key === "state") {
-                  return (
-                    <React.Fragment key={key}>
-                      <select
-                        className="p-2 rounded bg-neutral-800 text-white text-sm w-full col-span-2"
-                        value={value}
-                        onChange={(e) =>
-                          setFormData((prev: any) => ({ ...prev, state: e.target.value }))
-                        }
-                      >
-                        <option value="" disabled>Select State</option>
-                        {states.map((s) => (
-                          <option key={s} value={s}>
-                            {s}
-                          </option>
-                        ))}
-                      </select>
-                    </React.Fragment>
-                  );
-                }
+                const label = key
+                  .replace(/([A-Z])/g, " $1")
+                  .replace(/^./, (str) => str.toUpperCase());
 
                 return (
                   <input
@@ -110,13 +66,114 @@ export default function SignYourContractStep({
                     placeholder={label}
                     value={value}
                     onChange={(e) =>
-                      setFormData((prev: any) => ({ ...prev, [key]: e.target.value }))
+                      setFormData((prev: any) => ({
+                        ...prev,
+                        [key]: e.target.value,
+                      }))
                     }
-                    disabled={key === "balanceDue"}
                   />
                 );
               })}
+
+              {/* Earnest Money and Balance Due */}
+              <input
+                key="earnestMoney"
+                className="p-2 rounded bg-neutral-800 text-white text-sm"
+                placeholder="Earnest Money"
+                value={formData.earnestMoney}
+                onChange={(e) =>
+                  setFormData((prev: any) => ({
+                    ...prev,
+                    earnestMoney: e.target.value,
+                  }))
+                }
+              />
+              <div className="relative">
+                <input
+                  key="balanceDue"
+                  className="p-2 rounded bg-neutral-800 text-sm text-gray-400 italic w-full pr-8"
+                  placeholder="Balance Due (auto)"
+                  value={formData.balanceDue}
+                  disabled
+                />
+                <div className="pointer-events-none absolute right-2 top-2 text-white text-sm">🔒</div>
+              </div>
+
+              {/* Closing Date and Days to Close */}
+              <div className="relative">
+                <input
+                  type="date"
+                  value={formData.closingDate}
+                  onChange={(e) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      closingDate: e.target.value,
+                    }))
+                  }
+                  className="p-2 w-full rounded bg-neutral-800 text-white text-sm appearance-none"
+                />
+                <div className="pointer-events-none absolute right-3 top-2.5 text-white text-sm">📅</div>
+              </div>
+              <input
+                key="daysToClose"
+                className="p-2 rounded bg-neutral-800 text-white text-sm"
+                placeholder="Days to Close (30 Days?)"
+                value={formData.daysToClose || ""}
+                onChange={(e) =>
+                  setFormData((prev: any) => ({
+                    ...prev,
+                    daysToClose: e.target.value,
+                  }))
+                }
+              />
+
+              {/* Due Diligence and State */}
+              <input
+                key="dueDiligenceDays"
+                className="p-2 rounded bg-neutral-800 text-white text-sm"
+                placeholder="Inspection Days (7+)"
+                value={formData.dueDiligenceDays}
+                onChange={(e) =>
+                  setFormData((prev: any) => ({
+                    ...prev,
+                    dueDiligenceDays: e.target.value,
+                  }))
+                }
+              />
+              <select
+                key="state"
+                className="p-2 rounded bg-neutral-800 text-white text-sm"
+                value={formData.state}
+                onChange={(e) =>
+                  setFormData((prev: any) => ({
+                    ...prev,
+                    state: e.target.value,
+                  }))
+                }
+              >
+                <option value="" disabled>
+                  Select State
+                </option>
+                {states.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
             </div>
+
+            {!hasSignature && (
+              <div className="mt-4 col-span-2">
+                <button
+                  type="button"
+                  onClick={() => setShowSignaturePad(true)}
+                  className="w-full px-4 py-2 rounded bg-white text-black font-semibold hover:bg-gray-200 transition"
+                >
+                  Create Signature
+                </button>
+              </div>
+            )}
+
             <div className="mt-6 flex justify-end gap-2">
               <button
                 onClick={() => setShowForm(false)}
@@ -128,6 +185,7 @@ export default function SignYourContractStep({
                 <button
                   onClick={handleDownload}
                   className="w-full px-6 py-3 rounded bg-neutral-800 border border-cyan-500 hover:bg-cyan-600 hover:text-black text-white text-center font-semibold transition"
+                  disabled={!hasSignature}
                 >
                   Download PDF
                 </button>
