@@ -22,7 +22,7 @@ const FAQSection: React.FC = () => {
         <ol className="list-decimal list-inside space-y-1">
           <li>🔍 Find a property and fill in the home details + agent info.</li>
           <li>📞 Call the agent using the provided Call Script to get the needed information.</li>
-          <li>🧮 Calculate offers and send to the agent.</li>
+          <li>🧮 Click to calculate offers and send to the agent.</li>
           <li>✅ If accepted, press “Finalize” for us to send the contract.</li>
           <li>📅 Closing will take less than 30 days and the💲balance will be added to your account.</li>
         </ol>
