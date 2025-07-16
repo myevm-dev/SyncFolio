@@ -10,7 +10,7 @@ import TeamSection from "../components/TeamSection";
 import ReferralSection from "../components/ReferralSection";
 import IncomingInvites from "../components/IncomingInvites";
 import Balances from "../components/Balances";
-import DealflowCard from "../components/DealflowCard";
+import TurfwarsCard from "../components/TurfwarsCard";
 
 
 const roleOptions = [
@@ -293,7 +293,7 @@ export default function ProfilePage() {
           <ReferralSection walletAddress={walletAddress} />
         </div>
         <div className="max-w-6xl mx-auto mt-6">
-          <DealflowCard />
+          <TurfwarsCard />
         </div>
 
       </div>

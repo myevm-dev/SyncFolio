@@ -33,7 +33,7 @@ const MyBuyboxTable: React.FC = () => {
               <td className="px-6 py-3">{item.state}</td>
               <td className="px-6 py-3 text-right">
                 <Link
-                  to="/dealflow"
+                  to="/turfwars"
                   className="inline-block px-3 py-1 text-xs font-semibold text-black bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full shadow hover:opacity-90"
                 >
                   Boost

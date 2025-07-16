@@ -43,7 +43,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/contracts/:id" element={<ContractStatusPage />} />
             <Route path="/yield" element={<YieldPage />} />
             <Route path="/profile/:id" element={<UserProfilePage />} />
-            <Route path="/dealflow" element={<DealFlowPage />} />
+            <Route path="/turfwars" element={<DealFlowPage />} />
             <Route path="/features/:slug" element={<FeaturePage />} />
             <Route path="/instant-offer" element={<InstantOfferPage />} /> {/* ✅ New route */}
           </Route>

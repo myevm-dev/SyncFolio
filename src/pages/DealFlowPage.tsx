@@ -30,7 +30,7 @@ export default function DealFlowPage() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const isStandalone = pathname === "/dealflow";
+  const isStandalone = pathname === "/turfwars";
 
   useLayoutEffect(() => {
     if (isStandalone) {
