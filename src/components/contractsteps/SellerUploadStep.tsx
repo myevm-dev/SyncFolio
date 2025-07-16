@@ -4,13 +4,10 @@ interface Props {
   index: number;
 }
 
-export default function SellerUploadStep({ index }: Props) {
-  const handleUpload = () => alert("Upload contract signed by seller");
-  
+export default function SellerUploadStep({ index }: { index: number }) {
   return (
     <button
-      onClick={handleUpload}
-      className="text-xs px-4 py-1 rounded bg-yellow-500 text-black font-semibold w-max"
+      className="px-4 py-2 rounded bg-neutral-800 border border-yellow-400 hover:bg-yellow-400 hover:text-black text-yellow-400 font-semibold w-full text-left"
     >
       Upload Signed Contract
     </button>

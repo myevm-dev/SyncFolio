@@ -8,9 +8,29 @@ import SignatureModal from "../components/SignatureModal";
 import JVAgreementModal from "../components/JVAgreementModal";
 import SignYourContractStep from "../components/contractsteps/SignYourContractStep";
 import SellerUploadStep from "../components/contractsteps/SellerUploadStep";
-import DispoOptionsStep from "../components/contractsteps/DispoOptionsStep";
 import JVAgreementStep from "../components/contractsteps/JVAgreementStep";
 import { generateContractPdf } from "../lib/generateContractPdf";
+
+const DispoOptionsStep = () => {
+  const options = [
+    "Have Syncfolio Sell it for you",
+    "Investor Deal Flow with fixed fee",
+    "Finder Fee Auction Marketplace",
+  ];
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      {options.map((label) => (
+        <button
+          key={label}
+          className="w-full p-4 rounded bg-neutral-800 border border-cyan-500 hover:bg-cyan-600 hover:text-black text-white text-center font-semibold transition"
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 const defaultSteps = [
   "Contract Signed by You",
@@ -95,11 +115,19 @@ export default function ContractStatusPage() {
     setShowForm(false);
   };
 
-  
-  
+  const handleJvDownload = async () => {
+    alert("Generating JV Agreement...");
+    await generateContractPdf({
+      ...formData,
+      purchasePrice: "0",
+      earnestMoney: "0",
+      balanceDue: "0",
+      dueDiligenceDays: "0",
+    });
+    setJvSigned(true);
+  };
 
   const steps = Array.isArray(contract?.steps) ? contract.steps : defaultSteps;
-  const currentStep = Number.isInteger(contract?.statusIndex) ? contract.statusIndex : 0;
 
   return (
     <div className="max-w-xl mx-auto px-6 py-12 text-white">
@@ -107,10 +135,7 @@ export default function ContractStatusPage() {
       <p className="text-center text-lg text-cyan-400 mb-8">{contract?.address}</p>
 
       <div className="h-2 rounded mb-8 bg-neutral-800 overflow-hidden">
-        <div
-          className="h-full bg-green-500 transition-all duration-500"
-          style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-        />
+        <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `100%` }} />
       </div>
 
       <div className="relative">
@@ -123,7 +148,7 @@ export default function ContractStatusPage() {
                 StepComponent = (
                   <SignYourContractStep
                     index={index}
-                    currentStep={currentStep}
+                    currentStep={index}
                     showForm={showForm}
                     setShowForm={setShowForm}
                     hasSignature={hasSignature}
@@ -144,26 +169,23 @@ export default function ContractStatusPage() {
                 StepComponent = (
                   <JVAgreementStep
                     index={index}
-                    currentStep={currentStep}
+                    currentStep={index}
                     setShowJvModal={setShowJvModal}
+                    handleJvDownload={handleJvDownload}
                   />
                 );
                 break;
+              default:
+                StepComponent = null;
             }
 
             return (
               <li key={index} className="relative flex items-start gap-3">
-                <div
-                  className={`relative z-10 w-6 h-6 flex items-center justify-center rounded-full border-2 text-xs font-bold transition-all duration-300 ${
-                    index <= currentStep
-                      ? "bg-green-500 border-green-500 text-black"
-                      : "bg-black text-white border-white"
-                  }`}
-                >
+                <div className={`relative z-10 w-6 h-6 flex items-center justify-center rounded-full border-2 text-xs font-bold transition-all duration-300 bg-green-500 border-green-500 text-black`}>
                   {index + 1}
                 </div>
                 <div className="flex flex-col mt-1 gap-2">
-                  <span className={`${index <= currentStep ? "text-white" : "text-neutral-500"}`}>{label}</span>
+                  <span className={`text-white`}>{label}</span>
                   {StepComponent}
                 </div>
               </li>

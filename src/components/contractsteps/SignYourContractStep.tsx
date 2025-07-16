@@ -25,8 +25,6 @@ export default function SignYourContractStep({
   setFormData,
   handleDownload,
 }: Props) {
-  if (index !== currentStep) return null;
-
   const states = [
     "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS",
     "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY",
@@ -38,12 +36,17 @@ export default function SignYourContractStep({
     <>
       <button
         onClick={() => setShowForm(true)}
-        className="text-xs px-4 py-1 rounded bg-cyan-500 text-black font-semibold w-max"
+        disabled={index !== currentStep}
+        className={`text-xs px-4 py-1 rounded font-semibold w-max ${
+          index === currentStep
+            ? "bg-cyan-500 text-black"
+            : "bg-neutral-700 text-white opacity-60 cursor-not-allowed"
+        }`}
       >
         Sign and Download
       </button>
 
-      {showForm && (
+      {showForm && index === currentStep && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
           <div className="bg-neutral-900 p-6 rounded w-full max-w-lg">
             <h2 className="text-xl font-bold mb-4 text-white text-center">Sign Your Contract</h2>
