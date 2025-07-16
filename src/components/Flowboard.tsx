@@ -39,7 +39,7 @@ const Flowboard: React.FC<FlowboardProps> = ({ open, onClose }) => {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl bg-zinc-900 border-zinc-700 px-4 py-8">
         <div className="text-white">
-          <h2 className="text-2xl font-bold text-center mb-6">🏁 Dealflow Leaderboard</h2>
+          <h2 className="text-2xl font-bold text-center mb-6">Dealflow Leaderboard</h2>
 
           <div className="flex justify-center gap-4 mb-4">
             {["overall", "state", "county"].map((m) => (
