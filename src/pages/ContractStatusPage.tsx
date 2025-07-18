@@ -12,19 +12,44 @@ import { generateContractPdf } from "../lib/generateContractPdf";
 const DispoOptionsStep = () => {
   const options = [
     {
-      title: "Syncfolio Sells It",
-      description:
-        "Our team finds a buyer & handles the contract as a JV.",
+      title: "Syncfolio Sells It for You",
+      description: (
+        <>
+          Our team finds a buyer & handles the contract as a JV.
+          <br />
+          <span className="text-sm mt-2 block text-white text-center">
+            <span className="text-cyan-400 font-semibold">40% to you</span>,{" "}
+            <span className="text-yellow-400 font-semibold">20% to platform</span>,{" "}
+            <span className="text-pink-400 font-semibold">40% to Syncfolio Dispo</span>
+          </span>
+        </>
+      ),
     },
     {
-      title: "Deal Flow for Fixed Fee",
-      description:
-        "List it in our internal deal flow network for flat finders fee.",
+      title: "Fee Auction Marketplace",
+      description: (
+        <>
+          Open your deal to auction bidding on our marketplace.
+          <br />
+          <span className="text-sm mt-2 block text-white text-center">
+            <span className="text-cyan-400 font-semibold">70% to you</span>,{" "}
+            <span className="text-yellow-400 font-semibold">30% to platform</span>
+          </span>
+        </>
+      ),
     },
     {
-      title: "Fee Auction Market",
-      description:
-        "Open your deal to auction bidding on our marketplace.",
+      title: "Deal Flow Network for Fixed Fee",
+      description: (
+        <>
+          List it in our internal deal flow network for flat finder's fee.
+          <br />
+          <span className="text-sm mt-2 block text-white text-center">
+            <span className="text-cyan-400 font-semibold">80% to you</span>,{" "}
+            <span className="text-yellow-400 font-semibold">20% to platform</span>
+          </span>
+        </>
+      ),
     },
   ];
 
@@ -43,8 +68,9 @@ const DispoOptionsStep = () => {
   );
 };
 
+
 const defaultSteps = [
-  "SIgn and Generate Contract",
+  "Sign and Generate Contract",
   "Seller Signs then Upload Contract",
   "Choose how to Sell Contract",
   "JV Agreement Signed Between You and Syncfolio",
