@@ -9,10 +9,17 @@ import SellerUploadStep from "../components/contractsteps/SellerUploadStep";
 import JVAgreementStep from "../components/contractsteps/JVAgreementStep";
 import { generateContractPdf } from "../lib/generateContractPdf";
 
-const DispoOptionsStep = () => {
+const DispoOptionsStep = ({
+  setDispoChoice,
+  selected,
+}: {
+  setDispoChoice: (val: "auction" | "dealflow" | "syncdispo") => void;
+  selected: "auction" | "dealflow" | "syncdispo" | "";
+}) => {
   const options = [
     {
       title: "Syncfolio Sells It for You",
+      key: "syncdispo",
       description: (
         <>
           Our team finds a buyer & handles the contract as a JV.
@@ -27,6 +34,7 @@ const DispoOptionsStep = () => {
     },
     {
       title: "Fee Auction Marketplace",
+      key: "auction",
       description: (
         <>
           Open your deal to auction bidding on our marketplace.
@@ -40,6 +48,7 @@ const DispoOptionsStep = () => {
     },
     {
       title: "Deal Flow Network for Fixed Fee",
+      key: "dealflow",
       description: (
         <>
           List it in our internal deal flow network for flat finder's fee.
@@ -55,15 +64,23 @@ const DispoOptionsStep = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {options.map(({ title, description }) => (
-        <div
-          key={title}
-          className="w-[250px] md:w-[440px] px-6 py-4 rounded bg-neutral-800 border border-cyan-500 text-white transition-all hover:bg-cyan-600 hover:text-black"
-        >
-          <div className="font-semibold text-center mb-2">{title}</div>
-          <p className="text-sm text-center leading-snug">{description}</p>
-        </div>
-      ))}
+      {options.map(({ title, description, key }) => {
+        const isSelected = selected === key;
+        return (
+          <div
+            key={title}
+            onClick={() => setDispoChoice(key as "auction" | "dealflow" | "syncdispo")}
+            className={`w-[250px] md:w-[440px] px-6 py-4 rounded border transition-all cursor-pointer ${
+              isSelected
+                ? "bg-cyan-600 text-black border-yellow-400 scale-[1.02]"
+                : "bg-neutral-800 text-white border-cyan-500 hover:bg-cyan-600 hover:text-black"
+            }`}
+          >
+            <div className="font-semibold text-center mb-2">{title}</div>
+            <p className="text-sm text-center leading-snug">{description}</p>
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -91,6 +108,7 @@ export default function ContractStatusPage() {
   const [hasSignature, setHasSignature] = useState(false);
   const [jvSigned, setJvSigned] = useState(false);
   const [showJvModal, setShowJvModal] = useState(false);
+  const [dispoChoice, setDispoChoice] = useState<"auction" | "dealflow" | "syncdispo" | "">("");
 
   const [formData, setFormData] = useState({
     sellerName: "",
@@ -197,9 +215,17 @@ export default function ContractStatusPage() {
               case 1:
                 StepComponent = <SellerUploadStep index={index} />;
                 break;
+            
               case 2:
-                StepComponent = <DispoOptionsStep />;
+                StepComponent = (
+                  <DispoOptionsStep
+                    setDispoChoice={setDispoChoice}
+                    selected={dispoChoice}
+                  />
+                );
                 break;
+
+
               case 3:
                 StepComponent = (
                   <JVAgreementStep
@@ -236,6 +262,7 @@ export default function ContractStatusPage() {
           onConfirm={() => {
             setShowJvModal(false);
           }}
+          dispoChoice={dispoChoice as "auction" | "dealflow" | "syncdispo"}
         />
       )}
     </div>
