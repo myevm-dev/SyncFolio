@@ -45,3 +45,9 @@ input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px #18181b inset !important;
   -webkit-text-fill-color: #fff !important;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  pointer-events: none;
+}

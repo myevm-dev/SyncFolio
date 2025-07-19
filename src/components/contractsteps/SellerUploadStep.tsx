@@ -4,18 +4,11 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../../lib/firebase";
 import { useParams } from "react-router-dom";
 import { useActiveAccount } from "thirdweb/react";
+import { CalendarIcon, ClockIcon } from "@heroicons/react/24/outline";
 
 interface Props {
   index: number;
 }
-
-const timezones = [
-  "America/New_York",
-  "America/Chicago",
-  "America/Denver",
-  "America/Los_Angeles",
-  "UTC",
-];
 
 export default function SellerUploadStep({ index }: Props) {
   const [showModal, setShowModal] = useState(false);
@@ -24,7 +17,7 @@ export default function SellerUploadStep({ index }: Props) {
   const [file, setFile] = useState<File | null>(null);
   const [inspectionDate, setInspectionDate] = useState("");
   const [inspectionTime, setInspectionTime] = useState("");
-  const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone); // default to user's
+  const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
 
   const { id: contractId } = useParams();
   const account = useActiveAccount();
@@ -43,12 +36,10 @@ export default function SellerUploadStep({ index }: Props) {
 
     setUploading(true);
     try {
-      // upload file
       const storageRef = ref(storage, `contracts/${walletAddress}/${contractId}/signed_contract.pdf`);
       await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
 
-      // convert to ISO string in selected timezone
       const local = new Date(`${inspectionDate}T${inspectionTime}`);
       const zoned = new Date(
         new Intl.DateTimeFormat("en-US", {
@@ -111,32 +102,59 @@ export default function SellerUploadStep({ index }: Props) {
             />
 
             <label className="text-sm block mb-1">Inspection End Date</label>
-            <input
-              type="date"
-              value={inspectionDate}
-              onChange={(e) => setInspectionDate(e.target.value)}
-              className="w-full mb-4 p-2 rounded bg-neutral-800 border border-cyan-500"
-            />
+            <div className="relative mb-4">
+              <input
+                type="date"
+                value={inspectionDate}
+                onChange={(e) => setInspectionDate(e.target.value)}
+                className="w-full p-2 pr-10 rounded bg-neutral-800 border border-cyan-500 text-white"
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-2.5 text-white"
+                onClick={() => {
+                  document.querySelector<HTMLInputElement>('input[type="date"]')?.showPicker?.();
+                }}
+              >
+                <CalendarIcon className="h-5 w-5" />
+              </button>
+            </div>
 
-            <label className="text-sm block mb-1">Inspection End Time</label>
-            <input
-              type="time"
-              value={inspectionTime}
-              onChange={(e) => setInspectionTime(e.target.value)}
-              className="w-full mb-4 p-2 rounded bg-neutral-800 border border-cyan-500"
-            />
+
+
+            <div className="relative mb-4">
+              <input
+                type="time"
+                value={inspectionTime}
+                onChange={(e) => setInspectionTime(e.target.value)}
+                className="w-full p-2 pr-10 rounded bg-neutral-800 border border-cyan-500 text-white"
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-2.5 text-white"
+                onClick={() => {
+                  document.querySelector<HTMLInputElement>('input[type="time"]')?.showPicker?.();
+                }}
+              >
+                <ClockIcon className="h-5 w-5" />
+              </button>
+            </div>
+
 
             <label className="text-sm block mb-1">Time Zone</label>
             <select
               value={timezone}
               onChange={(e) => setTimezone(e.target.value)}
-              className="w-full mb-4 p-2 rounded bg-neutral-800 border border-cyan-500"
+              className="w-full mb-4 p-2 rounded bg-neutral-800 border border-cyan-500 text-white"
             >
-              {timezones.map((tz) => (
-                <option key={tz} value={tz}>
-                  {tz}
-                </option>
-              ))}
+              <option value="">Select Timezone</option>
+              <option value="Pacific/Honolulu" className="text-purple-400">Hawaii</option>
+              <option value="America/Anchorage" className="text-rose-400">Alaska</option>
+              <option value="America/Los_Angeles" className="text-orange-400">Pacific</option>
+              <option value="America/Denver" className="text-yellow-400">Mountain</option>
+              <option value="America/Chicago" className="text-green-400">Central</option>
+              <option value="America/New_York" className="text-cyan-400">Eastern</option>
+              <option value="UTC" className="text-white">UTC</option>
             </select>
 
             <div className="flex justify-between mt-6">
