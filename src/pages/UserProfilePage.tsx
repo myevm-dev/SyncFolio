@@ -5,6 +5,8 @@ import { db } from "../lib/firebase";
 import DashboardCards from "../components/DashboardCards";
 import Balances from "../components/Balances";
 import { useActiveAccount } from "thirdweb/react";   // ✅ v5 React hook
+import ProfileStatCard from "../components/ProfileStatCard";
+
 
 const roleGradients: Record<string, string> = {
   Investor: "bg-gradient-to-r from-green-400 to-blue-600",
@@ -27,6 +29,8 @@ export default function UserProfilePage() {
   const [profile, setProfile] = useState<any | null>(null);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [buyingVolume, setBuyingVolume] = useState(0);
+  const [sellingVolume, setSellingVolume] = useState(0);
 
   /* ---------------------------------------------------- *
    *  Load profile data (by displayName, then by address) *
@@ -142,7 +146,7 @@ export default function UserProfilePage() {
           {profile.roles.map((role: string) => (
             <span
               key={role}
-              className={`w-44 px-3 py-1 rounded-full text-sm font-semibold text-center ${
+              className={`w-44 px-3 py-1 rounded-full mb-8 text-sm font-semibold text-center ${
                 roleGradients[role] || "bg-zinc-600"
               }`}
             >
@@ -151,10 +155,20 @@ export default function UserProfilePage() {
           ))}
         </div>
       )}
+      <ProfileStatCard
+        pendingTotal={`+$${(buyingVolume + sellingVolume).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`}
+      />
 
       {/* Dashboard cards */}
       <div className="mt-10">
-        <DashboardCards walletAddress={walletAddress} />
+       <DashboardCards
+        walletAddress={walletAddress}
+        setBuyingVolume={setBuyingVolume}
+        setSellingVolume={setSellingVolume}
+      />
       </div>
 
       {/* Balances */}
