@@ -20,7 +20,7 @@ const DispoOptionsStep = ({
   setDispoChoice: (val: "auction" | "dealflow" | "syncdispo") => void;
   selected: "auction" | "dealflow" | "syncdispo" | "";
 }) => {
-  const options = [
+    const options = [
     {
       title: "Syncfolio Sells It for You",
       key: "syncdispo",
@@ -41,6 +41,7 @@ const DispoOptionsStep = ({
       key: "auction",
       description: (
         <>
+          <span className="text-red-500 font-semibold">COMING SOON</span> <br />
           Open your deal to auction bidding on our marketplace.
           <br />
           <span className="text-sm mt-2 block text-white text-center">
@@ -55,6 +56,7 @@ const DispoOptionsStep = ({
       key: "dealflow",
       description: (
         <>
+          <span className="text-red-500 font-semibold">COMING SOON</span> <br />
           List it in our internal deal flow network for flat finder's fee.
           <br />
           <span className="text-sm mt-2 block text-white text-center">
@@ -65,6 +67,7 @@ const DispoOptionsStep = ({
       ),
     },
   ];
+
 
   return (
     <div className="flex flex-col gap-4">
@@ -77,8 +80,9 @@ const DispoOptionsStep = ({
             className={`w-[250px] md:w-[440px] px-6 py-4 rounded border transition-all cursor-pointer ${
               isSelected
                 ? "bg-blue-800 text-white border-green-400"
-                : "bg-black text-white border-cyan-500 hover:bg-cyan-600 hover:text-black"
+                : "bg-black text-white border-cyan-500 hover:bg-neutral-900 hover:border-cyan-300 hover:shadow-md hover:shadow-cyan-500/30 hover:scale-[1.01] transform"
             }`}
+
 
 
           >
@@ -203,8 +207,8 @@ export default function ContractStatusPage() {
         <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `100%` }} />
       </div>
 
-      <div className="relative">
-        <div className="absolute left-4 top-2 bottom-2 w-1 bg-neutral-700 rounded" />
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-y-2 left-4 w-1 bg-neutral-700 rounded" />
         <ul className="space-y-6 pl-10">
           {steps.map((label: string, index: number) => {
             let StepComponent = null;
