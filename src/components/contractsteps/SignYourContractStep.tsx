@@ -37,6 +37,7 @@ export default function SignYourContractStep({
   const [showSignatureModal, setShowSignatureModal] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
   const [checkingSig, setCheckingSig] = useState(true);
+  const [showUseTheirModal, setShowUseTheirModal] = useState(false);
 
   useEffect(() => {
     const checkSignature = async () => {
@@ -61,16 +62,55 @@ export default function SignYourContractStep({
     <>
       <div className="w-[250px] md:w-[440px] bg-black border border-cyan-500 rounded-xl p-6 shadow-md flex flex-col text-center">
         <p className="text-white font-semibold text-lg mb-4">Contract Signature</p>
-        <button
-          onClick={() => {
-            if (hasSignature) setShowForm(true);
-            else setShowSignatureModal(true);
-          }}
-          className="w-full py-2 text-sm font-semibold rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white transition"
-        >
-          {hasSignature ? "Sign Contract" : "Create Signature"}
-        </button>
+
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={() => {
+              if (hasSignature) setShowForm(true);
+              else setShowSignatureModal(true);
+            }}
+            className="px-4 py-2 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded font-semibold w-full"
+          >
+            Generate Contract
+          </button>
+
+          <button
+            onClick={() => setShowUseTheirModal(true)}
+            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded font-semibold w-full"
+          >
+            Use Their Contract
+          </button>
+        </div>
       </div>
+
+      {showUseTheirModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+          <div className="bg-neutral-900 p-6 rounded w-full max-w-lg text-white">
+            <h2 className="text-lg font-bold mb-4 text-center">Use Seller's Contract</h2>
+            <p className="mb-6 text-sm text-center">
+              Go ahead and sign, be sure to verify it says there is a <span className="font-bold text-cyan-400">7 business day inspection period</span> that you can cancel for any reason. <br/><br/>Also, make sure that it <span className="font-bold text-cyan-400">does not state anywhere that the contract is non assignable</span>.
+              <br/><br/>Then continue to the next step to upload the contract once signed.
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setShowUseTheirModal(false)}
+                className="px-4 py-2 rounded bg-neutral-700 hover:bg-neutral-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowForm(true);
+                  setShowUseTheirModal(false);
+                }}
+                className="px-4 py-2 rounded bg-cyan-600 hover:bg-cyan-500"
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showForm && index === currentStep && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
