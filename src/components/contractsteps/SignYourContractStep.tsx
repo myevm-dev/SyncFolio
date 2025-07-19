@@ -63,35 +63,66 @@ export default function SignYourContractStep({
       <div className="w-[250px] md:w-[440px] bg-black border border-cyan-500 rounded-xl p-6 shadow-md flex flex-col text-center">
         <p className="text-white font-semibold text-lg mb-4">Contract Signature</p>
 
-        <div className="flex justify-center gap-4">
+        <div className="flex gap-2">
           <button
             onClick={() => {
               if (hasSignature) setShowForm(true);
               else setShowSignatureModal(true);
             }}
-            className="px-4 py-2 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded font-semibold w-full"
+            className="flex-1 py-1 text-sm rounded-full text-black bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
           >
             Generate Contract
           </button>
 
           <button
             onClick={() => setShowUseTheirModal(true)}
-            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded font-semibold w-full"
+            className="flex-1 py-1 text-sm rounded-full text-black bg-gradient-to-r from-yellow-500 to-yellow-300 hover:from-yellow-600 hover:to-yellow-400"
           >
             Use Their Contract
           </button>
         </div>
-      </div>
-
+      </div> 
       {showUseTheirModal && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
           <div className="bg-neutral-900 p-6 rounded w-full max-w-lg text-white">
             <h2 className="text-lg font-bold mb-4 text-center">Use Seller's Contract</h2>
-            <p className="mb-6 text-sm text-center">
-              Go ahead and sign, be sure to verify it says there is a <span className="font-bold text-cyan-400">7 business day inspection period</span> that you can cancel for any reason. <br/><br/>Also, make sure that it <span className="font-bold text-cyan-400">does not state anywhere that the contract is non assignable</span>.
-              <br/><br/>Then continue to the next step to upload the contract once signed.
-            </p>
-            <div className="flex justify-center gap-4">
+
+            <div className="space-y-4 text-sm">
+              <label className="flex items-start gap-2">
+                <input
+                  type="checkbox"
+                  checked={formData.contractHasInspection === "true"}
+                  onChange={(e) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      contractHasInspection: e.target.checked.toString(),
+                    }))
+                  }
+                />
+                <span>
+                  I verified the contract includes a{" "}
+                  <span className="text-cyan-400 font-bold">7 business day inspection period</span>.
+                </span>
+              </label>
+
+              <label className="flex items-start gap-2">
+                <input
+                  type="checkbox"
+                  checked={formData.contractIsAssignable === "true"}
+                  onChange={(e) =>
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      contractIsAssignable: e.target.checked.toString(),
+                    }))
+                  }
+                />
+                <span>
+                  I verified the contract <span className="text-cyan-400 font-bold">does not say it’s non-assignable</span>.
+                </span>
+              </label>
+            </div>
+
+            <div className="flex justify-center gap-4 mt-6">
               <button
                 onClick={() => setShowUseTheirModal(false)}
                 className="px-4 py-2 rounded bg-neutral-700 hover:bg-neutral-600"
@@ -99,18 +130,28 @@ export default function SignYourContractStep({
                 Cancel
               </button>
               <button
+                disabled={
+                  formData.contractHasInspection !== "true" ||
+                  formData.contractIsAssignable !== "true"
+                }
                 onClick={() => {
-                  setShowForm(true);
                   setShowUseTheirModal(false);
                 }}
-                className="px-4 py-2 rounded bg-cyan-600 hover:bg-cyan-500"
+                className={`px-4 py-2 rounded ${
+                  formData.contractHasInspection === "true" &&
+                  formData.contractIsAssignable === "true"
+                    ? "bg-cyan-600 hover:bg-cyan-500"
+                    : "bg-neutral-600 cursor-not-allowed"
+                }`}
               >
                 Continue
               </button>
+
             </div>
           </div>
         </div>
       )}
+
 
       {showForm && index === currentStep && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">

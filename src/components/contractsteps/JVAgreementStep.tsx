@@ -25,7 +25,7 @@ export default function JVAgreementStep({
           setShowJvModal(true);
           setTimeout(() => handleJvDownload(), 0); // optional, depending on intent
         }}
-        className="w-full py-2 text-sm font-semibold rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white transition"
+        className="w-full py-2 text-sm font-semibold rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-black transition"
       >
         Sign & Download JV Agreement
       </button>

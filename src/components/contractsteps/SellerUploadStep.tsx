@@ -91,7 +91,7 @@ export default function SellerUploadStep({ index }: Props) {
         <button
           type="button"
           onClick={() => setShowModal(true)}
-          className="w-full py-2 text-sm font-semibold rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white transition"
+          className="w-full py-2 text-sm font-semibold rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-black transition"
         >
           Upload Signed Contract
         </button>

@@ -82,13 +82,13 @@ export default function SearchingForBuyerStep({ index }: Props) {
         <div className="flex gap-2 mt-auto">
           <button
             onClick={handleCancelContract}
-            className="flex-1 py-1 text-sm rounded-full text-white bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600"
+            className="flex-1 py-1 text-sm rounded-full text-black bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600"
           >
             Cancel Contract
           </button>
           <button
             onClick={handleExtendContract}
-            className="flex-1 py-1 text-sm rounded-full text-white bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+            className="flex-1 py-1 text-sm rounded-full text-black bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
           >
             Extend Inspection
           </button>
