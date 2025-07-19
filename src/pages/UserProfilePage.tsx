@@ -118,14 +118,14 @@ export default function UserProfilePage() {
       <h2 className="text-2xl font-bold mb-1">
         {profile?.displayName || "Unnamed Account"}
       </h2>
-      <p className="text-sm text-gray-400 mb-1">
+      <p className="text-sm text-gray-400 mb-2">
         <span className="font-semibold text-white">Account Address:</span>
       </p>
       <a
         href={`https://basescan.org/address/${walletAddress}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-sm text-blue-400 break-all mb-4 underline hover:text-cyan-300"
+        className="text-sm text-blue-400 break-all mb-8 underline hover:text-cyan-300"
       >
         {walletAddress}
       </a>
@@ -155,12 +155,14 @@ export default function UserProfilePage() {
           ))}
         </div>
       )}
+      <div className="mt-6">
       <ProfileStatCard
         pendingTotal={`+$${(buyingVolume + sellingVolume).toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}`}
       />
+      </div>
 
       {/* Dashboard cards */}
       <div className="mt-10">
