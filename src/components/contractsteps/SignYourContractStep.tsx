@@ -62,10 +62,13 @@ export default function SignYourContractStep({
       <div className="w-[250px] md:w-[440px] bg-black border border-cyan-500 rounded-xl p-6 shadow-md flex flex-col text-center">
         <p className="text-white font-semibold text-lg mb-4">Contract Signature</p>
         <button
-          onClick={() => setShowForm(true)}
+          onClick={() => {
+            if (hasSignature) setShowForm(true);
+            else setShowSignatureModal(true);
+          }}
           className="w-full py-2 text-sm font-semibold rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white transition"
         >
-          Sign and Download
+          {hasSignature ? "Sign Contract" : "Create Signature"}
         </button>
       </div>
 
@@ -185,24 +188,6 @@ export default function SignYourContractStep({
               </select>
             </div>
 
-            {!checkingSig && (
-              <div className="mt-4 col-span-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (hasSignature) {
-                      setHasSignature(true);
-                    } else {
-                      setShowSignatureModal(true);
-                    }
-                  }}
-                  className="w-full px-4 py-2 rounded bg-white text-black font-semibold hover:bg-gray-200 transition"
-                >
-                  {hasSignature ? "Sign Contract" : "Create Signature"}
-                </button>
-              </div>
-            )}
-
             <div className="mt-6 flex justify-end gap-2">
               <button
                 onClick={() => setShowForm(false)}
@@ -216,7 +201,7 @@ export default function SignYourContractStep({
                   className="w-full px-6 py-3 rounded bg-neutral-800 border border-cyan-500 hover:bg-cyan-600 hover:text-black text-white text-center font-semibold transition"
                   disabled={!hasSignature}
                 >
-                  Download PDF
+                  Sign and Download
                 </button>
               </div>
             </div>
