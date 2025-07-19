@@ -293,12 +293,12 @@ export default function ScriptModal({ open, onClose, formData, setFormData }: Pr
 
                               return (
                                 <span className="text-red-400 font-medium block mb-4">
-                                  I can see how this one might be harder to sell. <br/> <br/>
+                                  I can see how this one might be harder to sell. <br/><br/>
                                   Based on this, I don’t think <span className="uppercase">any investor</span> could finance this deal, as it would border on predatory lending.
                                   <br /><br />
-                                    At today’s rates, a retail buyer would pay roughly{" "}
+                                  At today’s rates, a retail buyer would pay roughly{" "}
                                   <span className="underline">
-                                    {overagePercent.toFixed(0)}%
+                                    ${(listing * 1.92).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                   </span>{" "}
                                   for the property, and would need to show at least{" "}
                                   <span className="font-bold">
