@@ -76,7 +76,7 @@ const DispoOptionsStep = ({
             onClick={() => setDispoChoice(key as "auction" | "dealflow" | "syncdispo")}
             className={`w-[250px] md:w-[440px] px-6 py-4 rounded border transition-all cursor-pointer ${
               isSelected
-                ? "bg-cyan-600 text-white border-yellow-400"
+                ? "bg-blue-800 text-white border-green-400"
                 : "bg-black text-white border-cyan-500 hover:bg-cyan-600 hover:text-black"
             }`}
 

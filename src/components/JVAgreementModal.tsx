@@ -65,7 +65,7 @@ const JVAgreementModal: React.FC<JVAgreementModalProps> = ({
 
         <div className="flex items-center justify-center gap-2 text-sm text-gray-400 mb-4 mt-4">
           <Info size={16} className="text-blue-400" />
-          In the future, you'll be able to choose your own buyer or 3rd party dispo from the platform.
+          .
         </div>
 
         <div className="flex justify-between mt-6">
