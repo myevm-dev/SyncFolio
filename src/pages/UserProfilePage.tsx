@@ -179,6 +179,7 @@ export default function UserProfilePage() {
           walletAddress={walletAddress}
           hideActions={!isCurrentUser}
           remote={!isCurrentUser}
+          showPayButton={!isCurrentUser}
           balances={{
             platform: {
               USD: platformUSD,

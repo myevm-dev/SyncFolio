@@ -34,6 +34,7 @@ interface BalanceCardProps {
   onWithdrawClick?: () => void;
   opPrice?: number | null;
   ethPrice?: number | null;
+  showPayButton?: boolean;
 }
 
 const BalanceCard: React.FC<BalanceCardProps> = ({
@@ -47,6 +48,7 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
   onWithdrawClick,
   opPrice,
   ethPrice,
+  showPayButton = false,
 }) => (
   <div className="bg-black border border-neutral-700 rounded-xl p-6 shadow-md flex flex-col justify-between text-left min-w-[300px]">
     <div className="flex items-center justify-between mb-4">
@@ -141,7 +143,7 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
         );
       })}
     </div>
-    {!hideActions && (
+    {!hideActions ? (
       <div className="flex gap-2 mt-auto">
         <button
           onClick={onDepositClick}
@@ -156,9 +158,23 @@ const BalanceCard: React.FC<BalanceCardProps> = ({
           Withdraw
         </button>
       </div>
-    )}
+    ) : showPayButton ? (
+
+      <div className="flex mt-auto">
+        <button
+          onClick={() => alert("TODO: Payment modal")}
+          className="flex-1 py-1 text-sm rounded-full text-black font-semibold bg-gradient-to-r from-[#fed7aa] to-[#fdba74] hover:from-[#fdba74] hover:to-[#fb923c]"
+        >
+          Pay
+        </button>
+      </div>
+
+
+
+    ) : null}
   </div>
 );
+
 
 interface BalancesProps {
   balances: {
@@ -168,6 +184,7 @@ interface BalancesProps {
   walletAddress?: string;
   hideActions?: boolean;
   remote?: boolean;
+  showPayButton?: boolean;
 }
 
 const Balances: React.FC<BalancesProps> = ({
@@ -175,6 +192,7 @@ const Balances: React.FC<BalancesProps> = ({
   walletAddress,
   hideActions = false,
   remote = false,
+  showPayButton = false,
 }) => {
   const creditsHook = usePlatformCredits();
   const { eth: ethHook, usdc: usdcHook } = useWalletBalances();
@@ -251,7 +269,9 @@ const Balances: React.FC<BalancesProps> = ({
           onDepositClick={() => setModal("platformDeposit")}
           onWithdrawClick={() => setModal("platformWithdraw")}
           opPrice={opPrice}
+          showPayButton={showPayButton}
         />
+
         <BalanceCard
           title="Wallet Balance (WEB 3)"
           items={walletItems}
@@ -262,7 +282,9 @@ const Balances: React.FC<BalancesProps> = ({
           onWithdrawClick={() => setModal("walletWithdraw")}
           opPrice={opPrice}
           ethPrice={ethPrice}
+          showPayButton={showPayButton}
         />
+
       </div>
       {!remote && (
         <>
