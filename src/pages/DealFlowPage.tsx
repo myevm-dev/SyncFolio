@@ -6,6 +6,8 @@ import * as d3 from "d3";
 import * as topojson from "topojson-client";
 import { FeatureCollection, Geometry } from "geojson";
 import FIPSModal from "../components/FIPSModal";
+import TurfFooter from "../components/TurfFooter";
+
 
 /* ---------- types ---------- */
 interface EducationDatum {
@@ -189,6 +191,8 @@ export default function DealFlowPage() {
         fipsCode={selectedFips}
         countyName={selectedCounty}
       />
+          <TurfFooter /> {/* ✅ new control footer */}
+
     </div>
   );
 }
