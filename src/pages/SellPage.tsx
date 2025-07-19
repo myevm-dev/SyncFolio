@@ -1,5 +1,4 @@
 import MyListings from "../components/MyListings";
-import Web3Notice from "../components/Web3Notice";
 
 export default function SellPage() {
   return (
@@ -7,7 +6,7 @@ export default function SellPage() {
       <h1 className="text-3xl font-bold mb-2 text-center">
         Submit your Property Listing or Browse Active Buyers.
       </h1>
-      <Web3Notice />
+    
       <MyListings />
     </div>
   );
