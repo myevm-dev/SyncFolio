@@ -59,10 +59,11 @@ export default function SignYourContractStep({
 
   return (
     <>
-      <div className="w-[250px] md:w-[440px]">
+      <div className="w-[250px] md:w-[440px] bg-black border border-cyan-500 rounded-xl p-6 shadow-md flex flex-col text-center">
+        <p className="text-white font-semibold text-lg mb-4">Contract Signature</p>
         <button
           onClick={() => setShowForm(true)}
-          className="w-full px-6 py-4 rounded bg-neutral-800 border border-cyan-500 hover:bg-cyan-600 hover:text-black text-white text-center font-semibold transition"
+          className="w-full py-2 text-sm font-semibold rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white transition"
         >
           Sign and Download
         </button>
@@ -74,16 +75,14 @@ export default function SignYourContractStep({
             <h2 className="text-xl font-bold mb-4 text-white text-center">Sign & Generate Contract</h2>
             <div className="grid grid-cols-2 gap-4">
               {Object.entries(formData).map(([key, value]) => {
-                if (
-                  [
-                    "earnestMoney",
-                    "balanceDue",
-                    "closingDate",
-                    "dueDiligenceDays",
-                    "state",
-                    "daysToClose",
-                  ].includes(key)
-                ) {
+                if ([
+                  "earnestMoney",
+                  "balanceDue",
+                  "closingDate",
+                  "dueDiligenceDays",
+                  "state",
+                  "daysToClose",
+                ].includes(key)) {
                   return null;
                 }
 

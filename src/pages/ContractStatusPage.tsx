@@ -7,6 +7,10 @@ import JVAgreementModal from "../components/JVAgreementModal";
 import SignYourContractStep from "../components/contractsteps/SignYourContractStep";
 import SellerUploadStep from "../components/contractsteps/SellerUploadStep";
 import JVAgreementStep from "../components/contractsteps/JVAgreementStep";
+import SearchingForBuyerStep from "../components/contractsteps/SearchingForBuyerStep";
+import BuyerIdentifiedStep from "../components/contractsteps/BuyerIdentifiedStep";
+import ClosedPaymentStep from "../components/contractsteps/ClosedPaymentStep";
+
 import { generateContractPdf } from "../lib/generateContractPdf";
 
 const DispoOptionsStep = ({
@@ -71,9 +75,8 @@ const DispoOptionsStep = ({
             key={title}
             onClick={() => setDispoChoice(key as "auction" | "dealflow" | "syncdispo")}
             className={`w-[250px] md:w-[440px] px-6 py-4 rounded border transition-all cursor-pointer ${
-              isSelected
-                ? "bg-cyan-600 text-black border-yellow-400 scale-[1.02]"
-                : "bg-neutral-800 text-white border-cyan-500 hover:bg-cyan-600 hover:text-black"
+              "bg-black text-white border-cyan-500 hover:bg-cyan-600 hover:text-black"
+
             }`}
           >
             <div className="font-semibold text-center mb-2">{title}</div>
@@ -87,7 +90,7 @@ const DispoOptionsStep = ({
 
 
 const defaultSteps = [
-  "Sign and Generate Contract",
+  "Generate and Sign Contract",
   "Seller Signs then Upload Contract",
   "Choose how to Sell Contract",
   "JV Agreement Signed Between You and Syncfolio",
@@ -109,6 +112,7 @@ export default function ContractStatusPage() {
   const [jvSigned, setJvSigned] = useState(false);
   const [showJvModal, setShowJvModal] = useState(false);
   const [dispoChoice, setDispoChoice] = useState<"auction" | "dealflow" | "syncdispo" | "">("");
+  const [isPaid, setIsPaid] = useState(false);
 
   const [formData, setFormData] = useState({
     sellerName: "",
@@ -125,22 +129,26 @@ export default function ContractStatusPage() {
   });
 
   useEffect(() => {
-    const fetchContract = async () => {
-      if (!walletAddress || !contractId) return;
-      const ref = doc(db, `users/${walletAddress}/contracts/${contractId}`);
-      const snap = await getDoc(ref);
-      if (snap.exists()) {
-        const data = snap.data();
-        setContract(data);
-        setFormData((prev) => ({
-          ...prev,
-          propertyAddress: data.address || "",
-        }));
+  const fetchContract = async () => {
+    if (!walletAddress || !contractId) return;
+    const ref = doc(db, `users/${walletAddress}/contracts/${contractId}`);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      const data = snap.data();
+      setContract(data);
+      setFormData((prev) => ({
+        ...prev,
+        propertyAddress: data.address || "",
+      }));
+      if (data.paid) {
+        setIsPaid(true);
       }
-      setLoading(false);
-    };
-    fetchContract();
-  }, [walletAddress, contractId]);
+    }
+    setLoading(false);
+  };
+  fetchContract();
+}, [walletAddress, contractId]);
+
 
   useEffect(() => {
     const checkSignature = async () => {
@@ -236,6 +244,32 @@ export default function ContractStatusPage() {
                   />
                 );
                 break;
+
+              case 4:
+                StepComponent = <SearchingForBuyerStep index={index} />;
+                break;
+
+              case 5:
+                StepComponent = (
+                  <BuyerIdentifiedStep
+                    index={index}
+                    currentStep={index}
+                    isComplete={contract?.buyerCommitted || false}
+                  />
+                );
+                break;
+
+              case 6:
+                StepComponent = (
+                  <ClosedPaymentStep
+                    index={index}
+                    currentStep={index}
+                    isPaid={isPaid}
+                  />
+                );
+                break;
+
+
               default:
                 StepComponent = null;
             }

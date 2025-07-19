@@ -40,7 +40,11 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
       offersSnap.docs.forEach((doc) => {
         const data = doc.data();
         const amount = parseFloat(data.offerAmount?.replace(/[^0-9.]/g, "") || "0");
-        if (["cash", "sellerFinance", "takeover", "hybrid"].includes(data.method)) {
+
+        const isBuying = ["cash", "sellerFinance", "takeover", "hybrid"].includes(data.method);
+        const isExternal = data.source === "external";
+
+        if (isBuying || isExternal) {
           totalBuy += amount;
         } else {
           totalSell += amount;
