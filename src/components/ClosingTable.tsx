@@ -9,7 +9,7 @@ export default function ClosingTable() {
           <tr>
             <th className="px-4 py-3">Property</th>
             <th className="px-4 py-3">Buyer</th>
-            <th className="px-4 py-3">Close Date</th>
+            <th className="px-4 py-3">Date</th>
             <th className="px-4 py-3">Amount</th>
           </tr>
         </thead>
