@@ -44,16 +44,20 @@ export default function TurfNavbar() {
       {/* TurfWars Logo */}
       <div
         className="flex items-center gap-2 text-white font-semibold text-lg sm:text-2xl cursor-pointer"
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/about")}
       >
         <img
           src="/assets/turflogo.png"
           alt="TurfWars logo"
           className="w-10 h-10 sm:w-12 sm:h-12 shrink-0"
         />
-        <span className="bg-gradient-to-r from-purple-500 to-blue-900 bg-clip-text text-transparent">
-        TurfWars
+        <div className="flex flex-col leading-none">
+        <span className="bg-gradient-to-r from-purple-500 to-blue-900 bg-clip-text text-transparent text-xl sm:text-2xl">
+            TurfWars
         </span>
+        <span className="text-xs text-white opacity-60 ml-[1px]">by SyncFolio</span>
+        </div>
+
 
       </div>
 
