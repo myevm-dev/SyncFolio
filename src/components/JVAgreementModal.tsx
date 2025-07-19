@@ -1,27 +1,56 @@
-// src/components/JVAgreementModal.tsx
-import React from "react";
+import React, { useRef } from "react";
 import { Info } from "lucide-react";
 import AuctionJVAgreement from "./agreements/AuctionAgreement";
 import DealFlowAgreement from "./agreements/DealFlowAgreement";
 import SyncDispoAgreement from "./agreements/SyncDispoAgreement";
+import { toPng } from "html-to-image";
+import { jsPDF } from "jspdf";
 
-interface Props {
+interface JVAgreementModalProps {
   onClose: () => void;
   onConfirm: () => void;
   dispoChoice: "auction" | "dealflow" | "syncdispo";
 }
 
-const JVAgreementModal: React.FC<Props> = ({ onClose, onConfirm, dispoChoice }) => {
+const JVAgreementModal: React.FC<JVAgreementModalProps> = ({
+  onClose,
+  onConfirm,
+  dispoChoice,
+}) => {
+  const pdfRef = useRef<HTMLDivElement>(null);
+
   const renderAgreement = () => {
     switch (dispoChoice) {
       case "auction":
-        return <AuctionJVAgreement />;
+        return <AuctionJVAgreement ref={pdfRef} />;
       case "dealflow":
-        return <DealFlowAgreement />;
+        return <DealFlowAgreement ref={pdfRef} />;
       case "syncdispo":
-        return <SyncDispoAgreement />;
+        return <SyncDispoAgreement ref={pdfRef} />;
       default:
-        return <p className="text-sm text-center text-red-400">Invalid dispo option selected.</p>;
+        return (
+          <p className="text-sm text-center text-red-400">
+            Invalid dispo option selected.
+          </p>
+        );
+    }
+  };
+
+  const handleConfirmAndDownload = async () => {
+    onConfirm();
+
+    if (!pdfRef.current) return;
+
+    try {
+      const dataUrl = await toPng(pdfRef.current);
+      const pdf = new jsPDF();
+      const imgProps = pdf.getImageProperties(dataUrl);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("Syncfolio-JV-Agreement.pdf");
+    } catch (err) {
+      console.error("PDF generation failed:", err);
     }
   };
 
@@ -34,7 +63,7 @@ const JVAgreementModal: React.FC<Props> = ({ onClose, onConfirm, dispoChoice }) 
 
         {renderAgreement()}
 
-        <div className="flex items-center justify-center gap-2 text-sm text-gray-400 mb-4">
+        <div className="flex items-center justify-center gap-2 text-sm text-gray-400 mb-4 mt-4">
           <Info size={16} className="text-blue-400" />
           In the future, you'll be able to choose your own buyer or 3rd party dispo from the platform.
         </div>
@@ -47,7 +76,7 @@ const JVAgreementModal: React.FC<Props> = ({ onClose, onConfirm, dispoChoice }) 
             Cancel
           </button>
           <button
-            onClick={onConfirm}
+            onClick={handleConfirmAndDownload}
             className="px-4 py-2 bg-green-500 hover:bg-green-600 text-black font-semibold rounded w-full ml-2"
             disabled={!dispoChoice}
           >

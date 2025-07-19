@@ -4,7 +4,7 @@ interface Props {
   index: number;
   currentStep: number;
   setShowJvModal: (open: boolean) => void;
-  handleJvDownload: () => void;
+  handleJvDownload: () => Promise<void>;
 }
 
 export default function JVAgreementStep({
@@ -23,7 +23,7 @@ export default function JVAgreementStep({
       <button
         onClick={() => {
           setShowJvModal(true);
-          setTimeout(() => handleJvDownload(), 0);
+          setTimeout(() => handleJvDownload(), 0); // optional, depending on intent
         }}
         className="w-full py-2 text-sm font-semibold rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white transition"
       >

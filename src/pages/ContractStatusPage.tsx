@@ -298,10 +298,13 @@ export default function ContractStatusPage() {
           onClose={() => setShowJvModal(false)}
           onConfirm={() => {
             setShowJvModal(false);
+            setJvSigned(true);
           }}
           dispoChoice={dispoChoice as "auction" | "dealflow" | "syncdispo"}
         />
+
       )}
+
     </div>
   );
 }

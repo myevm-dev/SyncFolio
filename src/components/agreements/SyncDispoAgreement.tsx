@@ -1,28 +1,27 @@
-// /components/agreements/SyncDispoAgreement.tsx
-import React from "react";
+import React, { forwardRef } from "react";
+import SyncDispoJVContractPdf from "./SyncDispoJVContractPdf";
 
-const SyncDispoAgreement = () => {
+const SyncDispoAgreement = forwardRef<HTMLDivElement>((_, ref) => {
   return (
-    <p className="text-sm text-center mb-6 space-y-2">
-      <>
-        If this deal closes, you will receive{" "}
-        <span className="font-semibold text-cyan-400">40%</span> of the total assignment fee, or a minimum of{" "}
-        <span className="font-semibold text-cyan-400">$2250</span> +{" "}
-        <span className="font-semibold" style={{ color: "#ff00ff" }}>
-          Bonus 50k Ꞙolio Token
-        </span>
-        , whichever is <span className="font-bold text-cyan-400">MORE</span>.
+    <>
+      <p className="text-sm text-center mb-6 space-y-2">
+        If Syncfolio handles the dispo end-to-end, you will receive{" "}
+        <span className="font-semibold text-cyan-400">50%</span> of the assignment fee.
         <br /><br />
-        The assignment fee is split as follows:
+        The fee is split as follows:
         <br />
-        <span className="text-cyan-400 font-semibold">• 40% to you</span> (sourcing the deal)
+        <span className="text-cyan-400 font-semibold">• 50% to you</span> (deal creator)
         <br />
-        <span className="text-pink-400 font-semibold">• 40% to Syncfolio Dispo</span> (dispo/funding partner)
-        <br />
-        <span className="text-yellow-400 font-semibold">• 20% to platform</span> (compliance, infra, admin)
-      </>
-    </p>
+        <span className="text-yellow-400 font-semibold">• 50% to platform</span> (full service dispo, buyer onboarding, contract)
+        <br /><br />
+        Syncfolio acts as your partner to ensure maximum exposure and smooth closing.
+      </p>
+
+      <div style={{ position: "absolute", left: "-9999px", top: 0 }}>
+        <SyncDispoJVContractPdf ref={ref} />
+      </div>
+    </>
   );
-};
+});
 
 export default SyncDispoAgreement;
