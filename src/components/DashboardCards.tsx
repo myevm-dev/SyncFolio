@@ -117,7 +117,7 @@ const DashboardCards: React.FC<Props> = ({
             })}`
           : "$0.00",
       icon: "💰",
-      route: "/yield",
+      route: "/earn",
       extra: (
         <div className="text-[15px] mt-1 flex flex-wrap items-center gap-1">
           <span className="text-[#fd01f5] font-semibold">+ 100k Ꞙolio</span>

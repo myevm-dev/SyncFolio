@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import BasicYieldGroup from "../components/BasicYieldGroup";
 import AdvancedYieldGroup from "../components/AdvancedYieldGroup";
 
-export default function YieldPage() {
+export default function EarnPage() {
   const [mode, setMode] = useState<"basic" | "advanced" | "swap">("basic");
 
   return (

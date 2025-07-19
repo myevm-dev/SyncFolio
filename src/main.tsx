@@ -21,7 +21,7 @@ import AnalyticsPage from "./pages/AnalyticsPage";
 import BuyingCenterPage from "./pages/BuyingCenterPage";
 import SellingCenterPage from "./pages/SellingCenterPage";
 import ContractStatusPage from "./pages/ContractStatusPage";
-import YieldPage from "./pages/YieldPage";
+import EarnPage from "./pages/EarnPage";
 import InstantOfferPage from "./pages/InstantOffersPage";
 
 createRoot(document.getElementById("root")!).render(
@@ -41,7 +41,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/buying-center" element={<BuyingCenterPage />} />
             <Route path="/selling-center" element={<SellingCenterPage />} />
             <Route path="/contracts/:id" element={<ContractStatusPage />} />
-            <Route path="/yield" element={<YieldPage />} />
+            <Route path="/earn" element={<EarnPage />} />
             <Route path="/profile/:id" element={<UserProfilePage />} />
             <Route path="/turfwars" element={<DealFlowPage />} />
             <Route path="/features/:slug" element={<FeaturePage />} />
