@@ -59,19 +59,23 @@ export default function SearchingForBuyerStep({ index }: Props) {
 
   const handleCancelContract = () => {
     if (!pdfContainerRef.current) return;
-    html2pdf()
-      .from(pdfContainerRef.current)
-      .save("Contract_Termination.pdf");
+    html2pdf().from(pdfContainerRef.current).save("Contract_Termination.pdf");
   };
 
   const handleExtendContract = () => {
     if (!pdfExtendRef.current) return;
-    html2pdf()
-      .from(pdfExtendRef.current)
-      .save("Inspection_Extension.pdf");
+    html2pdf().from(pdfExtendRef.current).save("Inspection_Extension.pdf");
   };
 
   if (index < 4) return null;
+
+  const pdfStyles = {
+    padding: "40px 24px 24px 24px",
+    fontFamily: "Arial, sans-serif",
+    fontSize: "14px",
+    lineHeight: "1.6",
+    color: "black"
+  } as React.CSSProperties;
 
   return (
     <>
@@ -96,7 +100,7 @@ export default function SearchingForBuyerStep({ index }: Props) {
       </div>
 
       <div style={{ position: "absolute", left: "-9999px", top: 0 }}>
-        <div ref={pdfContainerRef} style={{ padding: "24px", fontFamily: "Arial, sans-serif", fontSize: "14px", lineHeight: "1.6", color: "black" }}>
+        <div ref={pdfContainerRef} style={pdfStyles}>
           <h2 style={{ textAlign: "center", fontWeight: "bold" }}>NOTICE OF BUYER'S TERMINATION OF CONTRACT</h2>
           <p style={{ textAlign: "center" }}>CONCERNING THE CONTRACT FOR THE SALE OF THE PROPERTY AT</p>
           <hr />
@@ -114,20 +118,24 @@ export default function SearchingForBuyerStep({ index }: Props) {
 
           <br/><br/><br/>
 
-          <table style={{ width: "100%" }}>
+          <table style={{ width: "100%", marginTop: "32px" }}>
             <tbody>
               <tr>
-                <td style={{ borderTop: "1px solid #000", width: "30%", textAlign: "center" }}>Buyer</td>
+                <td style={{ borderTop: "1px solid #000", width: "45%", textAlign: "center" }}>Buyer</td>
                 <td style={{ width: "10%" }}></td>
-                <td style={{ borderTop: "1px solid #000", width: "30%", textAlign: "center" }}>Date</td>
+                <td style={{ borderTop: "1px solid #000", width: "45%", textAlign: "center" }}>Date</td>
+              </tr>
+              <tr><td colSpan={3} style={{ height: "48px" }}></td></tr>
+              <tr>
+                <td style={{ borderTop: "1px solid #000", width: "45%", textAlign: "center" }}>Seller</td>
                 <td style={{ width: "10%" }}></td>
-                <td style={{ borderTop: "1px solid #000", width: "30%", textAlign: "center" }}>Seller</td>
+                <td style={{ borderTop: "1px solid #000", width: "45%", textAlign: "center" }}>Date</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <div ref={pdfExtendRef} style={{ padding: "24px", fontFamily: "Arial, sans-serif", fontSize: "14px", lineHeight: "1.6", color: "black" }}>
+        <div ref={pdfExtendRef} style={pdfStyles}>
           <h2 style={{ textAlign: "center", fontWeight: "bold" }}>BUYER'S REQUEST TO EXTEND INSPECTION PERIOD</h2>
           <p style={{ textAlign: "center" }}>CONCERNING THE CONTRACT FOR THE SALE OF THE PROPERTY AT</p>
           <hr />
@@ -141,14 +149,18 @@ export default function SearchingForBuyerStep({ index }: Props) {
 
           <br/><br/><br/>
 
-          <table style={{ width: "100%" }}>
+          <table style={{ width: "100%", marginTop: "32px" }}>
             <tbody>
               <tr>
-                <td style={{ borderTop: "1px solid #000", width: "30%", textAlign: "center" }}>Buyer</td>
+                <td style={{ borderTop: "1px solid #000", width: "45%", textAlign: "center" }}>Buyer</td>
                 <td style={{ width: "10%" }}></td>
-                <td style={{ borderTop: "1px solid #000", width: "30%", textAlign: "center" }}>Date</td>
+                <td style={{ borderTop: "1px solid #000", width: "45%", textAlign: "center" }}>Date</td>
+              </tr>
+              <tr><td colSpan={3} style={{ height: "48px" }}></td></tr>
+              <tr>
+                <td style={{ borderTop: "1px solid #000", width: "45%", textAlign: "center" }}>Seller</td>
                 <td style={{ width: "10%" }}></td>
-                <td style={{ borderTop: "1px solid #000", width: "30%", textAlign: "center" }}>Seller</td>
+                <td style={{ borderTop: "1px solid #000", width: "45%", textAlign: "center" }}>Date</td>
               </tr>
             </tbody>
           </table>
