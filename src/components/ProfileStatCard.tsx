@@ -14,7 +14,7 @@ const ProfileStatCard: React.FC<Props> = ({ pendingTotal, onClick }) => {
       onClick={onClick}
     >
       <p className="text-3xl font-extrabold mb-2 truncate max-w-[40vw] sm:max-w-none bg-gradient-to-r from-[#B18CFF] via-[#A675FF] to-[#00E0FF] bg-clip-text text-transparent">
-        Total Platform Volume
+        Total User Volume
       </p>
 
 
