@@ -54,11 +54,9 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
       contractsSnap.docs.forEach((doc) => {
         const data = doc.data();
         const amount = parseFloat(data.offerAmount?.replace(/[^0-9.]/g, "") || "0");
-        if (["cash", "sellerFinance", "takeover", "hybrid"].includes(data.method)) {
-          totalBuy += amount;
-        } else {
-          totalSell += amount;
-        }
+
+        // Assume all contracts are for buying side
+        totalBuy += amount;
       });
 
       setBuyingVolume(totalBuy);
