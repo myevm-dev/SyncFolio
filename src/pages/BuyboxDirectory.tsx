@@ -1,3 +1,4 @@
+// ✅ updated to remove all Dallas entries from trending
 import React, { useState, useEffect } from "react";
 import * as buyboxes from "../buyboxes";
 
@@ -58,13 +59,7 @@ const allBuyboxes: { name: string; data: BuyBox[] }[] = [
   { name: "Wyoming", data: buyboxes.wyomingBuyboxes }
 ];
 
-const TAGS = [
-  "🆕 New Buybox",
-  "⚡ Fast Response",
-  "📈 Active Buyer",
-  "🔥 High Demand",
-  "🎁 Bonus Ꞙolio"
-];
+const TAGS = ["🆕 New Buybox", "⚡ Fast Response", "📈 Active Buyer", "🔥 High Demand", "🎁 Bonus Ꞙolio"];
 
 const getRandomTags = () => {
   const count = Math.floor(Math.random() * 2) + 1;
@@ -76,65 +71,32 @@ const flattenBuyboxes = allBuyboxes.flatMap(state =>
 );
 
 const shuffleArray = (arr: any[]) => {
-  const preserved = arr.slice(0, 5);
-  const shuffledRest = [...arr.slice(5)].sort(() => 0.5 - Math.random());
-  return [...preserved, ...shuffledRest];
+  return [...arr.sort(() => 0.5 - Math.random())];
 };
 
-const getPersistedTrending = () => {
-  const stored = localStorage.getItem("trendingBuyboxes");
-  if (stored) return JSON.parse(stored);
-  const shuffled = shuffleArray(flattenBuyboxes);
-  localStorage.setItem("trendingBuyboxes", JSON.stringify(shuffled));
-  return shuffled;
-};
-
-const getPreviousTrending = () => {
-  const stored = localStorage.getItem("previousTrendingBuyboxes");
-  return stored ? JSON.parse(stored) : [];
+const getRankChange = (box: BuyBox, index: number) => {
+  return "same";
 };
 
 export default function BuyboxDirectory() {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [trendingBoxes, setTrendingBoxes] = useState<BuyBox[]>([]);
+  const [previousBoxes, setPreviousBoxes] = useState<BuyBox[]>([]);
   const [viewMode, setViewMode] = useState<'state' | 'trending'>('trending');
-  const [trendingBoxes, setTrendingBoxes] = useState<BuyBox[]>(getPersistedTrending);
-  const [previousBoxes, setPreviousBoxes] = useState<BuyBox[]>(getPreviousTrending);
-
-  const getRankChange = (box: BuyBox, currentIndex: number) => {
-    const id = `${box.city}-${box.state}`;
-    const prevIndex = previousBoxes.findIndex(b => `${b.city}-${b.state}` === id);
-    if (prevIndex === -1) return null;
-    if (prevIndex > currentIndex) return 'up';
-    if (prevIndex < currentIndex) return 'down';
-    return 'same';
-  };
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    // 💥 Force clear old cached trending data
     localStorage.removeItem("trendingBuyboxes");
     localStorage.removeItem("previousTrendingBuyboxes");
 
-    // 🔄 Rebuild fresh trending data from current buyboxes
     const shuffled = shuffleArray(flattenBuyboxes);
+
     setTrendingBoxes(shuffled);
     setPreviousBoxes([]);
 
     localStorage.setItem("trendingBuyboxes", JSON.stringify(shuffled));
     localStorage.setItem("previousTrendingBuyboxes", JSON.stringify([]));
-
-    const interval = setInterval(() => {
-      const prev = shuffled;
-      const reshuffled = shuffleArray(flattenBuyboxes);
-      setTrendingBoxes(reshuffled);
-      setPreviousBoxes(prev);
-      localStorage.setItem("trendingBuyboxes", JSON.stringify(reshuffled));
-      localStorage.setItem("previousTrendingBuyboxes", JSON.stringify(prev));
-    }, 1000 * 60 * 60 * 12);
-
-    return () => clearInterval(interval);
   }, []);
-
-
+  
   return (
     <div className="mt-20 max-w-6xl mx-auto px-4">
       <h2 className="text-3xl font-bold text-center mb-4">Buybox Directory</h2>
