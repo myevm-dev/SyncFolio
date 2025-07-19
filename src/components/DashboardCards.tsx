@@ -7,9 +7,16 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 interface Props {
   walletAddress: string;
   readOnly?: boolean;
+  setBuyingVolume?: (value: number) => void;
+  setSellingVolume?: (value: number) => void;
 }
 
-const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) => {
+const DashboardCards: React.FC<Props> = ({
+  walletAddress,
+  readOnly = false,
+  setBuyingVolume: setBuyingVolumeFromParent,
+  setSellingVolume: setSellingVolumeFromParent,
+}) => {
   const navigate = useNavigate();
   const [offerCount, setOfferCount] = useState(0);
   const [contractCount, setContractCount] = useState(0);
@@ -55,16 +62,24 @@ const DashboardCards: React.FC<Props> = ({ walletAddress, readOnly = false }) =>
         const data = doc.data();
         const amount = parseFloat(data.offerAmount?.replace(/[^0-9.]/g, "") || "0");
 
-        // Assume all contracts are for buying side
         totalBuy += amount;
       });
 
-      setBuyingVolume(totalBuy);
-      setSellingVolume(totalSell);
+      setBuyingVolume(totalBuy); // This is internal state
+      setSellingVolume(totalSell); // This is internal state
+
+      // ✅ This is what was missing:
+      if (typeof setBuyingVolumeFromParent === "function") {
+        setBuyingVolumeFromParent(totalBuy);
+      }
+      if (typeof setSellingVolumeFromParent === "function") {
+        setSellingVolumeFromParent(totalSell);
+      }
     };
 
     fetchVolumes();
   }, [walletAddress]);
+
 
   useEffect(() => {
     fetch("https://api.coingecko.com/api/v3/simple/price?ids=optimism&vs_currencies=usd")

@@ -7,6 +7,8 @@ import Lottie from "lottie-react";
 import animationData from "../lottie/Animation - 1749869487293.json";
 import DashboardCards from "../components/DashboardCards";
 import TeamSection from "../components/TeamSection";
+import ProfileStatCard from "../components/ProfileStatCard";
+
 import ReferralSection from "../components/ReferralSection";
 import IncomingInvites from "../components/IncomingInvites";
 import Balances from "../components/Balances";
@@ -59,6 +61,8 @@ export default function ProfilePage() {
     platform: { USD: 0, FOLIO: 0, CREDITS: 0 },
     wallet: { USDC: 0, FOLIO: 0, ETH: 0 },
   });
+  const [buyingVolume, setBuyingVolume] = useState(0);
+  const [sellingVolume, setSellingVolume] = useState(0);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -232,7 +236,7 @@ export default function ProfilePage() {
                     <button
                       key={role}
                       onClick={() => toggleRole(role)}
-                      className={`w-44 px-3 py-1 rounded-full text-sm text-white font-semibold transition border border-white/10 ${
+                      className={`w-44 px-3 py-1 rounded-full text-sm text-black font-semibold transition border border-white/10 ${
                         selectedRoles.includes(role)
                           ? roleGradients[role] || "bg-zinc-600"
                           : "bg-zinc-800 hover:bg-zinc-700"
@@ -257,7 +261,7 @@ export default function ProfilePage() {
             {selectedRoles.map((role) => (
               <span
                 key={role}
-                className={`w-44 px-3 py-1 rounded-full text-sm text-white font-semibold text-center ${
+                className={`w-44 px-3 mb-8 py-1 rounded-full text-sm text-black font-semibold text-center ${
                   roleGradients[role] || "bg-zinc-600"
                 }`}
               >
@@ -268,8 +272,22 @@ export default function ProfilePage() {
 
         )}
       </div>
+        <ProfileStatCard
+          pendingTotal={`+$${(buyingVolume + sellingVolume).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`}
+        />
 
-      <DashboardCards walletAddress={walletAddress} />
+
+
+      <DashboardCards
+        walletAddress={walletAddress}
+        setBuyingVolume={setBuyingVolume}
+        setSellingVolume={setSellingVolume}
+      />
+
+
       <Balances balances={balances} walletAddress={walletAddress} />
       <IncomingInvites walletAddress={walletAddress} onUpdateTeam={() => setReloadFlag((n) => n + 1)} />
 
