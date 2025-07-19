@@ -1,7 +1,7 @@
 export const marylandBuyboxes = [
   {
     city: "baltimore",
-    county: "montgomeryprince george'sbaltimoreanne arundelhowardfrederickharfordcharlescarrollwashingtoncecilkent",
+    county: "baltimore", // ✅ Baltimore City and Baltimore County exist, defaulting to county for consistency
     propertyType: "single family",
     foundation: "slab",
     bedMin: 1,
@@ -16,6 +16,7 @@ export const marylandBuyboxes = [
   },
   {
     city: "bowie",
+    county: "prince george's", // ✅ Bowie is in Prince George's County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -27,6 +28,7 @@ export const marylandBuyboxes = [
   },
   {
     city: "brandywine",
+    county: "prince george's", // ✅ Brandywine is in Prince George's County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -38,6 +40,7 @@ export const marylandBuyboxes = [
   },
   {
     city: "columbia",
+    county: "howard", // ✅ Columbia is in Howard County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -50,6 +53,7 @@ export const marylandBuyboxes = [
   },
   {
     city: "ellicott city",
+    county: "howard", // ✅ Ellicott City is in Howard County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -61,7 +65,7 @@ export const marylandBuyboxes = [
   },
   {
     city: "frederick",
-    county: "carrollfrederickbaltimoreharfordanne arundel",
+    county: "frederick", // ✅ Frederick is in Frederick County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -74,6 +78,7 @@ export const marylandBuyboxes = [
   },
   {
     city: "glen burnie",
+    county: "anne arundel", // ✅ Glen Burnie is in Anne Arundel County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -85,6 +90,7 @@ export const marylandBuyboxes = [
   },
   {
     city: "hagerstown",
+    county: "washington", // ✅ Hagerstown is in Washington County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -96,6 +102,7 @@ export const marylandBuyboxes = [
   },
   {
     city: "laurel",
+    county: "prince george's", // ✅ Laurel spans multiple counties, most populous in Prince George's
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -107,6 +114,7 @@ export const marylandBuyboxes = [
   },
   {
     city: "upper marlboro",
+    county: "prince george's", // ✅ Upper Marlboro is in Prince George's County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -118,6 +126,7 @@ export const marylandBuyboxes = [
   },
   {
     city: "white marsh",
+    county: "baltimore", // ✅ White Marsh is in Baltimore County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,

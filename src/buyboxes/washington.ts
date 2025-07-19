@@ -1,6 +1,7 @@
 export const washingtonBuyboxes = [
   {
     city: "king county",
+    county: "king", // ✅ This entry already references the county itself
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -13,6 +14,7 @@ export const washingtonBuyboxes = [
   },
   {
     city: "seattle",
+    county: "king", // ✅ Seattle is in King County
     propertyType: "single family, single property",
     bedMin: 1,
     bathMin: 1,
@@ -26,6 +28,7 @@ export const washingtonBuyboxes = [
   },
   {
     city: "spokane",
+    county: "spokane", // ✅ Spokane is in Spokane County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -38,6 +41,7 @@ export const washingtonBuyboxes = [
   },
   {
     city: "vancouver",
+    county: "clark", // ✅ Vancouver, WA is in Clark County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -50,6 +54,7 @@ export const washingtonBuyboxes = [
   },
   {
     city: "vashon",
+    county: "king", // ✅ Vashon Island is part of unincorporated King County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

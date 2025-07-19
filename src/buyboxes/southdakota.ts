@@ -1,6 +1,7 @@
 export const southdakotaBuyboxes = [
   {
     city: "sioux falls",
+    county: "minnehaha", // ✅ Sioux Falls is primarily in Minnehaha County (also partly in Lincoln County, but Minnehaha is primary)
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

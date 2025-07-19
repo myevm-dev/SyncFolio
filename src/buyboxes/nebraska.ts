@@ -1,6 +1,7 @@
 export const nebraskaBuyboxes = [
   {
     city: "omaha",
+    county: "douglas", // ✅ Omaha is in Douglas County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

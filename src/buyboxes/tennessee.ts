@@ -1,6 +1,7 @@
 export const tennesseeBuyboxes = [
   {
     city: "bartlett",
+    county: "shelby", // ✅ Bartlett is in Shelby County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 2,
@@ -13,7 +14,7 @@ export const tennesseeBuyboxes = [
   },
   {
     city: "chattanooga",
-    county: "tulsa",
+    county: "hamilton", // ✅ Chattanooga is in Hamilton County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -26,6 +27,7 @@ export const tennesseeBuyboxes = [
   },
   {
     city: "knoxville",
+    county: "knox", // ✅ Knoxville is in Knox County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -38,7 +40,7 @@ export const tennesseeBuyboxes = [
   },
   {
     city: "memphis",
-    county: "shelbytiptonrutherforddavidsonwashingtonwilliamsonknoxdyerwilsonsumnerhamiltonmontgomerymaricopasan joaquin",
+    county: "shelby", // ✅ Memphis is in Shelby County
     propertyType: "single family, multifamily",
     bedMin: 1,
     bathMin: 1,
@@ -52,7 +54,7 @@ export const tennesseeBuyboxes = [
   },
   {
     city: "middle valley",
-    county: "wilsondavidsonsumnerwilliamsoncumberlandputnamrutherford",
+    county: "hamilton", // ✅ Middle Valley is in Hamilton County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -65,6 +67,7 @@ export const tennesseeBuyboxes = [
   },
   {
     city: "murfreesboro",
+    county: "rutherford", // ✅ Murfreesboro is in Rutherford County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -77,6 +80,7 @@ export const tennesseeBuyboxes = [
   },
   {
     city: "nashville",
+    county: "davidson", // ✅ Nashville is in Davidson County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

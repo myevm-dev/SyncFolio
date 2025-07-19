@@ -1,6 +1,7 @@
 export const georgiaBuyboxes = [
   {
     city: "acworth",
+    county: "cobb",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -13,8 +14,7 @@ export const georgiaBuyboxes = [
   },
   {
     city: "atlanta",
-    county:
-      "fultoncobbclaytonhenrypauldinggwinnettdekalbhallchathamcherokeeforsythrichmondlowndesthomasbrookscookecholsgradycolquittlanierclinchdouglasfayettedadewalkercatoosa",
+    county: "fulton",
     propertyType: "single familysingle propertymultifamily",
     foundation: "slab",
     bedMin: 1,
@@ -27,8 +27,10 @@ export const georgiaBuyboxes = [
     maxPrice: 313085.79,
     hoa: true,
   },
+
   {
     city: "augusta",
+    county: "richmond",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -41,7 +43,7 @@ export const georgiaBuyboxes = [
   },
   {
     city: "columbus",
-    county: "muscogeeharris",
+    county: "muscogee harris",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -54,6 +56,7 @@ export const georgiaBuyboxes = [
   },
   {
     city: "decatur",
+    county: "dekalb",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -66,6 +69,7 @@ export const georgiaBuyboxes = [
   },
   {
     city: "kennesaw",
+    county: "cobb",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -78,6 +82,7 @@ export const georgiaBuyboxes = [
   },
   {
     city: "lawrenceville",
+    county: "gwinnett",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -90,6 +95,7 @@ export const georgiaBuyboxes = [
   },
   {
     city: "macon",
+    county: "bibb",
     propertyType: "single family",
     foundation: "slab",
     bedMin: 3,
@@ -103,6 +109,7 @@ export const georgiaBuyboxes = [
   },
   {
     city: "marietta",
+    county: "cobb",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -115,6 +122,7 @@ export const georgiaBuyboxes = [
   },
   {
     city: "powder springs",
+    county: "cobb",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -127,6 +135,7 @@ export const georgiaBuyboxes = [
   },
   {
     city: "ringgold",
+    county: "catoosa",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -139,6 +148,7 @@ export const georgiaBuyboxes = [
   },
   {
     city: "savannah",
+    county: "chatham",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -151,6 +161,7 @@ export const georgiaBuyboxes = [
   },
   {
     city: "smyrna",
+    county: "cobb",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -163,6 +174,7 @@ export const georgiaBuyboxes = [
   },
   {
     city: "valdosta",
+    county: "lowndes",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

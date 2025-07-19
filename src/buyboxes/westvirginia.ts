@@ -1,6 +1,7 @@
 export const westvirginiaBuyboxes = [
   {
     city: "charleston",
+    county: "kanawha", // ✅ Charleston is in Kanawha County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -13,6 +14,7 @@ export const westvirginiaBuyboxes = [
   },
   {
     city: "clarksburg",
+    county: "harrison", // ✅ Clarksburg is in Harrison County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,

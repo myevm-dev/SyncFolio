@@ -1,7 +1,7 @@
 export const ohioBuyboxes = [
   {
     city: "akron",
-    county: "summitstarktuscarawas",
+    county: "summit", // ✅ Akron is in Summit County
     propertyType: "single family",
     foundation: "slab",
     bedMin: 1,
@@ -16,7 +16,7 @@ export const ohioBuyboxes = [
   },
   {
     city: "cincinnati",
-    county: "hamiltonbutler",
+    county: "hamilton", // ✅ Cincinnati is in Hamilton County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -29,6 +29,7 @@ export const ohioBuyboxes = [
   },
   {
     city: "cleveland",
+    county: "cuyahoga", // ✅ Cleveland is in Cuyahoga County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -42,7 +43,7 @@ export const ohioBuyboxes = [
   },
   {
     city: "columbus",
-    county: "butlersummitlucascuyahogafranklinmahoninghamiltonhancockmontgomeryputnam",
+    county: "franklin", // ✅ Columbus is in Franklin County
     propertyType: "single family",
     bedMin: 1,
     bathMin: 1,
@@ -56,7 +57,7 @@ export const ohioBuyboxes = [
   },
   {
     city: "dayton",
-    county: "franklincuyahogalakelucasmadisonfairfieldunionpickawayhamiltonfayette",
+    county: "montgomery", // ✅ Dayton is in Montgomery County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -70,6 +71,7 @@ export const ohioBuyboxes = [
   },
   {
     city: "franklin",
+    county: "warren", // ✅ Franklin, OH is in Warren County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -82,6 +84,7 @@ export const ohioBuyboxes = [
   },
   {
     city: "maple heights",
+    county: "cuyahoga", // ✅ Maple Heights is in Cuyahoga County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -94,6 +97,7 @@ export const ohioBuyboxes = [
   },
   {
     city: "mason",
+    county: "warren", // ✅ Mason is in Warren County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -106,6 +110,7 @@ export const ohioBuyboxes = [
   },
   {
     city: "springfield",
+    county: "clark", // ✅ Springfield is in Clark County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -118,6 +123,7 @@ export const ohioBuyboxes = [
   },
   {
     city: "toledo",
+    county: "lucas", // ✅ Toledo is in Lucas County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -130,6 +136,7 @@ export const ohioBuyboxes = [
   },
   {
     city: "youngstown",
+    county: "mahoning", // ✅ Youngstown is in Mahoning County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

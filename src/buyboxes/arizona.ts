@@ -1,7 +1,7 @@
 export const arizonaBuyboxes = [
   {
     city: "maricopa",
-    county: "maricopapinalpimacoconino",
+    county: "pinal", // ✅ City of Maricopa is in Pinal County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -14,6 +14,7 @@ export const arizonaBuyboxes = [
   },
   {
     city: "mesa",
+    county: "maricopa", // ✅ Mesa is in Maricopa County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 2,
@@ -26,7 +27,7 @@ export const arizonaBuyboxes = [
   },
   {
     city: "phoenix",
-    county: "maricopapinalpimasanta cruzgreenleecochisenavajococoninola pazapachemohaveyavapai",
+    county: "maricopa", // ✅ Phoenix is in Maricopa County
     propertyType: "single family",
     bedMin: 1,
     bathMin: 1,
@@ -40,6 +41,7 @@ export const arizonaBuyboxes = [
   },
   {
     city: "tucson",
+    county: "pima", // ✅ Tucson is in Pima County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 2,

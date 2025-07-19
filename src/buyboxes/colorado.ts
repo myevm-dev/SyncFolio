@@ -1,7 +1,7 @@
 export const coloradoBuyboxes = [
   {
     city: "denver",
-    county: "el pasopueblo",
+    county: "denver", // ✅ Denver is in Denver County (a consolidated city-county)
     propertyType: "single family",
     bedMin: 1,
     bathMin: 1,

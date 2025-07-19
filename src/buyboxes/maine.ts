@@ -1,6 +1,7 @@
 export const maineBuyboxes = [
   {
     city: "portland",
+    county: "cumberland", // ✅ Portland is in Cumberland County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

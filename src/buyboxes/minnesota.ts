@@ -1,7 +1,7 @@
 export const minnesotaBuyboxes = [
   {
     city: "minneapolis",
-    county: "cumberlandonslowcarteretwake",
+    county: "hennepin", // ✅ Minneapolis is in Hennepin County
     propertyType: "single family",
     foundation: "slab",
     bedMin: 1,

@@ -1,7 +1,7 @@
 export const alabamaBuyboxes = [
   {
     city: "auburn",
-    county: "russelllee",
+    county: "lee", // ✅ Auburn is in Lee County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -14,6 +14,7 @@ export const alabamaBuyboxes = [
   },
   {
     city: "decatur",
+    county: "morgan", // ✅ Decatur is in Morgan County (small portion in Limestone, but Morgan is primary)
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -26,6 +27,7 @@ export const alabamaBuyboxes = [
   },
   {
     city: "huntsville",
+    county: "madison", // ✅ Huntsville is in Madison County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -38,7 +40,7 @@ export const alabamaBuyboxes = [
   },
   {
     city: "jacksonville",
-    county: "jeffersonst. clairblountshelby",
+    county: "calhoun", // ✅ Jacksonville is in Calhoun County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -51,6 +53,7 @@ export const alabamaBuyboxes = [
   },
   {
     city: "mobile",
+    county: "mobile", // ✅ Mobile is in Mobile County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -63,6 +66,7 @@ export const alabamaBuyboxes = [
   },
   {
     city: "montgomery",
+    county: "montgomery", // ✅ Montgomery is in Montgomery County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -75,6 +79,7 @@ export const alabamaBuyboxes = [
   },
   {
     city: "phenix city",
+    county: "russell", // ✅ Phenix City is primarily in Russell County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 2,
@@ -87,6 +92,7 @@ export const alabamaBuyboxes = [
   },
   {
     city: "tuscaloosa",
+    county: "tuscaloosa", // ✅ Tuscaloosa is in Tuscaloosa County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,

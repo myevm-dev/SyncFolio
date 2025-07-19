@@ -1,6 +1,7 @@
 export const massachusettsBuyboxes = [
   {
     city: "lowell",
+    county: "middlesex", // ✅ Lowell is in Middlesex County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -13,6 +14,7 @@ export const massachusettsBuyboxes = [
   },
   {
     city: "springfield",
+    county: "hampden", // ✅ Springfield is in Hampden County
     propertyType: "single family",
     foundation: "slab",
     bedMin: 1,

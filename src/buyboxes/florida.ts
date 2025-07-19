@@ -1,7 +1,7 @@
 export const floridaBuyboxes = [
   {
     city: "cape coral",
-    county: "leecolliercharlottesarasota",
+    county: "lee",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -27,6 +27,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "fort lauderdale",
+    county: "broward",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -39,6 +40,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "fort myers",
+    county: "lee",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 2,
@@ -51,6 +53,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "gainesville",
+    county: "alachua",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -63,6 +66,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "hillsborough county",
+    county: "hillsborough",
     propertyType: "single family",
     bedMin: 1,
     bathMin: 1,
@@ -75,7 +79,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "jacksonville",
-    county: "leecharlottesarasotamanateeflaglerst. johnsvolusiamonroemiami-dadebrowardsumtercollierpalm beachmartinseminolesanta rosaokaloosahendryorangebrevardlakepolkmarioncitrushillsboroughpinellasbakerclaynassauputnamduvalcolumbiaescambiaindian riverst. luciepasco",
+    county: "duval",
     propertyType: "single familymultifamily",
     foundation: "slab",
     bedMin: 1,
@@ -90,6 +94,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "lakeland",
+    county: "polk",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -102,6 +107,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "lehigh acres",
+    county: "lee",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -114,7 +120,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "miami",
-    county: "manateebrevardcharlotteleest. luciepascomiami-dadepolkflaglerduvalorangehillsboroughbrowardcitrushernandopinellassarasota",
+    county: "miami-dade",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -127,7 +133,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "naples",
-    county: "collierlee",
+    county: "collier",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -140,6 +146,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "ocala",
+    county: "marion",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -152,7 +159,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "orlando",
-    county: "palm beach",
+    county: "orange",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -165,7 +172,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "palm bay",
-    county: "palm beach",
+    county: "brevard",
     propertyType: "single family",
     foundation: "slab",
     bedMin: 2,
@@ -179,6 +186,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "panama city",
+    county: "bay",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -191,7 +199,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "panama city beach",
-    county: "leonpalm beachmartinbaysanta rosa",
+    county: "bay",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -204,6 +212,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "pensacola",
+    county: "escambia",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -229,6 +238,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "port charlotte",
+    county: "charlotte",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -241,6 +251,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "port saint lucie",
+    county: "st. lucie",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -253,7 +264,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "saint augustine",
-    county: "jackson",
+    county: "st. johns",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -266,6 +277,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "sarasota",
+    county: "sarasota",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -278,6 +290,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "tallahassee",
+    county: "leon",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 2,
@@ -290,7 +303,7 @@ export const floridaBuyboxes = [
   },
   {
     city: "tampa",
-    county: "pinellashillsboroughpascopolkmanateesarasotahernando",
+    county: "hillsborough",
     propertyType: "single family",
     foundation: "slab",
     bedMin: 2,

@@ -1,7 +1,7 @@
 export const northcarolinaBuyboxes = [
   {
     city: "charlotte",
-    county: "cabarruscumberlandonslowcarteretwakeguilfordalamanceforsythdurhampolkmoorepitttransylvaniaunionhendersonmecklenburgnew hanoverbrunswick",
+    county: "mecklenburg", // ✅ Charlotte is in Mecklenburg County
     propertyType: "single family",
     foundation: "slab",
     bedMin: 1,
@@ -16,6 +16,7 @@ export const northcarolinaBuyboxes = [
   },
   {
     city: "durham",
+    county: "durham", // ✅ Durham is in Durham County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -29,7 +30,7 @@ export const northcarolinaBuyboxes = [
   },
   {
     city: "greensboro",
-    county: "guilfordrockinghamforsythnew hanover",
+    county: "guilford", // ✅ Greensboro is in Guilford County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -42,7 +43,7 @@ export const northcarolinaBuyboxes = [
   },
   {
     city: "raleigh",
-    county: "santa cruzmontereymecklenburggastoncabarrusiredellunion",
+    county: "wake", // ✅ Raleigh is in Wake County
     propertyType: "single family",
     foundation: "slab",
     bedMin: 2,

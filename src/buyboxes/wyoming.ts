@@ -1,6 +1,7 @@
 export const wyomingBuyboxes = [
   {
     city: "cheyenne",
+    county: "laramie", // ✅ Cheyenne is in Laramie County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,

@@ -1,6 +1,7 @@
 export const texasBuyboxes = [
   {
     city: "amarillo",
+    county: "potter", // ✅ Amarillo is primarily in Potter County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -15,6 +16,7 @@ export const texasBuyboxes = [
   },
   {
     city: "arlington",
+    county: "tarrant", // ✅ Arlington is in Tarrant County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -29,6 +31,7 @@ export const texasBuyboxes = [
   },
   {
     city: "austin",
+    county: "travis", // ✅ Austin is in Travis County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -43,7 +46,7 @@ export const texasBuyboxes = [
   },
   {
     city: "baytown",
-    county: "monroe",
+    county: "harris", // ✅ Baytown is primarily in Harris County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -56,6 +59,7 @@ export const texasBuyboxes = [
   },
   {
     city: "beaumont",
+    county: "jefferson", // ✅ Beaumont is in Jefferson County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -68,6 +72,7 @@ export const texasBuyboxes = [
   },
   {
     city: "cleveland",
+    county: "liberty", // ✅ Cleveland, TX is in Liberty County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -82,7 +87,7 @@ export const texasBuyboxes = [
   },
   {
     city: "dallas",
-    county: "harrisdallastarrantbexartraviscollindentonfort bendhidalgoel pasotaylorbell",
+    county: "dallas", // ✅ Dallas is in Dallas County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -97,6 +102,7 @@ export const texasBuyboxes = [
   },
   {
     city: "el paso",
+    county: "el paso", // ✅ El Paso is in El Paso County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -111,7 +117,7 @@ export const texasBuyboxes = [
   },
   {
     city: "fort worth",
-    county: "tarrant countybell county and taylor county",
+    county: "tarrant", // ✅ Fort Worth is in Tarrant County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -126,6 +132,7 @@ export const texasBuyboxes = [
   },
   {
     city: "hollywood park",
+    county: "bexar", // ✅ Hollywood Park is in Bexar County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 2,
@@ -138,7 +145,7 @@ export const texasBuyboxes = [
   },
   {
     city: "houston",
-    county: "san bernardinoriversideharrisonfort bend",
+    county: "harris", // ✅ Houston is in Harris County (may extend to Fort Bend, but Harris is primary)
     propertyType: "single family, single family",
     foundation: "slab",
     bedMin: 1,
@@ -153,6 +160,7 @@ export const texasBuyboxes = [
   },
   {
     city: "richmond",
+    county: "fort bend", // ✅ Richmond is in Fort Bend County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -165,6 +173,7 @@ export const texasBuyboxes = [
   },
   {
     city: "spring",
+    county: "harris", // ✅ Spring is in unincorporated Harris County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -179,6 +188,7 @@ export const texasBuyboxes = [
   },
   {
     city: "sugar land",
+    county: "fort bend", // ✅ Sugar Land is in Fort Bend County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 2,

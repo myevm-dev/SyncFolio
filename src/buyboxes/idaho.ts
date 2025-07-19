@@ -1,6 +1,7 @@
 export const idahoBuyboxes = [
   {
     city: "coeur d'alene",
+    county: "kootenai", // ✅ Coeur d'Alene is in Kootenai County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

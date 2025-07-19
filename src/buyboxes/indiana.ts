@@ -1,6 +1,7 @@
 export const indianaBuyboxes = [
   {
     city: "fort wayne",
+    county: "allen", // ✅ Fort Wayne is in Allen County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -13,11 +14,11 @@ export const indianaBuyboxes = [
   },
   {
     city: "indianapolis",
-    county: "lakeporterlaporteallen",
+    county: "marion", // ✅ Indianapolis is in Marion County
     propertyType: "single familyduplex",
     bedMin: 1,
     bathMin: 1,
-    yearBuiltMin: 973,
+    yearBuiltMin: 1973, // ✅ corrected typo
     sqftMin: 700,
     sqftMax: 4000,
     arvPercentMax: 73.32,

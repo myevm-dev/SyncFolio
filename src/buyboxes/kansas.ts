@@ -1,7 +1,7 @@
 export const kansasBuyboxes = [
   {
     city: "kansas city",
-    county: "johnsonwyandottejacksonclayleavenworth",
+    county: "wyandotte", // ✅ Kansas City, KS is officially in Wyandotte County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -14,6 +14,7 @@ export const kansasBuyboxes = [
   },
   {
     city: "wichita",
+    county: "sedgwick", // ✅ Wichita is in Sedgwick County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

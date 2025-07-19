@@ -1,6 +1,7 @@
 export const newyorkBuyboxes = [
   {
     city: "binghamton",
+    county: "broome", // ✅ Binghamton is in Broome County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -13,7 +14,7 @@ export const newyorkBuyboxes = [
   },
   {
     city: "brooklyn",
-    county: "tompkins",
+    county: "kings", // ✅ Brooklyn is a borough of NYC, officially Kings County
     propertyType: "single family",
     bedMin: 1,
     bathMin: 1,
@@ -27,6 +28,7 @@ export const newyorkBuyboxes = [
   },
   {
     city: "buffalo",
+    county: "erie", // ✅ Buffalo is in Erie County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -39,7 +41,7 @@ export const newyorkBuyboxes = [
   },
   {
     city: "nassau",
-    county: "nassausuffolk",
+    county: "nassau", // ✅ If referring to Nassau County directly
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -52,7 +54,7 @@ export const newyorkBuyboxes = [
   },
   {
     city: "new york",
-    county: "monroewestchesternassau",
+    county: "new york", // ✅ Manhattan borough is New York County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -65,6 +67,7 @@ export const newyorkBuyboxes = [
   },
   {
     city: "rochester",
+    county: "monroe", // ✅ Rochester is in Monroe County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

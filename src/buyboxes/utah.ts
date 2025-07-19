@@ -1,7 +1,7 @@
 export const utahBuyboxes = [
   {
     city: "salt lake city",
-    county: "salt lakeutahdavisweberwashingtoncachetooeleironbox eldersummit",
+    county: "salt lake", // ✅ Salt Lake City is in Salt Lake County
     propertyType: "single family, multifamily",
     foundation: "slab",
     bedMin: 1,

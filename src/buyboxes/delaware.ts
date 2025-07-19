@@ -1,6 +1,7 @@
 export const delawareBuyboxes = [
   {
     city: "dover",
+    county: "kent", // ✅ Dover is in Kent County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -13,6 +14,7 @@ export const delawareBuyboxes = [
   },
   {
     city: "wilmington",
+    county: "new castle", // ✅ Wilmington is in New Castle County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

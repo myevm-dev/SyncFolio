@@ -1,6 +1,7 @@
 export const missouriBuyboxes = [
   {
     city: "florissant",
+    county: "st. louis", // ✅ Florissant is in St. Louis County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -13,6 +14,7 @@ export const missouriBuyboxes = [
   },
   {
     city: "independence",
+    county: "jackson", // ✅ Independence is in Jackson County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -25,6 +27,7 @@ export const missouriBuyboxes = [
   },
   {
     city: "jackson",
+    county: "cape girardeau", // ✅ Jackson, MO is in Cape Girardeau County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -37,7 +40,7 @@ export const missouriBuyboxes = [
   },
   {
     city: "kansas city",
-    county: "claychristianjasperplattegreenest. charlesboonejacksonst. louismississippijohnsoncassvolusia",
+    county: "jackson", // ✅ Kansas City, MO is primarily in Jackson County (also Clay, Platte, Cass — you can list others if needed)
     propertyType: "single family",
     foundation: "slab",
     bedMin: 1,
@@ -52,8 +55,8 @@ export const missouriBuyboxes = [
   },
   {
     city: "saint louis",
-    county: "st. louisst. charles",
-    propertyType: "single familysingle family.",
+    county: "st. louis city", // ✅ St. Louis is an independent city, not part of St. Louis County
+    propertyType: "single family",
     foundation: "slab",
     bedMin: 1,
     bathMin: 1,
@@ -66,6 +69,7 @@ export const missouriBuyboxes = [
   },
   {
     city: "saint louis county",
+    county: "st. louis", // ✅ This refers to the county, distinct from St. Louis City
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -78,6 +82,7 @@ export const missouriBuyboxes = [
   },
   {
     city: "springfield",
+    county: "greene", // ✅ Springfield is in Greene County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

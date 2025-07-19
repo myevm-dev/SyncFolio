@@ -1,6 +1,7 @@
 export const louisianaBuyboxes = [
   {
     city: "baton rouge",
+    county: "east baton rouge", // ✅
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -13,6 +14,7 @@ export const louisianaBuyboxes = [
   },
   {
     city: "bossier city",
+    county: "bossier", // ✅
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -25,6 +27,7 @@ export const louisianaBuyboxes = [
   },
   {
     city: "denham springs",
+    county: "livingston", // ✅
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -37,6 +40,7 @@ export const louisianaBuyboxes = [
   },
   {
     city: "houma",
+    county: "terrebonne", // ✅
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -49,6 +53,7 @@ export const louisianaBuyboxes = [
   },
   {
     city: "jefferson",
+    county: "jefferson", // ✅
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -60,6 +65,7 @@ export const louisianaBuyboxes = [
   },
   {
     city: "kenner",
+    county: "jefferson", // ✅
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -72,6 +78,7 @@ export const louisianaBuyboxes = [
   },
   {
     city: "lafayette",
+    county: "lafayette", // ✅
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -84,6 +91,7 @@ export const louisianaBuyboxes = [
   },
   {
     city: "lake charles",
+    county: "calcasieu", // ✅
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -96,6 +104,7 @@ export const louisianaBuyboxes = [
   },
   {
     city: "metairie",
+    county: "jefferson", // ✅
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -108,6 +117,7 @@ export const louisianaBuyboxes = [
   },
   {
     city: "new orleans",
+    county: "orleans", // ✅
     propertyType: "single family",
     foundation: "slab",
     bedMin: 1,
@@ -121,6 +131,7 @@ export const louisianaBuyboxes = [
   },
   {
     city: "shreveport",
+    county: "caddo", // ✅
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,

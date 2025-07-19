@@ -1,6 +1,7 @@
 export const northdakotaBuyboxes = [
   {
     city: "fargo",
+    county: "cass", // ✅ Fargo is in Cass County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

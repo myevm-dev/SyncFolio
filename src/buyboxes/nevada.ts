@@ -1,6 +1,7 @@
 export const nevadaBuyboxes = [
   {
     city: "carson city",
+    county: "carson city", // ✅ Carson City is an independent city and consolidated municipality
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -13,6 +14,7 @@ export const nevadaBuyboxes = [
   },
   {
     city: "las vegas",
+    county: "clark", // ✅ Las Vegas is in Clark County
     propertyType: "single family, multifamily",
     bedMin: 1,
     bathMin: 1,

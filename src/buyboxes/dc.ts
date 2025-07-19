@@ -1,6 +1,7 @@
 export const dcBuyboxes = [
   {
     city: "washington d.c.",
+    county: "district of columbia", // ✅ Washington D.C. is a consolidated city-county
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,

@@ -1,6 +1,7 @@
 export const wisconsinBuyboxes = [
   {
     city: "appleton",
+    county: "outagamie", // ✅ Appleton is primarily in Outagamie County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -13,6 +14,7 @@ export const wisconsinBuyboxes = [
   },
   {
     city: "fond du lac",
+    county: "fond du lac", // ✅ Fond du Lac is in Fond du Lac County
     propertyType: "single family",
     foundation: "slab",
     bedMin: 1,
@@ -27,6 +29,7 @@ export const wisconsinBuyboxes = [
   },
   {
     city: "green bay",
+    county: "brown", // ✅ Green Bay is in Brown County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -38,6 +41,7 @@ export const wisconsinBuyboxes = [
   },
   {
     city: "janesville",
+    county: "rock", // ✅ Janesville is in Rock County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -49,6 +53,7 @@ export const wisconsinBuyboxes = [
   },
   {
     city: "kenosha",
+    county: "kenosha", // ✅ Kenosha is in Kenosha County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -60,6 +65,7 @@ export const wisconsinBuyboxes = [
   },
   {
     city: "madison",
+    county: "dane", // ✅ Madison is in Dane County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -72,7 +78,7 @@ export const wisconsinBuyboxes = [
   },
   {
     city: "milwaukee",
-    county: "milwaukeewaukeshaozaukee",
+    county: "milwaukee", // ✅ Milwaukee is in Milwaukee County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -85,6 +91,7 @@ export const wisconsinBuyboxes = [
   },
   {
     city: "racine",
+    county: "racine", // ✅ Racine is in Racine County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -97,6 +104,7 @@ export const wisconsinBuyboxes = [
   },
   {
     city: "waukesha",
+    county: "waukesha", // ✅ Waukesha is in Waukesha County
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -108,6 +116,7 @@ export const wisconsinBuyboxes = [
   },
   {
     city: "wausau",
+    county: "marathon", // ✅ Wausau is in Marathon County
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -120,6 +129,7 @@ export const wisconsinBuyboxes = [
   },
   {
     city: "west allis",
+    county: "milwaukee", // ✅ West Allis is in Milwaukee County
     propertyType: "single family",
     foundation: "slab",
     bedMin: 3,

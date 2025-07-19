@@ -1,6 +1,7 @@
 export const californiaBuyboxes = [
   {
     city: "berkeley",
+    county: "alameda",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -13,6 +14,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "bonsall",
+    county: "san diego",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 2,
@@ -25,7 +27,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "coachella",
-    county: "riversidesan bernardino",
+    county: "riverside",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -51,6 +53,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "hollywood",
+    county: "los angeles",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 1,
@@ -63,6 +66,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "jacksonville",
+    county: "san bernardino",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -75,7 +79,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "lancaster",
-    county: "volusia",
+    county: "los angeles",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -88,6 +92,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "long beach",
+    county: "los angeles",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 2,
@@ -100,8 +105,8 @@ export const californiaBuyboxes = [
   },
   {
     city: "los angeles",
-    county: "orangelos angelessan diegoriversidesan bernardinoventurasan joaquinstanislausfresnoalamedasanta clarasan francisco",
-    propertyType: "single familysingle propertysingle famly",
+    county: "los angeles",
+    propertyType: "single family",
     foundation: "slab",
     bedMin: 1,
     bathMin: 1,
@@ -115,6 +120,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "malibu",
+    county: "los angeles",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 2,
@@ -127,6 +133,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "napa",
+    county: "napa",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 2,
@@ -139,6 +146,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "pasadena",
+    county: "los angeles",
     propertyType: "single family",
     bedMin: 3,
     bathMin: 2,
@@ -165,6 +173,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "riverside",
+    county: "riverside",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -177,7 +186,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "sacramento",
-    county: "tulare",
+    county: "sacramento",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -190,7 +199,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "san bernardino",
-    county: "riversidesan bernardino",
+    county: "san bernardino",
     propertyType: "single family",
     bedMin: 4,
     bathMin: 2,
@@ -203,6 +212,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "san diego",
+    county: "san diego",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -214,7 +224,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "san francisco",
-    county: "santa cruzmontereyalamedacontra costamarinnapasan franciscosan mateosanta clarasolanosonomasacramentostanislaussan joaquinkern",
+    county: "san francisco",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -240,6 +250,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "san jose",
+    county: "santa clara",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 2,
@@ -252,6 +263,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "santa barbara",
+    county: "santa barbara",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
@@ -264,6 +276,7 @@ export const californiaBuyboxes = [
   },
   {
     city: "vallejo",
+    county: "solano",
     propertyType: "single family",
     bedMin: 2,
     bathMin: 1,
