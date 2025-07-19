@@ -138,20 +138,22 @@ export default function BuyboxDirectory() {
   return (
     <div className="mt-20 max-w-6xl mx-auto px-4">
       <h2 className="text-3xl font-bold text-center mb-4">Buybox Directory</h2>
-      <div className="flex justify-center space-x-4 mb-6">
-        <button
-          className={`px-4 py-2 rounded ${viewMode === 'trending' ? 'bg-[#6e5690] text-black' : 'bg-zinc-800 text-white'}`}
-          onClick={() => setViewMode('trending')}
-        >
-          Trending
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${viewMode === 'state' ? 'bg-[#6e5690] text-black' : 'bg-zinc-800 text-white'}`}
-          onClick={() => setViewMode('state')}
-        >
-          State A-Z
-        </button>
+      <div className="flex justify-center gap-6 mb-6 mt-4">
+        {["trending", "state"].map((m) => (
+          <button
+            key={m}
+            onClick={() => setViewMode(m as "trending" | "state")}
+            className={`w-40 py-2 rounded-full transition font-medium text-center ${
+              viewMode === m
+                ? "bg-gradient-to-r from-purple-400 to-cyan-400 text-black shadow-md"
+                : "bg-transparent border border-zinc-600 text-white"
+            }`}
+          >
+            {m === "trending" ? "Trending" : "State A-Z"}
+          </button>
+        ))}
       </div>
+
 
       {viewMode === 'state' ? (
         allBuyboxes.map((state, i) => (
